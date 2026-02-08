@@ -13,18 +13,24 @@ const restaurantData = {
                     name: "Oceanos",
                     cuisine: "Seafood & Continental",
                     rating: 4.5,
+                    isFeatured: true,
+                    tags: ["Top Rated", "Seafood", "Modern"],
                     image: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&h=600&fit=crop",
+                    reviews: [
+                        { user: "Arjun K.", rating: 5, comment: "Best seafood in Kochi! The Lobster Thermidor is a must-try.", date: "2 days ago" },
+                        { user: "Sarah M.", rating: 4, comment: "Beautiful ambiance and fresh fish. Slightly expensive but worth it.", date: "1 week ago" }
+                    ],
                     foodItems: [
-                        { name: "Prawn Cocktail", category: "Starters", price: "₹280", description: "Fresh prawns with tangy cocktail sauce", image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&h=300&fit=crop" },
-                        { name: "Fish Fingers", category: "Starters", price: "₹220", description: "Crispy golden fried fish strips", image: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&h=300&fit=crop" },
-                        { name: "Grilled Calamari", category: "Starters", price: "₹320", description: "Tender squid rings with herbs", image: "https://images.unsplash.com/photo-1604909052743-94e838986d24?w=400&h=300&fit=crop" },
-                        { name: "Lobster Thermidor", category: "Main Course", price: "₹1200", description: "Creamy lobster in rich sauce", image: "https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?w=400&h=300&fit=crop" },
-                        { name: "Grilled Salmon", category: "Main Course", price: "₹850", description: "Atlantic salmon with lemon butter", image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&h=300&fit=crop" },
-                        { name: "Seafood Platter", category: "Main Course", price: "₹950", description: "Assorted fresh seafood", image: "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=400&h=300&fit=crop" },
-                        { name: "Fish and Chips", category: "Main Course", price: "₹480", description: "Classic British favorite", image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=400&h=300&fit=crop" },
-                        { name: "Tiramisu", category: "Desserts", price: "₹250", description: "Classic Italian dessert", image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&h=300&fit=crop" },
-                        { name: "Chocolate Lava Cake", category: "Desserts", price: "₹280", description: "Warm chocolate with liquid center", image: "https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=400&h=300&fit=crop" },
-                        { name: "Panna Cotta", category: "Desserts", price: "₹220", description: "Silky Italian cream dessert", image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=300&fit=crop" }
+                        { name: "Prawn Cocktail", category: "Starters", price: "₹280", isVeg: false, description: "Fresh prawns with tangy cocktail sauce", image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&h=300&fit=crop" },
+                        { name: "Fish Fingers", category: "Starters", price: "₹220", isVeg: false, description: "Crispy golden fried fish strips", image: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&h=300&fit=crop" },
+                        { name: "Grilled Calamari", category: "Starters", price: "₹320", isVeg: false, description: "Tender squid rings with herbs", image: "https://images.unsplash.com/photo-1604909052743-94e838986d24?w=400&h=300&fit=crop" },
+                        { name: "Lobster Thermidor", category: "Main Course", price: "₹1200", isVeg: false, description: "Creamy lobster in rich sauce", image: "https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?w=400&h=300&fit=crop" },
+                        { name: "Grilled Salmon", category: "Main Course", price: "₹850", isVeg: false, description: "Atlantic salmon with lemon butter", image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&h=300&fit=crop" },
+                        { name: "Seafood Platter", category: "Main Course", price: "₹950", isVeg: false, description: "Assorted fresh seafood", image: "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=400&h=300&fit=crop" },
+                        { name: "Fish and Chips", category: "Main Course", price: "₹480", isVeg: false, description: "Classic British favorite", image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=400&h=300&fit=crop" },
+                        { name: "Tiramisu", category: "Desserts", price: "₹250", isVeg: true, description: "Classic Italian dessert", image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&h=300&fit=crop" },
+                        { name: "Chocolate Lava Cake", category: "Desserts", price: "₹280", isVeg: true, description: "Warm chocolate with liquid center", image: "https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=400&h=300&fit=crop" },
+                        { name: "Panna Cotta", category: "Desserts", price: "₹220", isVeg: true, description: "Silky Italian cream dessert", image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=300&fit=crop" }
                     ]
                 },
                 {
@@ -33,18 +39,24 @@ const restaurantData = {
                     name: "Spice Garden",
                     cuisine: "Kerala Traditional",
                     rating: 4.7,
+                    isFeatured: true,
+                    tags: ["Traditional", "Healthy", "Top Rated"],
                     image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop",
+                    reviews: [
+                        { user: "Manoj P.", rating: 5, comment: "Authentic Kerala sadya. The Karimeen Pollichathu is exceptional!", date: "3 days ago" },
+                        { user: "Deepa V.", rating: 5, comment: "Best place for traditional family dinner.", date: "1 month ago" }
+                    ],
                     foodItems: [
-                        { name: "Kozhi Ularthiyathu", category: "Starters", price: "₹180", description: "Spicy Kerala chicken fry", image: "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=400&h=300&fit=crop" },
-                        { name: "Kallummakaya Fry", category: "Starters", price: "₹250", description: "Crispy mussel fry", image: "https://images.unsplash.com/photo-1615361200098-20a18fcc2409?w=400&h=300&fit=crop" },
-                        { name: "Banana Chips", category: "Starters", price: "₹80", description: "Crispy traditional chips", image: "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400&h=300&fit=crop" },
-                        { name: "Kerala Sadya", category: "Main Course", price: "₹350", description: "Traditional feast on banana leaf", image: "https://images.unsplash.com/photo-1626074353765-517a65faa902?w=400&h=300&fit=crop" },
-                        { name: "Karimeen Pollichathu", category: "Main Course", price: "₹480", description: "Pearl spot fish in banana leaf", image: "https://images.unsplash.com/photo-1515669097368-22e68427d265?w=400&h=300&fit=crop" },
-                        { name: "Beef Fry", category: "Main Course", price: "₹220", description: "Spicy Kerala style beef", image: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=400&h=300&fit=crop" },
-                        { name: "Appam with Stew", category: "Main Course", price: "₹180", description: "Soft rice pancakes with coconut stew", image: "https://images.unsplash.com/photo-1630383249896-424e482df921?w=400&h=300&fit=crop" },
-                        { name: "Payasam", category: "Desserts", price: "₹120", description: "Sweet rice pudding", image: "https://images.unsplash.com/photo-1663847697988-48c5b34580dd?w=400&h=300&fit=crop" },
-                        { name: "Unniyappam", category: "Desserts", price: "₹100", description: "Sweet rice fritters", image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400&h=300&fit=crop" },
-                        { name: "Ada Pradhaman", category: "Desserts", price: "₹140", description: "Rice flakes in coconut milk", image: "https://images.unsplash.com/photo-1570831739435-6601aa3fa4fb?w=400&h=300&fit=crop" }
+                        { name: "Kozhi Ularthiyathu", category: "Starters", price: "₹180", isVeg: false, description: "Spicy Kerala chicken fry", image: "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=400&h=300&fit=crop" },
+                        { name: "Kallummakaya Fry", category: "Starters", price: "₹250", isVeg: false, description: "Crispy mussel fry", image: "https://images.unsplash.com/photo-1615361200098-20a18fcc2409?w=400&h=300&fit=crop" },
+                        { name: "Banana Chips", category: "Starters", price: "₹80", isVeg: true, description: "Crispy traditional chips", image: "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400&h=300&fit=crop" },
+                        { name: "Kerala Sadya", category: "Main Course", price: "₹350", isVeg: true, description: "Traditional feast on banana leaf", image: "https://images.unsplash.com/photo-1626074353765-517a65faa902?w=400&h=300&fit=crop" },
+                        { name: "Karimeen Pollichathu", category: "Main Course", price: "₹480", isVeg: false, description: "Pearl spot fish in banana leaf", image: "https://images.unsplash.com/photo-1515669097368-22e68427d265?w=400&h=300&fit=crop" },
+                        { name: "Beef Fry", category: "Main Course", price: "₹220", isVeg: false, description: "Spicy Kerala style beef", image: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=400&h=300&fit=crop" },
+                        { name: "Appam with Stew", category: "Main Course", price: "₹180", isVeg: true, description: "Soft rice pancakes with coconut stew", image: "https://images.unsplash.com/photo-1630383249896-424e482df921?w=400&h=300&fit=crop" },
+                        { name: "Payasam", category: "Desserts", price: "₹120", isVeg: true, description: "Sweet rice pudding", image: "https://images.unsplash.com/photo-1663847697988-48c5b34580dd?w=400&h=300&fit=crop" },
+                        { name: "Unniyappam", category: "Desserts", price: "₹100", isVeg: true, description: "Sweet rice fritters", image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400&h=300&fit=crop" },
+                        { name: "Ada Pradhaman", category: "Desserts", price: "₹140", isVeg: true, description: "Rice flakes in coconut milk", image: "https://images.unsplash.com/photo-1570831739435-6601aa3fa4fb?w=400&h=300&fit=crop" }
                     ]
                 },
                 {
@@ -53,6 +65,7 @@ const restaurantData = {
                     name: "Urban Bistro",
                     cuisine: "Continental & Italian",
                     rating: 4.3,
+                    tags: ["Fast Food", "Modern"],
                     image: "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&h=600&fit=crop",
                     foodItems: [
                         { name: "Bruschetta", category: "Starters", price: "₹200", description: "Toasted bread with tomato basil", image: "https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=400&h=300&fit=crop" },
@@ -229,7 +242,13 @@ const restaurantData = {
                     name: "Paragon",
                     cuisine: "Malabar Cuisine",
                     rating: 4.7,
+                    isFeatured: true,
+                    tags: ["Famous", "Authentic", "Must Visit"],
                     image: "https://images.unsplash.com/photo-1515669097368-22e68427d265?w=800&h=600&fit=crop",
+                    reviews: [
+                        { user: "Siddharth R.", rating: 5, comment: "The legendary Malabar Biryani! Worth the travel to Kozhikode.", date: "4 days ago" },
+                        { user: "Anjali S.", rating: 4, comment: "Great food, but always crowded. Reservation recommended.", date: "2 weeks ago" }
+                    ],
                     foodItems: [
                         { name: "Chicken Fry", category: "Starters", price: "₹200", description: "Spicy Kerala chicken", image: "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=400&h=300&fit=crop" },
                         { name: "Fish Fry", category: "Starters", price: "₹180", description: "Crispy masala fish", image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=400&h=300&fit=crop" },
