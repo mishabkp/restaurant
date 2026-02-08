@@ -472,9 +472,12 @@ const app = {
               <div class="food-item-content">
                 <h3 class="food-item-name">${item.name}</h3>
                 <p class="food-item-description">Perfect for your mood!</p>
-                <button class="checkout-btn" style="padding: 0.5rem 1rem; font-size: 0.8rem; width: auto;" onclick="event.stopPropagation(); app.addToCart(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}', event)">
-                  Add to Cart
-                </button>
+                <div class="food-item-footer">
+                  <span class="food-item-category">${item.category}</span>
+                  <button class="add-to-cart-btn" onclick="event.stopPropagation(); app.addToCart(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}', event)">
+                    Add to Cart
+                  </button>
+                </div>
               </div>
               <div class="food-item-price">${item.price}</div>
             </div>
@@ -843,9 +846,9 @@ const app = {
               </button>
             </div>
             <p class="food-item-description">${item.description}</p>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+            <div class="food-item-footer">
               <span class="food-item-category">${item.category}</span>
-              <button class="checkout-btn" style="padding: 0.5rem 1rem; font-size: 0.8rem; width: auto;" onclick="event.stopPropagation(); app.addToCart(${restaurant.id}, '${item.name.replace(/'/g, "\\'")}', event)">
+              <button class="add-to-cart-btn" onclick="event.stopPropagation(); app.addToCart(${restaurant.id}, '${item.name.replace(/'/g, "\\'")}', event)">
                 Add to Cart
               </button>
             </div>
