@@ -561,7 +561,7 @@ const app = {
     ]);
 
     const content = `
-  < h1 class="page-title" > Restaurants in ${place.name}</h1 >
+      <h1 class="page-title">Restaurants in ${place.name}</h1>
       <p class="page-subtitle">${place.description}</p>
       
       <div class="filter-bar">
@@ -575,20 +575,20 @@ const app = {
       <div class="restaurants-grid" id="restaurantsGrid">
         ${this.renderRestaurants(place.restaurants)}
       </div>
-`;
+    `;
 
     document.getElementById('mainContent').innerHTML = content;
   },
 
   renderRestaurants(restaurants) {
     if (restaurants.length === 0) {
-      return `< p style = "grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-muted);" > No restaurants found matching your filter.</p > `;
+      return `<p style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-muted);">No restaurants found matching your filter.</p>`;
     }
 
     return restaurants.map((restaurant, index) => {
       const isFav = this.favorites.restaurants.includes(restaurant.id);
       return `
-  < div class="restaurant-card" style = "animation-delay: ${index * 0.1}s" >
+        <div class="restaurant-card" style="animation-delay: ${index * 0.1}s">
           <div class="card-image" onclick="app.navigateToRestaurant(${restaurant.id})" style="background-image: url('${restaurant.image}'); background-size: cover; background-position: center;">
             <button class="fav-btn ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); app.toggleFavorite(${restaurant.id}, 'restaurant', this)">
               ❤️
@@ -610,8 +610,8 @@ const app = {
               </span>
             </div>
           </div>
-        </div >
-  `;
+        </div>
+      `;
     }).join('');
   },
 
@@ -648,7 +648,7 @@ const app = {
 
   renderRestaurantPage(restaurant) {
     const content = `
-  < div class="restaurant-header" >
+      <div class="restaurant-header">
         <h1 class="restaurant-name">${restaurant.name}</h1>
         <div class="restaurant-info">
           <span class="info-badge">
@@ -668,7 +668,7 @@ const app = {
             Book a Table
           </span>
         </div>
-      </div >
+      </div>
 
       <div class="filter-bar">
         <button class="filter-btn ${this.currentFilters.restaurant === 'all' ? 'active' : ''}" onclick="app.applyRestaurantFilter(${restaurant.id}, 'all')">Full Menu</button>
@@ -704,22 +704,22 @@ const app = {
   renderReviews(reviews) {
     if (reviews.length === 0) {
       return `
-  < div class="empty-state" style = "padding: 2rem;" >
-    <p class="empty-state-text">No reviews yet. Be the first to review!</p>
-        </div >
-  `;
+        <div class="empty-state" style="padding: 2rem;">
+          <p class="empty-state-text">No reviews yet. Be the first to review!</p>
+        </div>
+      `;
     }
 
     return reviews.map(r => `
-  < div class="review-card fade-in" >
+      <div class="review-card fade-in">
         <div class="review-header">
           <span class="review-user">${r.user}</span>
           <span class="review-date">${r.date}</span>
         </div>
         <div class="review-stars">${'⭐'.repeat(r.rating)}</div>
         <p class="review-comment">${r.comment}</p>
-      </div >
-  `).reverse().join('');
+      </div>
+    `).reverse().join('');
   },
 
   openReviewModal(restaurantId) {
@@ -727,7 +727,7 @@ const app = {
     const body = document.getElementById('checkoutBody');
 
     body.innerHTML = `
-  < h2 class="checkout-title" > Rate your experience</h2 >
+      <h2 class="checkout-title">Rate your experience</h2>
       <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">How was your dinner at this restaurant?</p>
       
       <div class="star-rating-input">
