@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Test - Restaurant Navigator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f1419;
+            color: white;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #667eea;
+        }
+
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .food-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .food-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .food-name {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #ff6b6b;
+        }
+
+        .success {
+            color: #51cf66;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔍 Image Display Test</h1>
+
+    <div class="test-section">
+        <h2>Statistics</h2>
+        <p id="stats">Loading...</p>
+    </div>
+
+    <div class="test-section">
+        <h2>Sample Biryani Items (First 10)</h2>
+        <div class="food-grid" id="biryaniGrid"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>All Food Items with Images (First 20)</h2>
+        <div class="food-grid" id="allFoodGrid"></div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script>
+        // Count items with images
+        let totalItems = 0;
+        let itemsWithImages = 0;
+        let biryaniItems = [];
+        let allFoodItems = [];
+
+        restaurantData.places.forEach(place => {
+            place.restaurants.forEach(restaurant => {
+                restaurant.foodItems.forEach(item => {
+                    totalItems++;
+                    if (item.image) {
+                        itemsWithImages++;
+                        allFoodItems.push({ ...item, restaurant: restaurant.name });
+                    }
+                    if (item.name.toLowerCase().includes('biryani') || item.name.toLowerCase().includes('biriyani')) {
+                        biryaniItems.push({ ...item, restaurant: restaurant.name });
+                    }
+                });
+            });
+        });
+
+        // Display statistics
+        document.getElementById('stats').innerHTML = `
+            <p class="${itemsWithImages === totalItems ? 'success' : 'error'}">
+                ✓ Total Food Items: <strong>${totalItems}</strong><br>
+                ✓ Items with Images: <strong>${itemsWithImages}</strong><br>
+                ✓ Coverage: <strong>${((itemsWithImages / totalItems) * 100).toFixed(1)}%</strong><br>
+                ✓ Biryani Items Found: <strong>${biryaniItems.length}</strong>
+            </p>
+        `;
+
+        // Display biryani items
+        const biryaniGrid = document.getElementById('biryaniGrid');
+        biryaniItems.slice(0, 10).forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'food-card';
+            card.innerHTML = `
+                ${item.image ? `<img src="${item.image}" alt="${item.name}" onerror="this.src=''; this.alt='Image failed to load';" loading="lazy">` : '<p class="error">No image</p>'}
+                <div class="food-name">${item.name}</div>
+                <small>${item.restaurant}</small><br>
+                <small class="${item.image ? 'success' : 'error'}">${item.image ? '✓ Has image' : '✗ No image'}</small>
+            `;
+            biryaniGrid.appendChild(card);
+        });
+
+        // Display all food items
+        const allFoodGrid = document.getElementById('allFoodGrid');
+        allFoodItems.slice(0, 20).forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'food-card';
+            card.innerHTML = `
+                <img src="${item.image}" alt="${item.name}" onerror="this.style.display='none';" loading="lazy">
+                <div class="food-name">${item.name}</div>
+                <small>${item.restaurant}</small>
+            `;
+            allFoodGrid.appendChild(card);
+        });
+
+        console.log('Total items:', totalItems);
+        console.log('Items with images:', itemsWithImages);
+        console.log('Biryani items:', biryaniItems);
+    </script>
+</body>
+
+</html>
