@@ -54,6 +54,37 @@ const app = {
     }
   },
 
+  animateFlyToCart(btn, imageUrl) {
+    if (!imageUrl) return;
+
+    const cartIcon = document.querySelector('.cart-toggle-btn');
+    if (!cartIcon) return;
+
+    const btnRect = btn.getBoundingClientRect();
+    const cartRect = cartIcon.getBoundingClientRect();
+
+    const flyer = document.createElement('img');
+    flyer.src = imageUrl;
+    flyer.className = 'flying-item';
+    flyer.style.left = `${btnRect.left}px`;
+    flyer.style.top = `${btnRect.top}px`;
+    document.body.appendChild(flyer);
+
+    // Animate to cart
+    flyer.animate([
+      { left: `${btnRect.left}px`, top: `${btnRect.top}px`, transform: 'scale(1) rotate(0deg)', opacity: 1 },
+      { left: `${cartRect.left}px`, top: `${cartRect.top}px`, transform: 'scale(0.1) rotate(360deg)', opacity: 0 }
+    ], {
+      duration: 800,
+      easing: 'cubic-bezier(0.42, 0, 0.58, 1)',
+      fill: 'forwards'
+    }).onfinish = () => {
+      flyer.remove();
+      cartIcon.classList.add('cart-bump');
+      setTimeout(() => cartIcon.classList.remove('cart-bump'), 400);
+    };
+  },
+
   initTheme() {
     this.theme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', this.theme);
@@ -111,7 +142,7 @@ const app = {
     }
   },
 
-  addToCart(restaurantId, itemName) {
+  addToCart(restaurantId, itemName, event) {
     let restaurant;
     restaurantData.places.forEach(place => {
       const found = place.restaurants.find(r => r.id === restaurantId);
@@ -141,6 +172,12 @@ const app = {
 
     this.saveCart();
     this.showToast(`Added ${item.name} to cart! 🛒`);
+
+    // Trigger fly animation
+    const btn = event?.currentTarget;
+    if (btn) {
+      this.animateFlyToCart(btn, item.image);
+    }
   },
 
   removeFromCart(cartId) {
@@ -317,21 +354,11 @@ const app = {
       <div class="featured-section">
         <h2 class="section-title">✨ Today's Featured Spots</h2>
         <div class="carousel-container" id="featuredCarousel">
-          ${featured.map(r => `
-            <div class="carousel-card" onclick="app.navigateToRestaurant(${r.id})">
-              <img src="${r.image}" alt="${r.name}" class="carousel-img">
-              <div class="carousel-content">
-                <h3 class="card-title">${r.name}</h3>
-                <p class="card-cuisine">${r.cuisine}</p>
-                <div style="margin-top: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
-                  <span class="card-rating">⭐ ${r.rating}</span>
-                  <span class="tag-badge">Featured</span>
-                </div>
-              </div>
-            </div>
-          `).join('')}
+          ${this.renderFeaturedCarousel(featured)}
         </div>
       </div>
+
+      ${this.renderMoodPicker()}
 
       <h1 class="page-title">Discover Kerala's Best Restaurants</h1>
       <p class="page-subtitle">Choose a location to explore amazing dining experiences</p>
@@ -354,6 +381,137 @@ const app = {
 
     document.getElementById('mainContent').innerHTML = content;
     this.initCarouselDrag();
+    this.initCardTilt();
+  },
+
+  renderFeaturedCarousel(featured) {
+    return featured.map(r => `
+      <div class="carousel-card" onclick="app.navigateToRestaurant(${r.id})">
+        <img src="${r.image}" alt="${r.name}" class="carousel-img">
+        <div class="carousel-content">
+          <h3 class="card-title">${r.name}</h3>
+          <p class="card-cuisine">${r.cuisine}</p>
+          <div style="margin-top: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+            <span class="card-rating">⭐ ${r.rating}</span>
+            <span class="tag-badge">Featured</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  },
+
+  renderMoodPicker() {
+    return `
+      <div class="mood-picker-section">
+        <h2 class="mood-title">What's your food mood? 🍽️</h2>
+        <p style="color: var(--text-secondary);">Tell us how you feel, and we'll suggest the perfect meal!</p>
+        
+        <div class="mood-grid">
+          <div class="mood-option" onclick="app.handleMoodSelection('spicy')">
+            <span class="mood-emoji">🔥</span>
+            <span class="mood-label">Feeling Spicy</span>
+          </div>
+          <div class="mood-option" onclick="app.handleMoodSelection('light')">
+            <span class="mood-emoji">🥗</span>
+            <span class="mood-label">Light & Fresh</span>
+          </div>
+          <div class="mood-option" onclick="app.handleMoodSelection('sweet')">
+            <span class="mood-emoji">🍰</span>
+            <span class="mood-label">Sweet Tooth</span>
+          </div>
+          <div class="mood-option" onclick="app.handleMoodSelection('traditional')">
+            <span class="mood-emoji">🏺</span>
+            <span class="mood-label">Traditional</span>
+          </div>
+          <div class="mood-option" onclick="app.handleMoodSelection('comfort')">
+            <span class="mood-emoji">🍲</span>
+            <span class="mood-label">Comfort Food</span>
+          </div>
+        </div>
+        
+        <div id="moodSuggestions" class="suggestion-overlay hidden"></div>
+      </div>
+    `;
+  },
+
+  handleMoodSelection(mood) {
+    const container = document.getElementById('moodSuggestions');
+    container.classList.remove('hidden');
+    container.innerHTML = `<div class="skeleton" style="height: 100px; border-radius: 20px;"></div>`;
+
+    setTimeout(() => {
+      let suggestions = [];
+      restaurantData.places.forEach(p => {
+        p.restaurants.forEach(r => {
+          r.foodItems.forEach(item => {
+            if (mood === 'spicy' && (item.name.toLowerCase().includes('biryani') || item.name.toLowerCase().includes('chilly'))) {
+              suggestions.push({ ...item, restaurantId: r.id });
+            } else if (mood === 'light' && (item.category === 'Starters' || item.isVeg)) {
+              suggestions.push({ ...item, restaurantId: r.id });
+            } else if (mood === 'sweet' && item.category === 'Desserts') {
+              suggestions.push({ ...item, restaurantId: r.id });
+            } else if (mood === 'traditional' && (p.name === 'Kochi' || item.name.toLowerCase().includes('sadya') || item.name.toLowerCase().includes('fish'))) {
+              suggestions.push({ ...item, restaurantId: r.id });
+            } else if (mood === 'comfort' && (item.category === 'Main Course')) {
+              suggestions.push({ ...item, restaurantId: r.id });
+            }
+          });
+        });
+      });
+
+      // Filter unique items and pick random 3
+      suggestions = suggestions.filter((v, i, a) => a.findIndex(t => t.name === v.name) === i);
+      const shuffled = suggestions.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+      container.innerHTML = `
+        <h3 style="margin: 2rem 0 1rem; color: var(--text-primary);">Chef's Recommendations for you:</h3>
+        <div class="food-items">
+          ${shuffled.map(item => `
+            <div class="food-item fade-in" onclick="app.showFoodModal(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}')">
+              ${item.image ? `<img src="${item.image}" alt="${item.name}" class="food-item-image">` : ''}
+              <div class="food-item-content">
+                <h3 class="food-item-name">${item.name}</h3>
+                <p class="food-item-description">Perfect for your mood!</p>
+                <button class="checkout-btn" style="padding: 0.5rem 1rem; font-size: 0.8rem; width: auto;" onclick="event.stopPropagation(); app.addToCart(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}', event)">
+                  Add to Cart
+                </button>
+              </div>
+              <div class="food-item-price">${item.price}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }, 600);
+  },
+
+  initCardTilt() {
+    // 3D Card Tilt interaction
+    const cards = document.querySelectorAll('.place-card, .restaurant-card');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = (y - centerY) / 10;
+        const rotateY = (centerX - x) / 10;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+
+        // Light reflection (CSS variable)
+        const lightX = (x / rect.width) * 100;
+        const lightY = (y / rect.height) * 100;
+        card.style.setProperty('--light-x', `${lightX}%`);
+        card.style.setProperty('--light-y', `${lightY}%`);
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
+      });
+    });
   },
 
   initCarouselDrag() {
@@ -403,7 +561,7 @@ const app = {
     ]);
 
     const content = `
-      <h1 class="page-title">Restaurants in ${place.name}</h1>
+  < h1 class="page-title" > Restaurants in ${place.name}</h1 >
       <p class="page-subtitle">${place.description}</p>
       
       <div class="filter-bar">
@@ -417,20 +575,20 @@ const app = {
       <div class="restaurants-grid" id="restaurantsGrid">
         ${this.renderRestaurants(place.restaurants)}
       </div>
-    `;
+`;
 
     document.getElementById('mainContent').innerHTML = content;
   },
 
   renderRestaurants(restaurants) {
     if (restaurants.length === 0) {
-      return `<p style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-muted);">No restaurants found matching your filter.</p>`;
+      return `< p style = "grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-muted);" > No restaurants found matching your filter.</p > `;
     }
 
     return restaurants.map((restaurant, index) => {
       const isFav = this.favorites.restaurants.includes(restaurant.id);
       return `
-        <div class="restaurant-card" style="animation-delay: ${index * 0.1}s">
+  < div class="restaurant-card" style = "animation-delay: ${index * 0.1}s" >
           <div class="card-image" onclick="app.navigateToRestaurant(${restaurant.id})" style="background-image: url('${restaurant.image}'); background-size: cover; background-position: center;">
             <button class="fav-btn ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); app.toggleFavorite(${restaurant.id}, 'restaurant', this)">
               ❤️
@@ -452,8 +610,8 @@ const app = {
               </span>
             </div>
           </div>
-        </div>
-      `;
+        </div >
+  `;
     }).join('');
   },
 
@@ -490,7 +648,7 @@ const app = {
 
   renderRestaurantPage(restaurant) {
     const content = `
-      <div class="restaurant-header">
+  < div class="restaurant-header" >
         <h1 class="restaurant-name">${restaurant.name}</h1>
         <div class="restaurant-info">
           <span class="info-badge">
@@ -510,7 +668,7 @@ const app = {
             Book a Table
           </span>
         </div>
-      </div>
+      </div >
 
       <div class="filter-bar">
         <button class="filter-btn ${this.currentFilters.restaurant === 'all' ? 'active' : ''}" onclick="app.applyRestaurantFilter(${restaurant.id}, 'all')">Full Menu</button>
@@ -538,7 +696,7 @@ const app = {
           ${this.renderReviews(restaurant.reviews || [])}
         </div>
       </div>
-    `;
+`;
 
     document.getElementById('mainContent').innerHTML = content;
   },
@@ -546,22 +704,22 @@ const app = {
   renderReviews(reviews) {
     if (reviews.length === 0) {
       return `
-        <div class="empty-state" style="padding: 2rem;">
-          <p class="empty-state-text">No reviews yet. Be the first to review!</p>
-        </div>
-      `;
+  < div class="empty-state" style = "padding: 2rem;" >
+    <p class="empty-state-text">No reviews yet. Be the first to review!</p>
+        </div >
+  `;
     }
 
     return reviews.map(r => `
-      <div class="review-card fade-in">
+  < div class="review-card fade-in" >
         <div class="review-header">
           <span class="review-user">${r.user}</span>
           <span class="review-date">${r.date}</span>
         </div>
         <div class="review-stars">${'⭐'.repeat(r.rating)}</div>
         <p class="review-comment">${r.comment}</p>
-      </div>
-    `).reverse().join('');
+      </div >
+  `).reverse().join('');
   },
 
   openReviewModal(restaurantId) {
@@ -569,7 +727,7 @@ const app = {
     const body = document.getElementById('checkoutBody');
 
     body.innerHTML = `
-      <h2 class="checkout-title">Rate your experience</h2>
+  < h2 class="checkout-title" > Rate your experience</h2 >
       <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">How was your dinner at this restaurant?</p>
       
       <div class="star-rating-input">
@@ -685,7 +843,12 @@ const app = {
               </button>
             </div>
             <p class="food-item-description">${item.description}</p>
-            <span class="food-item-category">${item.category}</span>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+              <span class="food-item-category">${item.category}</span>
+              <button class="checkout-btn" style="padding: 0.5rem 1rem; font-size: 0.8rem; width: auto;" onclick="event.stopPropagation(); app.addToCart(${restaurant.id}, '${item.name.replace(/'/g, "\\'")}', event)">
+                Add to Cart
+              </button>
+            </div>
           </div>
           <div class="food-item-price">${item.price}</div>
         </div>

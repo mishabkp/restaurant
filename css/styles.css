@@ -2174,3 +2174,140 @@ body {
     text-align: center;
   }
 }
+
+/* ========================================
+   FLY TO CART ANIMATION
+   ======================================== */
+
+.flying-item {
+  position: fixed;
+  z-index: 5000;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  pointer-events: none;
+  box-shadow: 0 0 15px rgba(102, 126, 234, 0.5);
+  border: 2px solid white;
+}
+
+@keyframes cartBump {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.4);
+    color: var(--primary-color);
+  }
+}
+
+.cart-bump {
+  animation: cartBump 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ========================================
+   MOOD-BASED FOOD PICKER
+   ======================================== */
+
+.mood-picker-section {
+  background: var(--bg-card);
+  padding: var(--spacing-2xl);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: var(--spacing-2xl);
+  text-align: center;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.mood-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  margin-bottom: var(--spacing-md);
+  background: var(--warm-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mood-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+}
+
+.mood-option {
+  background: var(--bg-header);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 120px;
+}
+
+.mood-option:hover {
+  transform: translateY(-8px);
+  background: var(--bg-card-hover);
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-glow);
+}
+
+.mood-emoji {
+  font-size: 2.5rem;
+}
+
+.mood-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.suggestion-overlay {
+  margin-top: var(--spacing-xl);
+  animation: fadeIn 0.5s ease;
+}
+
+/* ========================================
+   GLASSMORPHIC CARD TILT (3D Effect)
+   ======================================== */
+
+.place-card,
+.restaurant-card {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shine effect on hover */
+.place-card::after,
+.restaurant-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at var(--light-x, 50%) var(--light-y, 50%),
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+.place-card:hover::after,
+.restaurant-card:hover::after {
+  opacity: 1;
+}
