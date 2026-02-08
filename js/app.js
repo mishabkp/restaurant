@@ -468,18 +468,21 @@ const app = {
         <div class="food-items">
           ${shuffled.map(item => `
             <div class="food-item fade-in" onclick="app.showFoodModal(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}')">
-              ${item.image ? `<img src="${item.image}" alt="${item.name}" class="food-item-image">` : ''}
+              <div class="food-item-image-container">
+                ${item.image ? `<img src="${item.image}" alt="${item.name}" class="food-item-image">` : ''}
+                <div class="food-item-price-tag">${item.price}</div>
+                <button class="fav-btn small overlay-fav" onclick="event.stopPropagation();">❤️</button>
+              </div>
               <div class="food-item-content">
                 <h3 class="food-item-name">${item.name}</h3>
                 <p class="food-item-description">Perfect for your mood!</p>
                 <div class="food-item-footer">
                   <span class="food-item-category">${item.category}</span>
                   <button class="add-to-cart-btn" onclick="event.stopPropagation(); app.addToCart(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}', event)">
-                    Add to Cart
+                    <span>Add</span> 🛒
                   </button>
                 </div>
               </div>
-              <div class="food-item-price">${item.price}</div>
             </div>
           `).join('')}
         </div>
@@ -837,23 +840,23 @@ const app = {
       const isFav = this.favorites.items.includes(itemId);
       return `
         <div class="food-item" style="animation-delay: ${index * 0.05}s" onclick="app.showFoodModal(${restaurant.id}, '${item.name.replace(/'/g, "\\'")}')">
-          ${item.image ? `<img src="${item.image}" alt="${item.name}" class="food-item-image" loading="lazy">` : ''}
+          <div class="food-item-image-container">
+            ${item.image ? `<img src="${item.image}" alt="${item.name}" class="food-item-image" loading="lazy">` : ''}
+            <div class="food-item-price-tag">${item.price}</div>
+            <button class="fav-btn small overlay-fav ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); app.toggleFavorite('${itemId}', 'item', this)">
+              ❤️
+            </button>
+          </div>
           <div class="food-item-content">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-              <h3 class="food-item-name">${item.name}</h3>
-              <button class="fav-btn small ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); app.toggleFavorite('${itemId}', 'item', this)">
-                ❤️
-              </button>
-            </div>
+            <h3 class="food-item-name">${item.name}</h3>
             <p class="food-item-description">${item.description}</p>
             <div class="food-item-footer">
               <span class="food-item-category">${item.category}</span>
               <button class="add-to-cart-btn" onclick="event.stopPropagation(); app.addToCart(${restaurant.id}, '${item.name.replace(/'/g, "\\'")}', event)">
-                Add to Cart
+                <span>Add</span> 🛒
               </button>
             </div>
           </div>
-          <div class="food-item-price">${item.price}</div>
         </div>
       `;
     }).join('');
