@@ -87,6 +87,9 @@
           <span id="cartTotal">₹0</span>
         </div>
         <button class="checkout-btn" onclick="app.startCheckout()">Proceed to Checkout</button>
+        <button class="split-trigger-btn-large" onclick="app.openSplitBill()">
+          💸 Split the Bill
+        </button>
       </div>
     </div>
   </div>
@@ -116,6 +119,46 @@
       © 2026 FOOD VISTA - College Project
     </p>
   </footer>
+
+  <!-- SPLIT BILL MODAL -->
+  <div id="splitBillModal" class="modal-overlay hidden">
+    <div class="modal-content split-bill-modal">
+      <button class="modal-close" onclick="app.closeSplitBill()">✕</button>
+      <h2 class="section-title">💸 Split the Bill</h2>
+
+      <div id="splitStep1">
+        <p class="modal-subtitle">Add your friends to split the bill with</p>
+        <div class="split-input-group">
+          <input type="text" id="splitNameInput" placeholder="Friend's Name..."
+            onkeypress="if(event.key === 'Enter') app.addSplitParticipant()">
+          <button class="add-friend-btn" onclick="app.addSplitParticipant()">Add</button>
+        </div>
+        <div id="splitParticipants" class="participants-container">
+          <!-- Chips added here -->
+        </div>
+        <button class="primary-btn full-width" onclick="app.nextSplitStep()">Next: Assign Items ➔</button>
+      </div>
+
+      <div id="splitStep2" class="hidden">
+        <p class="modal-subtitle">Who ate what? (Toggle to assign)</p>
+        <div id="splitItemsList" class="split-items-list">
+          <!-- Items to assign -->
+        </div>
+        <div class="split-actions">
+          <button class="secondary-btn" onclick="app.prevSplitStep()">Back</button>
+          <button class="primary-btn" onclick="app.calculateSplitAndShow()">Calculate Split 🧮</button>
+        </div>
+      </div>
+
+      <div id="splitStep3" class="hidden">
+        <p class="modal-subtitle">Here's the breakdown</p>
+        <div id="splitResults" class="split-results">
+          <!-- Results here -->
+        </div>
+        <button class="secondary-btn full-width" onclick="app.closeSplitBill()">Close</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Leaflet Map JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"

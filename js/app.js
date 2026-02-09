@@ -1298,11 +1298,11 @@ const app = {
     let stepHtml = '';
     if (this.currentCheckoutStep === 1) {
       stepHtml = `
-  < div class="checkout-steps" >
+        <div class="checkout-steps">
           <div class="step active">1</div>
           <div class="step">2</div>
           <div class="step">3</div>
-       </div>
+        </div>
         <h2 class="checkout-title">Delivery Details</h2>
         <form class="checkout-form" onsubmit="event.preventDefault(); app.nextCheckoutStep();">
           <input type="text" class="search-input" style="padding-left: 1rem;" placeholder="Full Name" required>
@@ -1655,8 +1655,186 @@ const app = {
     setTimeout(() => {
       this.map.invalidateSize();
     }, 100);
-  }
+  },
+
+  // ========================================
+  // SPLIT BILL LOGIC
+  // ========================================
+  splitParticipants: ['Me'],
+  splitAssignments: {}, // { itemId: ['Me', 'Rahul'] }
+
+  openSplitBill() {
+    const modal = document.getElementById('splitBillModal');
+    if (!modal) return;
+
+    // Reset state
+    this.splitParticipants = ['Me'];
+    this.splitAssignments = {};
+
+    // Initialize assignments with 'Me' for all items
+    this.cart.forEach(item => {
+      this.splitAssignments[item.cartId] = ['Me'];
+    });
+
+    this.renderSplitParticipants();
+    document.getElementById('splitStep1').classList.remove('hidden');
+    document.getElementById('splitStep2').classList.add('hidden');
+    document.getElementById('splitStep3').classList.add('hidden');
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  },
+
+  closeSplitBill() {
+    const modal = document.getElementById('splitBillModal');
+    if (modal) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+  },
+
+  addSplitParticipant() {
+    const input = document.getElementById('splitNameInput');
+    const name = input.value.trim();
+
+    if (name && !this.splitParticipants.includes(name)) {
+      this.splitParticipants.push(name);
+      input.value = '';
+      this.renderSplitParticipants();
+    }
+  },
+
+  removeSplitParticipant(name) {
+    if (name === 'Me') return; // Cannot remove self
+    this.splitParticipants = this.splitParticipants.filter(p => p !== name);
+
+    // Remove from assignments
+    Object.keys(this.splitAssignments).forEach(itemId => {
+      this.splitAssignments[itemId] = this.splitAssignments[itemId].filter(p => p !== name);
+      // Ensure at least someone is assigned (fallback to Me)
+      if (this.splitAssignments[itemId].length === 0) {
+        this.splitAssignments[itemId] = ['Me'];
+      }
+    });
+
+    this.renderSplitParticipants();
+  },
+
+  renderSplitParticipants() {
+    const container = document.getElementById('splitParticipants');
+    container.innerHTML = this.splitParticipants.map(name => `
+      <div class="participant-chip">
+        ${name}
+        ${name !== 'Me' ? `<span class="remove-btn" onclick="app.removeSplitParticipant('${name}')">×</span>` : ''}
+      </div>
+    `).join('');
+  },
+
+  nextSplitStep() {
+    if (this.splitParticipants.length < 2) {
+      this.showToast("Add at least one friend to split with! 👯‍♂️");
+      return;
+    }
+    document.getElementById('splitStep1').classList.add('hidden');
+    document.getElementById('splitStep2').classList.remove('hidden');
+    this.renderSplitItems();
+  },
+
+  prevSplitStep() {
+    document.getElementById('splitStep2').classList.add('hidden');
+    document.getElementById('splitStep1').classList.remove('hidden');
+  },
+
+  renderSplitItems() {
+    const list = document.getElementById('splitItemsList');
+    list.innerHTML = this.cart.map(item => `
+      <div class="split-item-row">
+        <div class="split-item-header">
+          <span>${item.name} (x${item.quantity})</span>
+          <span>${item.price}</span>
+        </div>
+        <div class="split-assignees">
+          ${this.splitParticipants.map(person => {
+      const isAssigned = this.splitAssignments[item.cartId]?.includes(person);
+      return `
+              <div class="assign-chip ${isAssigned ? 'selected' : ''}" 
+                   onclick="app.toggleSplitAssignment('${item.cartId}', '${person}')">
+                ${person}
+              </div>
+            `;
+    }).join('')}
+        </div>
+      </div>
+    `).join('');
+  },
+
+  toggleSplitAssignment(itemId, person) {
+    if (!this.splitAssignments[itemId]) this.splitAssignments[itemId] = [];
+
+    const assigned = this.splitAssignments[itemId];
+    if (assigned.includes(person)) {
+      // Remove
+      if (assigned.length > 1) { // Prevent removing last person
+        this.splitAssignments[itemId] = assigned.filter(p => p !== person);
+      } else {
+        this.showToast("Item must be assigned to at least one person!");
+      }
+    } else {
+      // Add
+      this.splitAssignments[itemId].push(person);
+    }
+    this.renderSplitItems();
+  },
+
+  calculateSplitAndShow() {
+    const breakdown = {};
+    this.splitParticipants.forEach(p => breakdown[p] = 0);
+
+    // Calculate Item Splits
+    this.cart.forEach(item => {
+      const price = parseInt(item.price.replace(/[^\d]/g, '')) * item.quantity;
+      const assignedPeople = this.splitAssignments[item.cartId] || ['Me'];
+      const splitAmount = price / assignedPeople.length;
+
+      assignedPeople.forEach(person => {
+        breakdown[person] += splitAmount;
+      });
+    });
+
+    // Add Delivery / Tax (Split equally)
+    // Assuming standard ₹40 delivery for now, or check logic
+    const deliveryFee = 40;
+    const feePerPerson = deliveryFee / this.splitParticipants.length;
+
+    // Render Results
+    const resultsContainer = document.getElementById('splitResults');
+    let resultsHTML = '';
+
+    Object.keys(breakdown).forEach(person => {
+      const totalShare = breakdown[person] + feePerPerson;
+      resultsHTML += `
+        <div class="split-result-row">
+          <span>${person}</span>
+          <span>₹${Math.ceil(totalShare)} <small style="color:var(--text-muted)">(+₹${Math.ceil(feePerPerson)} fee)</small></span>
+        </div>
+      `;
+    });
+
+    // Total Row
+    const grandTotal = Object.values(breakdown).reduce((a, b) => a + b, 0) + deliveryFee;
+    resultsHTML += `
+      <div class="split-result-row">
+        <span>Total Bill</span>
+        <span>₹${Math.ceil(grandTotal)}</span>
+      </div>
+    `;
+
+    resultsContainer.innerHTML = resultsHTML;
+
+    document.getElementById('splitStep3').classList.remove('hidden');
+  },
 };
+
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => app.init());

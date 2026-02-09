@@ -2867,3 +2867,250 @@ body {
   text-overflow: ellipsis;
   max-width: 100%;
 }
+
+/* ========================================
+   SPLIT BILL FEATURE (Redesigned)
+   ======================================== */
+.split-bill-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  width: 90%;
+  max-width: 500px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 2rem;
+}
+
+.split-bill-modal .modal-close {
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+}
+
+.split-bill-modal .section-title {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.modal-subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.split-input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  background: var(--bg-body);
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.split-input-group input {
+  flex: 1;
+  padding: 0.8rem;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 1rem;
+  outline: none;
+}
+
+.add-friend-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.add-friend-btn:hover {
+  background: var(--hover-color);
+}
+
+.participants-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 2rem;
+  min-height: 50px;
+  padding: 0.5rem;
+}
+
+.participant-chip {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.participant-chip .remove-btn {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.participant-chip .remove-btn:hover {
+  background: rgba(255, 59, 48, 0.8);
+}
+
+/* Items List Styling */
+.split-items-list {
+  max-height: 350px;
+  overflow-y: auto;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding-right: 0.5rem;
+}
+
+.split-items-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.split-items-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.split-item-row {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: border-color 0.2s;
+}
+
+.split-item-row:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.split-item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.split-assignees {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.assign-chip {
+  font-size: 0.85rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.assign-chip:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.assign-chip.selected {
+  background: var(--success-color);
+  color: white;
+  /* distinct from unselected */
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(0, 200, 83, 0.3);
+}
+
+/* Split Actions */
+.split-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.split-actions button {
+  flex: 1;
+  padding: 1rem;
+}
+
+/* Results Card */
+.split-results {
+  background: var(--bg-body);
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.split-result-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 1rem;
+}
+
+.split-result-row:last-child {
+  border-bottom: none;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--success-color);
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+}
+
+/* Trigger Button Redesign */
+.split-trigger-btn-large {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: var(--radius-md);
+  border: 2px dashed var(--primary-color);
+  background: rgba(255, 87, 34, 0.1);
+  /* Light accent bg */
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.split-trigger-btn-large:hover {
+  background: var(--primary-color);
+  color: white;
+  border-style: solid;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
+}
