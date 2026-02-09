@@ -3,9 +3,7 @@
    ======================================== */
 
 .login-page {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -15,6 +13,7 @@
         radial-gradient(circle at 90% 80%, rgba(245, 87, 108, 0.2) 0%, transparent 40%),
         radial-gradient(circle at 50% 50%, rgba(0, 242, 254, 0.05) 0%, transparent 50%);
     overflow: hidden;
+    padding: var(--spacing-lg);
 }
 
 .login-card {

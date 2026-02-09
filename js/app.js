@@ -387,6 +387,7 @@ const app = {
 
   // Page Rendering Methods
   showHomePage() {
+    this.toggleUIElements(true);
     this.currentView = 'home';
     this.currentPlace = null;
     this.currentRestaurant = null;
@@ -621,6 +622,7 @@ const app = {
   },
 
   showPlacePage(placeId) {
+    this.toggleUIElements(true);
     const place = restaurantData.places.find(p => p.id === placeId);
     if (!place) {
       this.showHomePage();
@@ -708,6 +710,7 @@ const app = {
   },
 
   showRestaurantPage(restaurantId) {
+    this.toggleUIElements(true);
     let restaurant = null;
     let place = null;
 
@@ -986,8 +989,7 @@ const app = {
   },
 
   showLoginPage() {
-    document.querySelector('.header').classList.add('hidden');
-    document.querySelector('.footer').classList.add('hidden');
+    this.toggleUIElements(false);
 
     const content = `
       <div class="login-page">
@@ -1020,9 +1022,21 @@ const app = {
     event.preventDefault();
     localStorage.setItem('isLoggedIn', 'true');
     this.isLoggedIn = true;
-    document.querySelector('.header').classList.remove('hidden');
-    document.querySelector('.footer').classList.remove('hidden');
+    this.toggleUIElements(true);
     this.handleRoute();
+  },
+
+  toggleUIElements(show) {
+    const header = document.querySelector('.header');
+    const footer = document.querySelector('.footer');
+    if (show) {
+      header?.classList.remove('hidden');
+      footer?.classList.remove('hidden');
+    } else {
+      header?.classList.add('hidden');
+      footer?.classList.add('hidden');
+      window.scrollTo(0, 0);
+    }
   },
 
   logout() {
@@ -1047,6 +1061,7 @@ const app = {
   },
 
   showDashboardPage() {
+    this.toggleUIElements(true);
     this.currentView = 'dashboard';
     this.updateBreadcrumb([
       { label: 'Home', onClick: () => this.navigateHome() },
@@ -1158,6 +1173,7 @@ const app = {
   },
 
   showAboutPage() {
+    this.toggleUIElements(true);
     this.currentView = 'about';
     this.updateBreadcrumb([
       { label: 'Home', onClick: () => this.navigateHome() },
@@ -1184,6 +1200,7 @@ const app = {
   },
 
   showContactPage() {
+    this.toggleUIElements(true);
     this.currentView = 'contact';
     this.updateBreadcrumb([
       { label: 'Home', onClick: () => this.navigateHome() },
