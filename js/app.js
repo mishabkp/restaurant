@@ -21,6 +21,7 @@ const app = {
 
   updateContent(html) {
     const mainContent = document.getElementById('mainContent');
+    mainContent.className = 'container'; // Reset to base class
     mainContent.classList.remove('fade-slide-up');
     void mainContent.offsetWidth; // Trigger reflow
     mainContent.innerHTML = html;
@@ -991,7 +992,10 @@ const app = {
   showLoginPage() {
     this.toggleUIElements(false);
 
-    const content = `
+    const mainContent = document.getElementById('mainContent');
+    mainContent.className = ''; // Remove container and animations
+
+    mainContent.innerHTML = `
       <div class="login-page">
         <div class="login-card">
           <div class="login-header">
@@ -1015,7 +1019,6 @@ const app = {
         </div>
       </div>
     `;
-    this.updateContent(content);
   },
 
   handleLogin(event) {

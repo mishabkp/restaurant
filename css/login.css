@@ -3,7 +3,11 @@
    ======================================== */
 
 .login-page {
-    min-height: 100vh;
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
