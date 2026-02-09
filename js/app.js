@@ -19,6 +19,37 @@ const app = {
     restaurant: 'all'
   },
 
+  updateContent(html) {
+    const mainContent = document.getElementById('mainContent');
+    mainContent.classList.remove('fade-slide-up');
+    void mainContent.offsetWidth; // Trigger reflow
+    mainContent.innerHTML = html;
+    mainContent.classList.add('fade-slide-up');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  isRestaurantOpen(hours) {
+    if (!hours) return true;
+    const now = new Date();
+    const currentTime = now.getHours() * 100 + now.getMinutes();
+    const [openH, openM] = hours.open.split(':').map(Number);
+    const [closeH, closeM] = hours.close.split(':').map(Number);
+    const openTime = openH * 100 + openM;
+    const closeTime = closeH * 100 + closeM;
+
+    return currentTime >= openTime && currentTime <= closeTime;
+  },
+
+  handleSurpriseMe() {
+    const allRestaurants = [];
+    restaurantData.places.forEach(p => {
+      p.restaurants.forEach(r => allRestaurants.push(r));
+    });
+    const randomRest = allRestaurants[Math.floor(Math.random() * allRestaurants.length)];
+    app.showToast(`✨ Magic! We found: ${randomRest.name}`);
+    this.navigateToRestaurant(randomRest.id);
+  },
+
   // Initialize the application
   init() {
     this.initTheme();
@@ -28,7 +59,25 @@ const app = {
     this.setupEventListeners();
     this.handleRoute();
     this.initModalEvents();
+    this.initLottie();
     window.addEventListener('hashchange', () => this.handleRoute());
+  },
+
+  initLottie() {
+    // Global lottie init if needed
+  },
+
+  loadLottie(containerId, animationUrl, loop = true) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    return lottie.loadAnimation({
+      container: container,
+      renderer: 'svg',
+      loop: loop,
+      autoplay: true,
+      path: animationUrl
+    });
   },
 
   initModalEvents() {
@@ -213,12 +262,13 @@ const app = {
     if (this.cart.length === 0) {
       itemsContainer.innerHTML = `
         <div class="empty-state">
-          <div class="empty-state-icon">🛒</div>
+          <div id="cartEmptyLottie" class="cart-lottie"></div>
           <p class="empty-state-text">Your cart is empty</p>
           <button class="submit-btn" style="margin-top: 1rem;" onclick="app.toggleCart()">Go Shopping</button>
         </div>
       `;
       summary.classList.add('hidden');
+      setTimeout(() => this.loadLottie('cartEmptyLottie', 'https://assets9.lottiefiles.com/packages/lf20_5njp9vob.json'), 100);
       return;
     }
 
@@ -351,6 +401,32 @@ const app = {
     });
 
     const content = `
+      <div class="hero-premium fade-slide-up">
+        <div class="hero-content">
+          <span class="hero-badge">PREMIUM DINING GUIDE</span>
+          <h1 class="hero-title">Experience the Art of <span class="text-gradient">Kerala Flavors</span></h1>
+          <p class="hero-subtitle">Discover curated dining experiences, from hidden gems to world-class restaurants across the heart of Kerala.</p>
+          <div class="hero-actions">
+            <button class="magic-btn" onclick="app.handleSurpriseMe()">✨ Surprise Me!</button>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-value">50+</span>
+              <span class="stat-label">Restaurants</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">12</span>
+              <span class="stat-label">Locations</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">4.8</span>
+              <span class="stat-label">Avg Rating</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
       <div class="featured-section">
         <h2 class="section-title">✨ Today's Featured Spots</h2>
         <div class="carousel-container" id="featuredCarousel">
@@ -359,6 +435,15 @@ const app = {
       </div>
 
       ${this.renderMoodPicker()}
+      
+      <div class="map-section">
+        <div class="section-header">
+          <span class="section-badge">INTERACTIVE MAP</span>
+          <h2 class="section-title">📍 Explore Kerala Visually</h2>
+          <p class="section-subtitle">Navigate through Kerala's culinary landscape with our interactive location explorer</p>
+        </div>
+        <div id="mainMap" class="map-container"></div>
+      </div>
 
       <h1 class="page-title">Discover Kerala's Best Restaurants</h1>
       <p class="page-subtitle">Choose a location to explore amazing dining experiences</p>
@@ -379,13 +464,25 @@ const app = {
       </div>
     `;
 
-    document.getElementById('mainContent').innerHTML = content;
+    this.updateContent(content);
     this.initCarouselDrag();
-    this.initCardTilt();
+
+    // Initialize Home Map
+    const cityMarkers = restaurantData.places.map(p => ({
+      name: p.name,
+      description: p.description,
+      coords: p.coords,
+      onClick: `app.navigateToPlace(${p.id})`,
+      linkText: "View Restaurants"
+    }));
+    this.initMap('mainMap', [10.5, 76.5], 7, cityMarkers);
   },
 
+
   renderFeaturedCarousel(featured) {
-    return featured.map(r => `
+    return featured.map(r => {
+      const isOpen = this.isRestaurantOpen(r.hours);
+      return `
       <div class="carousel-card" onclick="app.navigateToRestaurant(${r.id})">
         <img src="${r.image}" alt="${r.name}" class="carousel-img">
         <div class="carousel-content">
@@ -397,7 +494,8 @@ const app = {
           </div>
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
   },
 
   renderMoodPicker() {
@@ -490,35 +588,7 @@ const app = {
     }, 600);
   },
 
-  initCardTilt() {
-    // 3D Card Tilt interaction
-    const cards = document.querySelectorAll('.place-card, .restaurant-card');
-    cards.forEach(card => {
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
 
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        const rotateX = (y - centerY) / 10;
-        const rotateY = (centerX - x) / 10;
-
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-
-        // Light reflection (CSS variable)
-        const lightX = (x / rect.width) * 100;
-        const lightY = (y / rect.height) * 100;
-        card.style.setProperty('--light-x', `${lightX}%`);
-        card.style.setProperty('--light-y', `${lightY}%`);
-      });
-
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
-      });
-    });
-  },
 
   initCarouselDrag() {
     const slider = document.getElementById('featuredCarousel');
@@ -578,12 +648,26 @@ const app = {
         <button class="filter-btn ${this.currentFilters.place === 'Seafood' ? 'active' : ''}" onclick="app.applyPlaceFilter(${placeId}, 'Seafood')">🐟 Seafood</button>
       </div>
 
+      <div class="map-section">
+        <div id="placeMap" class="map-container"></div>
+      </div>
+
       <div class="restaurants-grid" id="restaurantsGrid">
         ${this.renderRestaurants(place.restaurants)}
       </div>
     `;
 
-    document.getElementById('mainContent').innerHTML = content;
+    this.updateContent(content);
+
+    // Initialize Place Map
+    const restMarkers = place.restaurants.map(r => ({
+      name: r.name,
+      cuisine: r.cuisine,
+      coords: r.coords,
+      onClick: `app.navigateToRestaurant(${r.id})`,
+      linkText: "View Menu"
+    }));
+    this.initMap('placeMap', place.coords, 13, restMarkers);
   },
 
   renderRestaurants(restaurants) {
@@ -593,9 +677,11 @@ const app = {
 
     return restaurants.map((restaurant, index) => {
       const isFav = this.favorites.restaurants.includes(restaurant.id);
+      const isOpen = this.isRestaurantOpen(restaurant.hours);
       return `
         <div class="restaurant-card" style="animation-delay: ${index * 0.1}s">
           <div class="card-image" onclick="app.navigateToRestaurant(${restaurant.id})" style="background-image: url('${restaurant.image}'); background-size: cover; background-position: center;">
+            <div class="status-badge ${isOpen ? 'open' : 'closed'}">${isOpen ? '● Open Now' : '● Closed'}</div>
             <button class="fav-btn ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); app.toggleFavorite(${restaurant.id}, 'restaurant', this)">
               ❤️
             </button>
@@ -684,6 +770,10 @@ const app = {
         <button class="filter-btn ${this.currentFilters.restaurant === 'Desserts' ? 'active' : ''}" onclick="app.applyRestaurantFilter(${restaurant.id}, 'Desserts')">🍰 Desserts</button>
       </div>
 
+      <div class="map-section" style="margin-bottom: var(--spacing-lg);">
+        <div id="restMap" class="map-container" style="height: 250px;"></div>
+      </div>
+
       <div class="food-items" id="foodItemsContainer">
         ${this.renderFoodItems(restaurant)}
       </div>
@@ -704,7 +794,16 @@ const app = {
       </div>
 `;
 
-    document.getElementById('mainContent').innerHTML = content;
+    this.updateContent(content);
+
+    // Initialize Restaurant Map
+    this.initMap('restMap', restaurant.coords, 16, [{
+      name: restaurant.name,
+      cuisine: restaurant.cuisine,
+      coords: restaurant.coords,
+      onClick: `console.log('Already here')`,
+      linkText: "Located Here"
+    }]);
   },
 
   renderReviews(reviews) {
@@ -838,9 +937,12 @@ const app = {
     return items.map((item, index) => {
       const itemId = `${restaurant.id}-${item.name.replace(/\s+/g, '_')}`;
       const isFav = this.favorites.items.includes(itemId);
+      const isBiriyani = item.name.toLowerCase().includes('biriyani');
+
       return `
         <div class="food-item" style="animation-delay: ${index * 0.05}s" onclick="app.showFoodModal(${restaurant.id}, '${item.name.replace(/'/g, "\\'")}')">
           <div class="food-item-image-container">
+            ${isBiriyani ? '<div class="lottie-container steam-animation" id="steam-' + itemId + '"></div>' : ''}
             ${item.image ? `<img src="${item.image}" alt="${item.name}" class="food-item-image" loading="lazy">` : ''}
             <div class="food-item-price-tag">${item.price}</div>
             <button class="fav-btn small overlay-fav ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); app.toggleFavorite('${itemId}', 'item', this)">
@@ -858,6 +960,7 @@ const app = {
             </div>
           </div>
         </div>
+        ${isBiriyani ? `<script>setTimeout(() => app.loadLottie('steam-${itemId}', 'https://assets10.lottiefiles.com/packages/lf20_qpwb7yqc.json'), 100)</script>` : ''}
       `;
     }).join('');
   },
@@ -890,7 +993,7 @@ const app = {
       <div class="login-page">
         <div class="login-card">
           <div class="login-header">
-            <h1 class="login-logo">🍽️ Navigator</h1>
+            <h1 class="login-logo">FOOD VISTA</h1>
             <p class="login-subtitle">Sign in to explore Kerala's flavors</p>
           </div>
           <form class="login-form" onsubmit="app.handleLogin(event)">
@@ -910,7 +1013,7 @@ const app = {
         </div>
       </div>
     `;
-    document.getElementById('mainContent').innerHTML = content;
+    this.updateContent(content);
   },
 
   handleLogin(event) {
@@ -959,6 +1062,22 @@ const app = {
       });
     });
 
+    const favItems = [];
+    restaurantData.places.forEach(place => {
+      place.restaurants.forEach(rest => {
+        rest.foodItems.forEach(item => {
+          const itemId = `${rest.id}-${item.name.replace(/\s+/g, '_')}`;
+          if (this.favorites.items.includes(itemId)) {
+            favItems.push({
+              ...item,
+              restaurantId: rest.id,
+              restaurantName: rest.name
+            });
+          }
+        });
+      });
+    });
+
     const content = `
       <h1 class="page-title">Welcome Back! 👋</h1>
       <p class="page-subtitle">Manage your favorite spots and personal settings</p>
@@ -989,22 +1108,53 @@ const app = {
               <p class="empty-state-text">You haven't added any favorites yet.</p>
             </div>
           `}
-        </div>
-
-        <div class="dashboard-section settings-sidebar">
-          <h2 class="section-title">⚙️ Settings</h2>
-          <div class="settings-card">
-            <div class="setting-item">
-              <span>Account Status</span>
-              <span class="status-badge">Active</span>
+          
+          <h2 class="section-title" style="margin-top: 3rem;">🍕 Favorite Dishes</h2>
+  ${favItems.length > 0 ? `
+            <div class="food-items dashboard-food-grid">
+              ${favItems.map((item, index) => {
+      const itemId = `${item.restaurantId}-${item.name.replace(/\s+/g, '_')}`;
+      return `
+                <div class="food-item" style="animation-delay: ${index * 0.05}s" onclick="app.showFoodModal(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}')">
+                  <div class="food-item-image-container">
+                    ${item.image ? `<img src="${item.image}" alt="${item.name}" class="food-item-image" loading="lazy">` : ''}
+                    <div class="food-item-price-tag">${item.price}</div>
+                    <button class="fav-btn small overlay-fav active" onclick="event.stopPropagation(); app.toggleFavorite('${itemId}', 'item', this)">
+                      ❤️
+                    </button>
+                  </div>
+                  <div class="food-item-content">
+                    <h3 class="food-item-name">${item.name}</h3>
+                    <p class="food-item-description" style="font-size: 0.85rem; color: var(--text-muted);">From ${item.restaurantName}</p>
+                    <div class="food-item-footer">
+                      <span class="food-item-category">${item.category}</span>
+                      <button class="add-to-cart-btn" onclick="event.stopPropagation(); app.addToCart(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}', event)">
+                        <span>Add</span> 🛒
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `}).join('')}
             </div>
-            <button class="logout-btn" onclick="app.logout()">Logout from Device</button>
-          </div>
-        </div>
-      </div>
-    `;
+          ` : `
+            <div class="empty-state">
+              <div class="empty-state-icon">🍕</div>
+              <p class="empty-state-text">You haven't added any favorite dishes yet.</p>
+            </div>
+          `}
+    <h2 class="section-title" style="margin-top: 3rem;">⚙️ Settings</h2>
+  <div class="settings-card">
+    <div class="setting-item">
+      <span>Account Status</span>
+      <span class="status-badge">Active</span>
+    </div>
+    <button class="logout-btn" onclick="app.logout()">Logout from Device</button>
+  </div>
+  </div>
+</div>
+  `;
 
-    document.getElementById('mainContent').innerHTML = content;
+    this.updateContent(content);
   },
 
   showAboutPage() {
@@ -1015,7 +1165,7 @@ const app = {
     ]);
 
     const content = `
-      <div class="about-container">
+    <div class="about-container">
         <div class="about-hero">
           <h1 class="page-title">Kerala's Culinary Compass</h1>
           <p class="page-subtitle">Connecting you to the authentic flavors of God's Own Country</p>
@@ -1024,13 +1174,13 @@ const app = {
           <img src="https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=800&h=600&fit=crop" alt="Kerala Food" class="about-image">
           <div class="about-text">
             <h2>Our Journey</h2>
-            <p>Restaurant Navigator started as a college project with a simple mission: to make finding great food in Kerala as easy as possible.</p>
+            <p>FOOD VISTA started as a college project with a simple mission: to make finding great food in Kerala as easy as possible.</p>
             <p style="margin-top: 1rem;">We curate the best dining experiences across Kochi, Kozhikode, Thrissur, and beyond.</p>
           </div>
         </div>
       </div>
-    `;
-    document.getElementById('mainContent').innerHTML = content;
+  `;
+    this.updateContent(content);
   },
 
   showContactPage() {
@@ -1040,7 +1190,7 @@ const app = {
       { label: 'Contact Us' }
     ]);
     const content = `
-      <div class="contact-container">
+    <div class="contact-container">
         <h1 class="page-title">Get In Touch</h1>
         <div class="contact-grid">
           <div class="contact-info">
@@ -1057,7 +1207,7 @@ const app = {
           </div>
         </div>
       </div>
-    `;
+`;
     document.getElementById('mainContent').innerHTML = content;
   },
 
@@ -1087,23 +1237,23 @@ const app = {
 
     const modal = document.getElementById('foodModal');
     const modalBody = document.getElementById('modalBody');
-    const itemId = `${restaurantId}-${item.name.replace(/\s+/g, '_')}`;
+    const itemId = `${restaurantId} -${item.name.replace(/\s+/g, '_')} `;
     const isFav = this.favorites.items.includes(itemId);
 
     modalBody.innerHTML = `
       ${item.image ? `<img src="${item.image}" alt="${item.name}" class="modal-hero-image">` : ''}
-      <div class="modal-details">
-        <div class="modal-header">
-          <h2 class="modal-title">${item.name}</h2>
-          <div class="modal-price">${item.price}</div>
-        </div>
-        <p class="modal-description">${item.description}</p>
-        <div class="modal-footer">
-          <button class="fav-btn ${isFav ? 'active' : ''}" onclick="app.toggleFavorite('${itemId}', 'item', this)">❤️ Favorite</button>
-          <button class="submit-btn" style="flex:1;" onclick="app.addToCart(${restaurantId}, '${item.name.replace(/'/g, "\\'")}')">Add to Cart 🛒</button>
-        </div>
+<div class="modal-details">
+  <div class="modal-header">
+    <h2 class="modal-title">${item.name}</h2>
+    <div class="modal-price">${item.price}</div>
+  </div>
+  <p class="modal-description">${item.description}</p>
+  <div class="modal-footer">
+    <button class="fav-btn ${isFav ? 'active' : ''}" onclick="app.toggleFavorite('${itemId}', 'item', this)">❤️ Favorite</button>
+    <button class="submit-btn" style="flex:1;" onclick="app.addToCart(${restaurantId}, '${item.name.replace(/'/g, "\\'")}')">Add to Cart 🛒</button>
+</div>
       </div>
-    `;
+  `;
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
   },
@@ -1128,11 +1278,11 @@ const app = {
     let stepHtml = '';
     if (this.currentCheckoutStep === 1) {
       stepHtml = `
-        <div class="checkout-steps">
+  < div class="checkout-steps" >
           <div class="step active">1</div>
           <div class="step">2</div>
           <div class="step">3</div>
-        </div>
+       </div>
         <h2 class="checkout-title">Delivery Details</h2>
         <form class="checkout-form" onsubmit="event.preventDefault(); app.nextCheckoutStep();">
           <input type="text" class="search-input" style="padding-left: 1rem;" placeholder="Full Name" required>
@@ -1435,6 +1585,56 @@ const app = {
   applyRestaurantFilter(restaurantId, filter) {
     this.currentFilters.restaurant = filter;
     this.showRestaurantPage(restaurantId);
+  },
+
+  // ========================================
+  // INTERACTIVE MAP LOGIC
+  // ========================================
+  map: null,
+  markers: [],
+
+  initMap(containerId, coords, zoom, markersData = []) {
+    if (!L) return;
+
+    // Cleanup existing map
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+    }
+
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    this.map = L.map(containerId).setView(coords, zoom);
+
+    // Add Tile Layer (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    // Add Markers
+    this.markers = [];
+    markersData.forEach(data => {
+      const marker = L.marker(data.coords).addTo(this.map);
+
+      const popupContent = `
+        <div class="map-popup-card">
+          <h3 class="map-popup-title">${data.name}</h3>
+          <p style="margin:0; font-size:0.8rem; color:var(--text-secondary);">${data.description || data.cuisine || ""}</p>
+          <a href="javascript:void(0)" onclick="${data.onClick}" class="map-popup-link">
+            ${data.linkText} ➔
+          </a>
+        </div>
+      `;
+
+      marker.bindPopup(popupContent);
+      this.markers.push(marker);
+    });
+
+    // Fix for map not loading properly in hidden/dynamic containers
+    setTimeout(() => {
+      this.map.invalidateSize();
+    }, 100);
   }
 };
 
