@@ -167,6 +167,16 @@
     </div>
   </div>
 
+  <!-- MAP MODAL -->
+  <div id="mapModal" class="modal-overlay hidden">
+    <div class="modal-content map-modal-content" style="max-width: 800px; width: 90%;">
+      <button class="modal-close" onclick="app.closeMapModal()">✕</button>
+      <h2 class="section-title">Explore Locations 📍</h2>
+      <div id="modalMap" class="modal-map-container"
+        style="height: 500px; width: 100%; border-radius: 12px; margin-top: 1rem;"></div>
+    </div>
+  </div>
+
   <!-- Leaflet Map JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>

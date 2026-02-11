@@ -768,20 +768,17 @@ const app = {
               🐟 Seafood
             </button>
           </div>
+          
+          <button class="map-toggle-btn" onclick="app.openPlaceMap(${placeId})">
+            <span>🗺️ View Map</span>
+          </button>
         </div>
 
         <div class="content-grid-layout">
-          <div class="restaurants-section">
+          <div class="restaurants-section" style="width: 100%;">
              <h2 class="section-heading">Curated Dining List</h2>
              <div class="restaurants-grid" id="restaurantsGrid">
                ${this.renderRestaurants(place.restaurants)}
-             </div>
-          </div>
-          
-          <div class="map-sidebar">
-             <div class="sticky-map-card">
-               <h3>Location Map</h3>
-               <div id="placeMap" class="sidebar-map"></div>
              </div>
           </div>
         </div>
@@ -789,16 +786,35 @@ const app = {
     `;
 
     this.updateContent(content);
+  },
+
+  openPlaceMap(placeId) {
+    const place = window.restaurantData.places.find(p => p.id === placeId);
+    if (!place) return;
+
+    const modal = document.getElementById('mapModal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
 
     // Initialize Place Map
     const restMarkers = place.restaurants.map(r => ({
       name: r.name,
       cuisine: r.cuisine,
       coords: r.coords,
-      onClick: `app.navigateToRestaurant(${r.id})`,
+      onClick: `app.navigateToRestaurant(${r.id}); app.closeMapModal();`,
       linkText: "View Menu"
     }));
-    this.initMap('placeMap', place.coords, 13, restMarkers);
+
+    // Wait for modal transition then init map
+    setTimeout(() => {
+      this.initMap('modalMap', place.coords, 13, restMarkers);
+    }, 100);
+  },
+
+  closeMapModal() {
+    const modal = document.getElementById('mapModal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
   },
 
   renderRestaurants(restaurants) {
