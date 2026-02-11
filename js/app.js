@@ -722,23 +722,69 @@ const app = {
     ]);
 
     const content = `
-      <h1 class="page-title">Restaurants in ${place.name}</h1>
-      <p class="page-subtitle">${place.description}</p>
-      
-      <div class="filter-bar">
-        <button class="filter-btn ${this.currentFilters.place === 'all' ? 'active' : ''}" onclick="app.applyPlaceFilter(${placeId}, 'all')">All</button>
-        <button class="filter-btn ${this.currentFilters.place === 'top' ? 'active' : ''}" onclick="app.applyPlaceFilter(${placeId}, 'top')">⭐ Top Rated</button>
-        <button class="filter-btn ${this.currentFilters.place === 'Traditional' ? 'active' : ''}" onclick="app.applyPlaceFilter(${placeId}, 'Traditional')">🏺 Traditional</button>
-        <button class="filter-btn ${this.currentFilters.place === 'Modern' ? 'active' : ''}" onclick="app.applyPlaceFilter(${placeId}, 'Modern')">🏙️ Modern</button>
-        <button class="filter-btn ${this.currentFilters.place === 'Seafood' ? 'active' : ''}" onclick="app.applyPlaceFilter(${placeId}, 'Seafood')">🐟 Seafood</button>
+      <!-- Premium Hero Section -->
+      <div class="place-hero" style="background-image: url('${place.image}');">
+        <div class="place-hero-overlay">
+          <div class="place-hero-content fade-slide-up">
+            <span class="place-badge">EXPLORE</span>
+            <h1 class="place-hero-title">${place.name}</h1>
+            <p class="place-hero-subtitle">${place.description}</p>
+            
+            <div class="place-stats">
+              <div class="stat-pill">
+                <span class="stat-icon">🍽️</span>
+                <span>${place.restaurants.length} Premium Spots</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-icon">⭐</span>
+                <span>4.8 Avg Rating</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-icon">📍</span>
+                <span>Kerala, India</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="map-section">
-        <div id="placeMap" class="map-container"></div>
-      </div>
+      <div class="container" style="margin-top: -4rem; position: relative; z-index: 10;">
+        <!-- Premium Filter Bar -->
+        <div class="glass-filter-bar fade-slide-up" style="animation-delay: 0.1s;">
+          <div class="filter-scroll">
+            <button class="filter-chip ${this.currentFilters.place === 'all' ? 'active' : ''}" onclick="app.applyPlaceFilter(${placeId}, 'all')">
+              All Spots
+            </button>
+            <button class="filter-chip ${this.currentFilters.place === 'top' ? 'active' : ''}" onclick="app.applyPlaceFilter(${placeId}, 'top')">
+              ⭐ Top Rated
+            </button>
+            <button class="filter-chip ${this.currentFilters.place === 'Traditional' ? 'active' : ''}" onclick="app.applyPlaceFilter(${placeId}, 'Traditional')">
+              🏺 Traditional
+            </button>
+            <button class="filter-chip ${this.currentFilters.place === 'Modern' ? 'active' : ''}" onclick="app.applyPlaceFilter(${placeId}, 'Modern')">
+              🏙️ Modern
+            </button>
+            <button class="filter-chip ${this.currentFilters.place === 'Seafood' ? 'active' : ''}" onclick="app.applyPlaceFilter(${placeId}, 'Seafood')">
+              🐟 Seafood
+            </button>
+          </div>
+        </div>
 
-      <div class="restaurants-grid" id="restaurantsGrid">
-        ${this.renderRestaurants(place.restaurants)}
+        <div class="content-grid-layout">
+          <div class="restaurants-section">
+             <h2 class="section-heading">Curated Dining List</h2>
+             <div class="restaurants-grid" id="restaurantsGrid">
+               ${this.renderRestaurants(place.restaurants)}
+             </div>
+          </div>
+          
+          <div class="map-sidebar">
+             <div class="sticky-map-card">
+               <h3>Location Map</h3>
+               <div id="placeMap" class="sidebar-map"></div>
+             </div>
+          </div>
+        </div>
       </div>
     `;
 
@@ -826,7 +872,7 @@ const app = {
 
   renderRestaurantPage(restaurant) {
     const content = `
-      <div class="restaurant-header">
+  < div class="restaurant-header" >
         <h1 class="restaurant-name">${restaurant.name}</h1>
         <div class="restaurant-info">
           <span class="info-badge">
@@ -846,7 +892,7 @@ const app = {
             Book a Table
           </span>
         </div>
-      </div>
+      </div >
 
       <div class="filter-bar">
         <button class="filter-btn ${this.currentFilters.restaurant === 'all' ? 'active' : ''}" onclick="app.applyRestaurantFilter(${restaurant.id}, 'all')">Full Menu</button>
@@ -878,7 +924,7 @@ const app = {
           <div class="skeleton" style="height: 100px;"></div>
         </div>
       </div>
-    `;
+`;
     this.updateContent(content);
     this.fetchReviews(restaurant.id);
 
