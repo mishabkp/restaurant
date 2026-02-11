@@ -872,7 +872,7 @@ const app = {
 
   renderRestaurantPage(restaurant) {
     const content = `
-  < div class="restaurant-header" >
+      <div class="restaurant-header">
         <h1 class="restaurant-name">${restaurant.name}</h1>
         <div class="restaurant-info">
           <span class="info-badge">
@@ -892,7 +892,7 @@ const app = {
             Book a Table
           </span>
         </div>
-      </div >
+      </div>
 
       <div class="filter-bar">
         <button class="filter-btn ${this.currentFilters.restaurant === 'all' ? 'active' : ''}" onclick="app.applyRestaurantFilter(${restaurant.id}, 'all')">Full Menu</button>
