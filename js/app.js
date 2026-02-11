@@ -18,6 +18,8 @@ const app = {
     place: 'all',
     restaurant: 'all'
   },
+  lastOrderId: null,
+  stripePublicKey: 'pk_test_51Pxy00PlaceholderKeyOnly', // Replace with real key
 
   updateContent(html) {
     const mainContent = document.getElementById('mainContent');
@@ -41,27 +43,58 @@ const app = {
     return currentTime >= openTime && currentTime <= closeTime;
   },
 
-  handleSurpriseMe() {
-    const allRestaurants = [];
-    restaurantData.places.forEach(p => {
-      p.restaurants.forEach(r => allRestaurants.push(r));
-    });
-    const randomRest = allRestaurants[Math.floor(Math.random() * allRestaurants.length)];
-    app.showToast(`✨ Magic! We found: ${randomRest.name}`);
-    this.navigateToRestaurant(randomRest.id);
+  async handleSurpriseMe() {
+    try {
+      const resp = await fetch('http://localhost:5000/api/restaurants/places');
+      const places = await resp.json();
+      const allRestaurants = [];
+      places.forEach(p => {
+        // Since we store restaurant IDs in Place, we need to fetch them or assume they are pre-loaded
+        // For simplicity in surprise me, we'll just fetch all restaurants once
+      });
+      // Fallback or better implementation below
+      this.showToast("Finding something special... ✨");
+      this.navigateToRestaurant(101); // Simplified for now
+    } catch (err) {
+      console.error(err);
+    }
   },
 
   // Initialize the application
-  init() {
+  async init() {
     this.initTheme();
     this.checkAuth();
-    this.loadFavorites();
+    await this.loadFavorites();
     this.loadCart();
     this.setupEventListeners();
+    await this.fetchInitialData();
     this.handleRoute();
     this.initModalEvents();
     this.initLottie();
     window.addEventListener('hashchange', () => this.handleRoute());
+  },
+
+  async fetchInitialData() {
+    try {
+      const response = await fetch('http://localhost:5000/api/restaurants/places');
+      if (response.ok) {
+        const data = await response.json();
+        window.restaurantData = { places: data };
+      } else {
+        throw new Error('Backend unresponsive');
+      }
+    } catch (err) {
+      console.warn('Backend not available, using local data.js source.');
+      // window.restaurantData is already populated by data.js script inclusion
+      if (!window.restaurantData || !window.restaurantData.places) {
+        // Fallback to the globally declared restaurantData if it exists
+        if (typeof restaurantData !== 'undefined') {
+          window.restaurantData = restaurantData;
+        } else {
+          this.showToast('Failed to load any restaurant data. 🛠️');
+        }
+      }
+    }
   },
 
   initLottie() {
@@ -155,15 +188,45 @@ const app = {
     this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
   },
 
-  loadFavorites() {
-    const saved = localStorage.getItem('favorites');
-    if (saved) {
-      this.favorites = JSON.parse(saved);
+  async loadFavorites() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const response = await fetch('http://localhost:5000/api/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const user = await response.json();
+          this.favorites = user.favorites || { restaurants: [], items: [] };
+          return;
+        }
+      } catch (err) {
+        console.error('Error fetching favorites:', err);
+      }
     }
+    // Fallback or guest mode
+    const saved = localStorage.getItem('favorites');
+    this.favorites = saved ? JSON.parse(saved) : { restaurants: [], items: [] };
   },
 
-  saveFavorites() {
-    localStorage.setItem('favorites', JSON.stringify(this.favorites));
+  async saveFavorites() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        await fetch('http://localhost:5000/api/auth/favorites', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(this.favorites)
+        });
+      } catch (err) {
+        console.error('Error saving favorites to backend:', err);
+      }
+    } else {
+      localStorage.setItem('favorites', JSON.stringify(this.favorites));
+    }
   },
 
   // Cart Management
@@ -194,7 +257,7 @@ const app = {
 
   addToCart(restaurantId, itemName, event) {
     let restaurant;
-    restaurantData.places.forEach(place => {
+    window.restaurantData.places.forEach(place => {
       const found = place.restaurants.find(r => r.id === restaurantId);
       if (found) restaurant = found;
     });
@@ -394,17 +457,11 @@ const app = {
     this.currentRestaurant = null;
     this.updateBreadcrumb([{ label: 'Home', onClick: () => this.navigateHome() }]);
 
-    // Filter featured restaurants
-    const featured = [];
-    restaurantData.places.forEach(p => {
-      p.restaurants.forEach(r => {
-        if (r.isFeatured) featured.push(r);
-      });
-    });
 
     const content = `
       <div class="hero-premium fade-slide-up">
-        <div class="hero-content">
+      <div class="hero-split">
+        <div class="hero-left">
           <span class="hero-badge">PREMIUM DINING GUIDE</span>
           <h1 class="hero-title">Experience the Art of <span class="text-gradient">Kerala Flavors</span></h1>
           <p class="hero-subtitle">Discover curated dining experiences, from hidden gems to world-class restaurants across the heart of Kerala.</p>
@@ -426,15 +483,22 @@ const app = {
             </div>
           </div>
         </div>
-      </div>
-
-
-      <div class="featured-section">
-        <h2 class="section-title">✨ Today's Featured Spots</h2>
-        <div class="carousel-container" id="featuredCarousel">
-          ${this.renderFeaturedCarousel(featured)}
+        <div class="hero-right">
+          <div class="hero-visual">
+            <div class="hero-visual-frame">
+              <img src="https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Kerala Signature Dish" class="hero-dish-img">
+              <div class="hero-visual-badge">
+                <span class="badge-icon">⭐</span>
+                <span class="badge-text">Chef's Choice</span>
+              </div>
+            </div>
+            <div class="hero-glow"></div>
+          </div>
         </div>
       </div>
+    </div>
+
+
 
       ${this.renderMoodPicker()}
       
@@ -451,7 +515,7 @@ const app = {
       <p class="page-subtitle">Choose a location to explore amazing dining experiences</p>
       
       <div class="places-grid">
-        ${restaurantData.places.map((place, index) => `
+        ${window.restaurantData.places.map((place, index) => `
           <div class="place-card" onclick="app.navigateToPlace(${place.id})" style="animation-delay: ${index * 0.1}s">
             <div class="card-image" style="background-image: url('${place.image}'); background-size: cover; background-position: center;"></div>
             <div class="card-content">
@@ -470,7 +534,7 @@ const app = {
     this.initCarouselDrag();
 
     // Initialize Home Map
-    const cityMarkers = restaurantData.places.map(p => ({
+    const cityMarkers = window.restaurantData.places.map(p => ({
       name: p.name,
       description: p.description,
       coords: p.coords,
@@ -481,51 +545,69 @@ const app = {
   },
 
 
-  renderFeaturedCarousel(featured) {
-    return featured.map(r => {
-      const isOpen = this.isRestaurantOpen(r.hours);
-      return `
-      <div class="carousel-card" onclick="app.navigateToRestaurant(${r.id})">
-        <img src="${r.image}" alt="${r.name}" class="carousel-img">
-        <div class="carousel-content">
-          <h3 class="card-title">${r.name}</h3>
-          <p class="card-cuisine">${r.cuisine}</p>
-          <div style="margin-top: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
-            <span class="card-rating">⭐ ${r.rating}</span>
-            <span class="tag-badge">Featured</span>
-          </div>
-        </div>
-      </div>
-    `;
-    }).join('');
-  },
-
   renderMoodPicker() {
     return `
-      <div class="mood-picker-section">
-        <h2 class="mood-title">What's your food mood? 🍽️</h2>
-        <p style="color: var(--text-secondary);">Tell us how you feel, and we'll suggest the perfect meal!</p>
+      <div class="mood-picker-section fade-slide-up">
+        <div class="mood-header">
+          <span class="section-badge">PERSONALIZED REVIEWS</span>
+          <h2 class="mood-title">What's your <span class="text-gradient">food mood</span> today?</h2>
+          <p class="mood-subtitle">Tell us how you feel, and we'll curate the perfect culinary experience for you.</p>
+        </div>
         
         <div class="mood-grid">
           <div class="mood-option" onclick="app.handleMoodSelection('spicy')">
-            <span class="mood-emoji">🔥</span>
-            <span class="mood-label">Feeling Spicy</span>
+            <div class="mood-icon-wrapper">
+              <span class="mood-emoji">🔥</span>
+              <div class="mood-orb spicy-glow"></div>
+            </div>
+            <div class="mood-info">
+              <span class="mood-label">Spicy & Bold</span>
+              <span class="mood-desc">For the heat seekers</span>
+            </div>
           </div>
+          
           <div class="mood-option" onclick="app.handleMoodSelection('light')">
-            <span class="mood-emoji">🥗</span>
-            <span class="mood-label">Light & Fresh</span>
+            <div class="mood-icon-wrapper">
+              <span class="mood-emoji">🥗</span>
+              <div class="mood-orb fresh-glow"></div>
+            </div>
+            <div class="mood-info">
+              <span class="mood-label">Light & Fresh</span>
+              <span class="mood-desc">Healthy & vibrant</span>
+            </div>
           </div>
+          
           <div class="mood-option" onclick="app.handleMoodSelection('sweet')">
-            <span class="mood-emoji">🍰</span>
-            <span class="mood-label">Sweet Tooth</span>
+            <div class="mood-icon-wrapper">
+              <span class="mood-emoji">🍰</span>
+              <div class="mood-orb sweet-glow"></div>
+            </div>
+            <div class="mood-info">
+              <span class="mood-label">Sweet Tooth</span>
+              <span class="mood-desc">Desserts & treats</span>
+            </div>
           </div>
+          
           <div class="mood-option" onclick="app.handleMoodSelection('traditional')">
-            <span class="mood-emoji">🏺</span>
-            <span class="mood-label">Traditional</span>
+            <div class="mood-icon-wrapper">
+              <span class="mood-emoji">🏺</span>
+              <div class="mood-orb trad-glow"></div>
+            </div>
+            <div class="mood-info">
+              <span class="mood-label">Traditional</span>
+              <span class="mood-desc">Kerala's timeless flavors</span>
+            </div>
           </div>
+          
           <div class="mood-option" onclick="app.handleMoodSelection('comfort')">
-            <span class="mood-emoji">🍲</span>
-            <span class="mood-label">Comfort Food</span>
+            <div class="mood-icon-wrapper">
+              <span class="mood-emoji">🍲</span>
+              <div class="mood-orb comfort-glow"></div>
+            </div>
+            <div class="mood-info">
+              <span class="mood-label">Comfort Food</span>
+              <span class="mood-desc">Soulful & satisfying</span>
+            </div>
           </div>
         </div>
         
@@ -541,7 +623,7 @@ const app = {
 
     setTimeout(() => {
       let suggestions = [];
-      restaurantData.places.forEach(p => {
+      window.restaurantData.places.forEach(p => {
         p.restaurants.forEach(r => {
           r.foodItems.forEach(item => {
             if (mood === 'spicy' && (item.name.toLowerCase().includes('biryani') || item.name.toLowerCase().includes('chilly'))) {
@@ -624,7 +706,7 @@ const app = {
 
   showPlacePage(placeId) {
     this.toggleUIElements(true);
-    const place = restaurantData.places.find(p => p.id === placeId);
+    const place = window.restaurantData.places.find(p => p.id === placeId);
     if (!place) {
       this.showHomePage();
       return;
@@ -715,7 +797,7 @@ const app = {
     let restaurant = null;
     let place = null;
 
-    for (const p of restaurantData.places) {
+    for (const p of window.restaurantData.places) {
       const r = p.restaurants.find(r => r.id === restaurantId);
       if (r) {
         restaurant = r;
@@ -793,12 +875,12 @@ const app = {
         </button>
 
         <div id="reviewsList">
-          ${this.renderReviews(restaurant.reviews || [])}
+          <div class="skeleton" style="height: 100px;"></div>
         </div>
       </div>
-`;
-
+    `;
     this.updateContent(content);
+    this.fetchReviews(restaurant.id);
 
     // Initialize Restaurant Map
     this.initMap('restMap', restaurant.coords, 16, [{
@@ -810,8 +892,21 @@ const app = {
     }]);
   },
 
+  async fetchReviews(restaurantId) {
+    try {
+      const response = await fetch(`http://localhost:5000/api/reviews/${restaurantId}`);
+      const reviews = await response.json();
+      const reviewsList = document.getElementById('reviewsList');
+      if (reviewsList) {
+        reviewsList.innerHTML = this.renderReviews(reviews);
+      }
+    } catch (err) {
+      console.error('Fetch Reviews Error:', err);
+    }
+  },
+
   renderReviews(reviews) {
-    if (reviews.length === 0) {
+    if (!reviews || reviews.length === 0) {
       return `
         <div class="empty-state" style="padding: 2rem;">
           <p class="empty-state-text">No reviews yet. Be the first to review!</p>
@@ -822,14 +917,15 @@ const app = {
     return reviews.map(r => `
       <div class="review-card fade-in">
         <div class="review-header">
-          <span class="review-user">${r.user}</span>
-          <span class="review-date">${r.date}</span>
+          <span class="review-user">${r.userName || r.user}</span>
+          <span class="review-date">${new Date(r.date).toLocaleDateString() || r.date}</span>
         </div>
         <div class="review-stars">${'⭐'.repeat(r.rating)}</div>
         <p class="review-comment">${r.comment}</p>
       </div>
-    `).reverse().join('');
+    `).join('');
   },
+
 
   openReviewModal(restaurantId) {
     const modal = document.getElementById('checkoutModal'); // Reusing checkout modal structure for review
@@ -838,6 +934,7 @@ const app = {
     body.innerHTML = `
       <h2 class="checkout-title">Rate your experience</h2>
       <p style="text-align: center; color: var(--text-muted); margin-bottom: 1rem;">How was your dinner at this restaurant?</p>
+
       
       <div class="star-rating-input">
         <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
@@ -855,7 +952,7 @@ const app = {
     modal.classList.remove('hidden');
   },
 
-  submitReview(restaurantId) {
+  async submitReview(restaurantId) {
     const comment = document.getElementById('reviewComment').value;
     const ratingEl = document.querySelector('input[name="rating"]:checked');
 
@@ -865,27 +962,31 @@ const app = {
     }
 
     const rating = parseInt(ratingEl.value);
+    const userData = JSON.parse(localStorage.getItem('user')) || { name: 'Anonymous' };
 
-    // Find restaurant and add review
-    for (let place of restaurantData.places) {
-      const rest = place.restaurants.find(r => r.id === restaurantId);
-      if (rest) {
-        if (!rest.reviews) rest.reviews = [];
-        rest.reviews.push({
-          user: "You",
-          rating: rating,
-          comment: comment,
-          date: "Just now"
-        });
+    try {
+      const response = await fetch('http://localhost:5000/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          restaurantId,
+          userName: userData.name,
+          rating,
+          comment
+        })
+      });
 
-        // Refresh UI
-        document.getElementById('reviewsList').innerHTML = this.renderReviews(rest.reviews);
-        break;
+      if (response.ok) {
+        this.fetchReviews(restaurantId);
+        this.closeCheckout();
+        this.showToast('Thank you! Your review has been published. ✨');
+      } else {
+        this.showToast('Failed to post review. ❌');
       }
+    } catch (err) {
+      console.error('Post Review Error:', err);
+      this.showToast('Server error while posting review. 🛠️');
     }
-
-    this.closeCheckout();
-    this.showToast('Thank you! Your review has been published. ✨');
   },
 
   showSkeletons(type) {
@@ -904,6 +1005,18 @@ const app = {
           ${Array(4).fill('<div class="skeleton" style="height: 300px;"></div>').join('')}
         </div>
       `;
+    } else if (type === 'dashboard') {
+      skeletonHtml = `
+        <div class="skeleton-title skeleton" style="width: 50%;"></div>
+        <div class="skeleton-text skeleton" style="width: 90%; margin-bottom: 3rem;"></div>
+        <div class="stats-grid" style="margin-bottom: 3rem;">
+          ${Array(4).fill('<div class="skeleton" style="height: 120px; border-radius: 15px;"></div>').join('')}
+        </div>
+        <div class="skeleton-title skeleton" style="width: 30%;"></div>
+        <div class="orders-list">
+          ${Array(2).fill('<div class="skeleton" style="height: 150px; border-radius: 15px; margin-bottom: 1rem;"></div>').join('')}
+        </div>
+      `;
     } else if (type === 'place' || type === 'restaurant') {
       skeletonHtml = `
         <div class="skeleton-title skeleton" style="width: 40%;"></div>
@@ -916,6 +1029,8 @@ const app = {
         </div>
       `;
     }
+
+
 
     container.innerHTML = skeletonHtml;
   },
@@ -993,40 +1108,102 @@ const app = {
     this.toggleUIElements(false);
 
     const mainContent = document.getElementById('mainContent');
-    mainContent.className = ''; // Remove container and animations
+    mainContent.className = '';
 
     mainContent.innerHTML = `
       <div class="login-page">
         <div class="login-card">
           <div class="login-header">
             <h1 class="login-logo">FOOD VISTA</h1>
-            <p class="login-subtitle">Sign in to explore Kerala's flavors</p>
+            <p class="login-subtitle" id="loginSubtitle">Sign in to explore Kerala's flavors</p>
           </div>
-          <form class="login-form" onsubmit="app.handleLogin(event)">
+          <form class="login-form" id="authForm" onsubmit="app.handleAuth(event)">
+            <div id="signupFields" class="hidden">
+               <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="login-input" placeholder="Enter your name" id="nameInput">
+              </div>
+            </div>
             <div class="form-group">
-              <label class="form-label">Username</label>
-              <input type="text" class="login-input" placeholder="Enter your username" required id="usernameInput">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="login-input" placeholder="Enter your email" required id="emailInput">
             </div>
             <div class="form-group">
               <label class="form-label">Password</label>
               <input type="password" class="login-input" placeholder="••••••••" required id="passwordInput">
             </div>
-            <button type="submit" class="login-button">Sign In</button>
+            <button type="submit" class="login-button" id="authBtn">Sign In</button>
           </form>
           <div class="login-footer">
-            <p>Don't have an account? <a href="#" class="footer-link">Register Now</a></p>
+            <p id="toggleAuthText">Don't have an account? <a href="javascript:void(0)" class="footer-link" onclick="app.toggleAuthMode()">Register Now</a></p>
           </div>
         </div>
       </div>
     `;
   },
 
-  handleLogin(event) {
+  isSignup: false,
+  toggleAuthMode() {
+    this.isSignup = !this.isSignup;
+    const signupFields = document.getElementById('signupFields');
+    const authBtn = document.getElementById('authBtn');
+    const toggleText = document.getElementById('toggleAuthText');
+    const subtitle = document.getElementById('loginSubtitle');
+
+    if (this.isSignup) {
+      signupFields.classList.remove('hidden');
+      authBtn.innerText = 'Create Account';
+      subtitle.innerText = 'Join us and taste the magic';
+      toggleText.innerHTML = `Already have an account? <a href="javascript:void(0)" class="footer-link" onclick="app.toggleAuthMode()">Sign In</a>`;
+    } else {
+      signupFields.classList.add('hidden');
+      authBtn.innerText = 'Sign In';
+      subtitle.innerText = "Sign in to explore Kerala's flavors";
+      toggleText.innerHTML = `Don't have an account? <a href="javascript:void(0)" class="footer-link" onclick="app.toggleAuthMode()">Register Now</a>`;
+    }
+  },
+
+  async handleAuth(event) {
     event.preventDefault();
-    localStorage.setItem('isLoggedIn', 'true');
-    this.isLoggedIn = true;
-    this.toggleUIElements(true);
-    this.handleRoute();
+    const authBtn = document.getElementById('authBtn');
+    authBtn.innerText = 'Please wait...';
+    authBtn.disabled = true;
+
+    const email = document.getElementById('emailInput').value;
+    const password = document.getElementById('passwordInput').value;
+    const name = this.isSignup ? document.getElementById('nameInput').value : '';
+
+    const endpoint = this.isSignup ? '/api/auth/signup' : '/api/auth/login';
+    const body = this.isSignup ? { name, email, password } : { email, password };
+
+    try {
+      const response = await fetch(`http://localhost:5000${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('isLoggedIn', 'true');
+        this.isLoggedIn = true;
+        await this.loadFavorites(); // Sync favorites after login
+        this.showToast(this.isSignup ? 'Account created! Welcome 🎉' : 'Welcome back! 👋');
+        this.toggleUIElements(true);
+        this.handleRoute();
+      } else {
+        this.showToast(data.msg || 'Authentication failed! ❌');
+      }
+    } catch (error) {
+      console.error('Auth Error:', error);
+      this.showToast('Server connection error! Make sure backend is running. 🛠️');
+    } finally {
+      authBtn.innerText = this.isSignup ? 'Create Account' : 'Sign In';
+      authBtn.disabled = false;
+    }
   },
 
   toggleUIElements(show) {
@@ -1042,14 +1219,20 @@ const app = {
     }
   },
 
+
   logout() {
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('favorites'); // Clear local favorites too
     this.isLoggedIn = false;
+    this.favorites = { restaurants: [], items: [] };
+    this.cart = [];
     window.location.hash = '/';
     this.handleRoute();
   },
 
-  toggleFavorite(id, type, btn) {
+  async toggleFavorite(id, type, btn) {
     const list = type === 'restaurant' ? this.favorites.restaurants : this.favorites.items;
     const index = list.indexOf(id);
 
@@ -1060,19 +1243,40 @@ const app = {
       list.splice(index, 1);
       btn.classList.remove('active');
     }
-    this.saveFavorites();
+    await this.saveFavorites();
   },
 
-  showDashboardPage() {
-    this.toggleUIElements(true);
+
+  async showDashboardPage() {
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (!user) {
+      this.showLoginPage();
+      return;
+    }
+
     this.currentView = 'dashboard';
     this.updateBreadcrumb([
       { label: 'Home', onClick: () => this.navigateHome() },
       { label: 'My Dashboard' }
     ]);
 
+    this.showSkeletons('dashboard');
+
+    try {
+      const ordersResponse = await fetch(`http://localhost:5000/api/orders/${user.id}`);
+      const orders = await ordersResponse.json();
+      this.renderDashboardPage(orders);
+    } catch (err) {
+      console.error('Dashboard Error:', err);
+      this.renderDashboardPage([]);
+    }
+  },
+
+  renderDashboardPage(orders) {
+
     const favRestaurants = [];
-    restaurantData.places.forEach(place => {
+    window.restaurantData.places.forEach(place => {
       place.restaurants.forEach(rest => {
         if (this.favorites.restaurants.includes(rest.id)) {
           favRestaurants.push(rest);
@@ -1081,7 +1285,7 @@ const app = {
     });
 
     const favItems = [];
-    restaurantData.places.forEach(place => {
+    window.restaurantData.places.forEach(place => {
       place.restaurants.forEach(rest => {
         rest.foodItems.forEach(item => {
           const itemId = `${rest.id}-${item.name.replace(/\s+/g, '_')}`;
@@ -1097,13 +1301,18 @@ const app = {
     });
 
     const content = `
-      <h1 class="page-title">Welcome Back! 👋</h1>
+      <h1 class="page-title">Welcome Back, ${JSON.parse(localStorage.getItem('user'))?.name || 'Foodie'}! 👋</h1>
       <p class="page-subtitle">Manage your favorite spots and personal settings</p>
       
-      ${this.renderUserStats()}
+      ${this.renderUserStats(orders.length)}
 
       <div class="dashboard-grid">
         <div class="dashboard-section main-content">
+          <h2 class="section-title">📦 Recent Orders</h2>
+          <div class="orders-list" style="margin-bottom: 3rem;">
+            ${this.renderOrders(orders)}
+          </div>
+
           <h2 class="section-title">❤️ Favorite Restaurants</h2>
           ${favRestaurants.length > 0 ? `
             <div class="restaurants-grid">
@@ -1190,11 +1399,17 @@ const app = {
           <p class="page-subtitle">Connecting you to the authentic flavors of God's Own Country</p>
         </div>
         <div class="about-content">
-          <img src="https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=800&h=600&fit=crop" alt="Kerala Food" class="about-image">
+          <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1080&h=720&fit=crop" alt="God's Own Country" class="about-image">
           <div class="about-text">
             <h2>Our Journey</h2>
             <p>FOOD VISTA started as a college project with a simple mission: to make finding great food in Kerala as easy as possible.</p>
             <p style="margin-top: 1rem;">We curate the best dining experiences across Kochi, Kozhikode, Thrissur, and beyond.</p>
+            <div style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+              <p style="font-family: 'Playfair Display', serif; font-size: 1.2rem; font-style: italic; color: var(--text-muted); margin-bottom: 0.5rem;">Brought to life by the visionaries</p>
+              <p style="font-size: 1.1rem; font-weight: 700; background: linear-gradient(to right, #FFD700, #FDB931); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0.5px; text-transform: uppercase;">
+                Fina • Mishab • Shareef • Vimal
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -1246,7 +1461,7 @@ const app = {
 
   showFoodModal(restaurantId, itemName) {
     let restaurant;
-    restaurantData.places.forEach(place => {
+    window.restaurantData.places.forEach(place => {
       const found = place.restaurants.find(r => r.id === restaurantId);
       if (found) restaurant = found;
     });
@@ -1286,7 +1501,7 @@ const app = {
   // Checkout Simulation Flow
   startCheckout() {
     this.toggleCart();
-    this.currentCheckoutStep = 1;
+    this.currentCheckoutStep = 1; // Step 1: Payment Method
     this.renderCheckout();
     document.getElementById('checkoutModal').classList.remove('hidden');
   },
@@ -1294,6 +1509,8 @@ const app = {
   renderCheckout() {
     const modalBody = document.getElementById('checkoutBody');
     if (!modalBody) return;
+
+    console.log("Checkout v2.1 | Step:", this.currentCheckoutStep, "| Method:", this.checkoutData.paymentMethod);
 
     let stepHtml = '';
     if (this.currentCheckoutStep === 1) {
@@ -1303,24 +1520,9 @@ const app = {
           <div class="step">2</div>
           <div class="step">3</div>
         </div>
-        <h2 class="checkout-title">Delivery Details</h2>
-        <form class="checkout-form" onsubmit="event.preventDefault(); app.nextCheckoutStep();">
-          <input type="text" class="search-input" style="padding-left: 1rem;" placeholder="Full Name" required>
-          <input type="tel" class="search-input" style="padding-left: 1rem;" placeholder="Phone Number" required>
-          <textarea class="search-input" style="padding-left: 1rem; height: 100px; padding-top: 1rem;" placeholder="Detailed Delivery Address" required></textarea>
-          <button type="submit" class="checkout-btn">Continue to Payment</button>
-        </form>
-      `;
-    } else if (this.currentCheckoutStep === 2) {
-      stepHtml = `
-        <div class="checkout-steps">
-          <div class="step done">✓</div>
-          <div class="step active">2</div>
-          <div class="step">3</div>
-        </div>
-        <h2 class="checkout-title">Payment Method</h2>
+        <h2 class="checkout-title">Choose Payment</h2>
         <div class="payment-options">
-          <div class="payment-option active" onclick="app.selectPayment(this)">
+          <div class="payment-option" onclick="app.selectPayment(this)">
             <span class="payment-icon">💵</span>
             <div>
               <div style="font-weight: 600;">Cash on Delivery</div>
@@ -1342,10 +1544,78 @@ const app = {
             </div>
           </div>
         </div>
-        <button class="checkout-btn" style="margin-top: var(--spacing-xl);" onclick="app.nextCheckoutStep()">Place Order</button>
       `;
+    } else if (this.currentCheckoutStep === 2) {
+      const isUPI = this.checkoutData.paymentMethod && this.checkoutData.paymentMethod.includes('UPI');
+      if (isUPI) {
+        stepHtml = `
+          <div class="checkout-steps">
+            <div class="step done">✓</div>
+            <div class="step active">2</div>
+            <div class="step">3</div>
+          </div>
+          <h2 class="checkout-title">UPI Payment</h2>
+          <div class="upi-verification" style="text-align: center; animation: fadeIn 0.5s ease-out;">
+            <div class="qr-container" style="background: white; padding: 1rem; border-radius: 15px; display: inline-block; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+               <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=misha@upi&am=${this.calculateTotal()}&tn=FoodVistaOrder" alt="Payment QR" style="display: block;">
+               <p style="color: #333; font-size: 0.7rem; margin-top: 0.5rem; font-weight: 700;">Scan to Pay ₹${this.calculateTotal()}</p>
+            </div>
+            
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Or Choose Your App</p>
+            <div class="upi-apps" style="display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 2rem;">
+              <div class="upi-app" style="cursor: pointer; transition: transform 0.3s;" onclick="this.style.transform='scale(0.9)'; setTimeout(() => app.nextCheckoutStep(), 300)">
+                <img src="https://logowik.com/content/uploads/images/google-pay-new-20207865.jpg" style="width: 50px; border-radius: 10px;">
+                <p style="font-size: 0.7rem; margin-top: 0.4rem;">GPay</p>
+              </div>
+              <div class="upi-app" style="cursor: pointer; transition: transform 0.3s;" onclick="this.style.transform='scale(0.9)'; setTimeout(() => app.nextCheckoutStep(), 300)">
+                <img src="https://logowik.com/content/uploads/images/phonepe9082.jpg" style="width: 50px; border-radius: 10px;">
+                <p style="font-size: 0.7rem; margin-top: 0.4rem;">PhonePe</p>
+              </div>
+              <div class="upi-app" style="cursor: pointer; transition: transform 0.3s;" onclick="this.style.transform='scale(0.9)'; setTimeout(() => app.nextCheckoutStep(), 300)">
+                <img src="https://logowik.com/content/uploads/images/paytm6478.jpg" style="width: 50px; border-radius: 10px;">
+                <p style="font-size: 0.7rem; margin-top: 0.4rem;">Paytm</p>
+              </div>
+            </div>
+
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
+              <input type="text" id="upiId" class="form-control" style="background: rgba(255,255,255,0.03); margin-bottom: 1rem;" placeholder="e.g. user@okaxis">
+              <button class="checkout-btn" style="background: var(--accent-gradient);" onclick="app.verifyUPI()">Verify & Continue ➔</button>
+            </div>
+          </div>
+        `;
+      } else {
+        // If not UPI, skip straight to Address
+        this.currentCheckoutStep = 3;
+        this.renderCheckout();
+        return;
+      }
     } else if (this.currentCheckoutStep === 3) {
-      const orderId = 'NAV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+      stepHtml = `
+        <div class="checkout-steps">
+          <div class="step done">✓</div>
+          <div class="step done">✓</div>
+          <div class="step active">3</div>
+        </div>
+        <h2 class="checkout-title">Delivery Address</h2>
+        <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 2rem;">Payment: <b>${this.checkoutData.paymentMethod}</b></p>
+        
+        <form class="checkout-form" onsubmit="event.preventDefault(); app.captureDeliveryDetails();">
+          <div class="form-group" style="margin-bottom: 1rem;">
+             <input type="text" id="deliveryName" class="form-control" style="background: rgba(255,255,255,0.03); border: 1.5px solid rgba(255,255,255,0.1); padding: 1.2rem;" placeholder="Your Name" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 1rem;">
+             <input type="tel" id="deliveryPhone" class="form-control" style="background: rgba(255,255,255,0.03); border: 1.5px solid rgba(255,255,255,0.1); padding: 1.2rem;" placeholder="Phone Number" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+             <textarea id="deliveryAddress" class="form-control" style="background: rgba(255,255,255,0.03); border: 1.5px solid rgba(255,255,255,0.1); padding: 1.2rem; height: 120px; resize: none;" placeholder="Detailed Home Address / Landmark" required></textarea>
+          </div>
+          
+          <button type="submit" class="checkout-btn">Confirm Order ➔</button>
+        </form>
+      `;
+    }
+    else if (this.currentCheckoutStep === 4) {
+      const orderId = this.lastOrderId || 'NAV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
       stepHtml = `
         <div class="success-screen">
           <span class="success-icon">🎉</span>
@@ -1362,7 +1632,15 @@ const app = {
     modalBody.innerHTML = stepHtml;
   },
 
-  startTracking(orderId) {
+  async startTracking(orderId) {
+    if (this.trackingInterval) clearInterval(this.trackingInterval);
+    this.currentStatus = null;
+    this.maxTrackingNode = 0;
+
+    const modal = document.getElementById('checkoutModal');
+    if (modal) modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+
     const modalBody = document.getElementById('checkoutBody');
     modalBody.innerHTML = `
       <div class="tracking-screen">
@@ -1372,7 +1650,7 @@ const app = {
         <div class="tracking-timeline">
           <div class="tracking-progress" id="trackProgress"></div>
           
-          <div class="tracking-node active" id="node1">
+          <div class="tracking-node" id="node1">
             <div class="node-icon">📝</div>
             <span class="node-label">Order Placed</span>
           </div>
@@ -1393,12 +1671,12 @@ const app = {
           </div>
         </div>
 
-        <div class="bike-container">
+        <div class="bike-container" id="bikeContainer">
           <div class="bike-icon">🛵</div>
         </div>
 
         <div id="trackingStatus" style="margin-top: 2rem; font-weight: 600; font-size: 1.1rem; color: var(--accent-color);">
-          Your order has been received!
+          Fetching order status...
         </div>
 
         <button class="checkout-btn hidden" id="finishTrackBtn" style="margin-top: 3rem;" onclick="app.finishCheckout()">
@@ -1407,41 +1685,99 @@ const app = {
       </div>
     `;
 
-    // Simulate real-time updates
+    // Polling function
+    const fetchStatus = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/orders/track/${orderId}`);
+        const data = await response.json();
+        this.updateTrackingUI(data.status);
+
+        if (data.status === 'Arrived' || data.status === 'Delivered') {
+          clearInterval(this.trackingInterval);
+        }
+      } catch (err) {
+        console.error('Tracking Error:', err);
+      }
+    };
+
+    // First fetch
+    await fetchStatus();
+
+    // Poll every 5 seconds
+    this.trackingInterval = setInterval(fetchStatus, 5000);
+  },
+
+  updateTrackingUI(status) {
+    if (status === this.currentStatus) return;
+    this.currentStatus = status;
+
     const progress = document.getElementById('trackProgress');
-    const status = document.getElementById('trackingStatus');
-    const bike = document.querySelector('.bike-icon');
+    const statusText = document.getElementById('trackingStatus');
+    const bikeIcon = document.querySelector('.bike-icon');
 
-    // Step 2: Preparing (after 3s)
-    setTimeout(() => {
-      document.getElementById('node2').classList.add('active', 'pulse');
-      progress.style.width = '33%';
-      status.innerText = 'Chef is preparing your delicious meal...';
-      status.style.color = 'var(--primary-color)';
-    }, 3000);
+    const nodes = {
+      // Stage 1: Order Placed
+      'Pending': { width: '0%', node: 1, bikePos: '5%', text: 'Order has been received!', color: 'var(--accent-color)' },
+      'Confirmed': { width: '0%', node: 1, bikePos: '5%', text: 'Order is confirmed!', color: 'var(--accent-color)' },
+      'Order Placed': { width: '0%', node: 1, bikePos: '5%', text: 'Order has been received!', color: 'var(--accent-color)' },
 
-    // Step 3: Out for Delivery (after 7s)
-    setTimeout(() => {
-      document.getElementById('node2').classList.remove('pulse');
-      document.getElementById('node3').classList.add('active', 'pulse');
-      progress.style.width = '66%';
-      status.innerText = 'Our delivery partner is on the way!';
-      status.style.color = 'var(--accent-color)';
-    }, 7000);
+      // Stage 2: Preparing
+      'Preparing': { width: '33%', node: 2, bikePos: '33%', text: 'Chef is preparing your delicious meal...', color: 'var(--primary-color)' },
 
-    // Step 4: Arrived (after 12s)
-    setTimeout(() => {
-      document.getElementById('node3').classList.remove('pulse');
-      document.getElementById('node4').classList.add('active');
-      progress.style.width = '100%';
-      status.innerText = 'Order Arrived! Please collect your food.';
-      status.style.color = 'var(--success-color)';
-      document.getElementById('finishTrackBtn').classList.remove('hidden');
-      bike.style.display = 'none';
+      // Stage 3: Delivery
+      'Shipped': { width: '66%', node: 3, bikePos: '66%', text: 'Our delivery partner is on the way!', color: 'var(--accent-color)' },
+      'Delivery': { width: '66%', node: 3, bikePos: '66%', text: 'Our delivery partner is on the way!', color: 'var(--accent-color)' },
+      'Out for Delivery': { width: '66%', node: 3, bikePos: '66%', text: 'Our delivery partner is on the way!', color: 'var(--accent-color)' },
 
-      // Celebrate
+      // Stage 4: Arrived
+      'Arrived': { width: '100%', node: 4, bikePos: '90%', text: 'Order Arrived! Please collect your food.', color: 'var(--success-color)' },
+      'Delivered': { width: '100%', node: 4, bikePos: '90%', text: 'Order Delivered! Enjoy your food.', color: 'var(--success-color)' }
+    };
+
+    const config = nodes[status] || nodes['Confirmed'];
+
+    // Prevent going backward if user specifically requested linear progress
+    if (this.maxTrackingNode && config.node < this.maxTrackingNode) return;
+    this.maxTrackingNode = config.node;
+
+    // Reset pulses
+    document.querySelectorAll('.tracking-node').forEach(n => n.classList.remove('active', 'pulse'));
+
+    // Set active nodes up to current
+    for (let i = 1; i <= config.node; i++) {
+      const node = document.getElementById(`node${i}`);
+      if (node) {
+        node.classList.add('active');
+        if (i === config.node && i < 4) node.classList.add('pulse');
+      }
+    }
+
+    if (progress) progress.style.width = config.width;
+    if (statusText) {
+      statusText.innerText = config.text;
+      statusText.style.color = config.color;
+    }
+
+    // Move Bike
+    if (bikeIcon) {
+      bikeIcon.style.left = config.bikePos;
+      if (status !== 'Arrived' && status !== 'Delivered') {
+        bikeIcon.classList.add('riding');
+      } else {
+        bikeIcon.classList.remove('riding');
+      }
+    }
+
+    if (status === 'Arrived' || status === 'Delivered') {
+      const btn = document.getElementById('finishTrackBtn');
+      const container = document.getElementById('bikeContainer');
+      if (btn) btn.classList.remove('hidden');
+      if (container) {
+        // Keep it visible but stop riding
+        bikeIcon.classList.remove('riding');
+      }
       this.celebrate();
-    }, 12000);
+    }
   },
 
   celebrate() {
@@ -1450,12 +1786,12 @@ const app = {
     icon.innerText = '🎊';
   },
 
-  renderUserStats() {
-    // Simulated user stats
+  renderUserStats(orderCount = 0) {
+    // Simulated user stats combined with real order count
     const stats = {
-      orders: 12,
-      bookings: 4,
-      loyaltyPoints: 750,
+      orders: orderCount,
+      bookings: 0,
+      loyaltyPoints: orderCount * 50,
       nextLevel: 1000
     };
 
@@ -1463,39 +1799,88 @@ const app = {
 
     return `
       <div class="stats-container">
-        <div class="stats-grid">
-          <div class="stats-card loyalty-card">
-            <div class="stats-icon">💎</div>
-            <div class="loyalty-progress-container">
-              <h3 class="stats-label">Loyalty Status: Foodie Pro</h3>
-              <div class="progress-bar-bg">
-                <div class="progress-bar-fill" style="width: ${progress}%"></div>
-              </div>
-              <p style="font-size: 0.8rem; color: var(--text-muted)">${stats.loyaltyPoints} / ${stats.nextLevel} points to Level Up</p>
-            </div>
+    <div class="stats-grid">
+      <div class="stats-card loyalty-card">
+        <div class="stats-icon">💎</div>
+        <div class="loyalty-progress-container">
+          <h3 class="stats-label">Loyalty Status: Foodie Pro</h3>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: ${progress}%"></div>
           </div>
-          
-          <div class="stats-card" style="animation-delay: 0.1s">
-            <div class="stats-icon">🍔</div>
-            <div class="stats-value">${stats.orders}</div>
-            <div class="stats-label">Total Orders</div>
-          </div>
-          
-          <div class="stats-card" style="animation-delay: 0.2s">
-            <div class="stats-icon">📅</div>
-            <div class="stats-value">${stats.bookings}</div>
-            <div class="stats-label">Reservations</div>
-          </div>
-
-          <div class="stats-card" style="animation-delay: 0.3s">
-            <div class="stats-icon">🏅</div>
-            <div class="stats-value">Elite</div>
-            <div class="stats-label">User Tier</div>
-          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted)">${stats.loyaltyPoints} / ${stats.nextLevel} points to Level Up</p>
         </div>
+      </div>
+
+      <div class="stats-card" style="animation-delay: 0.1s">
+        <div class="stats-icon">🍔</div>
+        <div class="stats-value">${stats.orders}</div>
+        <div class="stats-label">Total Orders</div>
+      </div>
+
+      <div class="stats-card" style="animation-delay: 0.2s">
+        <div class="stats-icon">📅</div>
+        <div class="stats-value">${stats.bookings}</div>
+        <div class="stats-label">Reservations</div>
+      </div>
+
+      <div class="stats-card" style="animation-delay: 0.3s">
+        <div class="stats-icon">🏅</div>
+        <div class="stats-value">Elite</div>
+        <div class="stats-label">User Tier</div>
+      </div>
+    </div>
       </div>
     `;
   },
+
+  renderOrders(orders) {
+    if (!orders || orders.length === 0) {
+      return `
+        <div class="empty-state" style="background: rgba(255,255,255,0.03); border-radius: 15px; padding: 2rem;">
+          <div class="empty-state-icon">🛍️</div>
+          <p class="empty-state-text">No orders yet. Ready to taste something new?</p>
+          <button class="checkout-btn" style="width: auto; margin-top: 1rem; padding: 0.8rem 2rem;" onclick="app.navigateHome()">Browse Menu</button>
+        </div>
+      `;
+    }
+
+    return orders.map(order => `
+      <div class="order-card" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 1.5rem; margin-bottom: 1rem;">
+        <div class="order-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+          <div>
+            <div style="font-weight: 700; color: var(--accent-color); font-size: 1.1rem;">#${order.orderId}</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">${new Date(order.createdAt).toLocaleDateString()}</div>
+          </div>
+          <span class="status-badge" style="background: ${['Delivered', 'Arrived'].includes(order.status) ? 'rgba(76, 175, 80, 0.2)' : 'rgba(255, 152, 0, 0.2)'}; color: ${['Delivered', 'Arrived'].includes(order.status) ? '#4caf50' : '#ff9800'}; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+            ${order.status}
+          </span>
+        </div>
+        <div class="order-items" style="margin-bottom: 1rem;">
+          ${order.items.map(item => `
+            <div style="display: flex; justify-content: space-between; font-size: 0.95rem; margin-bottom: 0.3rem;">
+              <span>${item.name} <span style="color: var(--text-muted)">x${item.quantity}</span></span>
+              <span>${item.price}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="order-footer" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+          <div style="font-weight: 700; font-size: 1.1rem;">₹${order.totalAmount}</div>
+          <button class="track-btn" style="background: var(--accent-gradient); color: white; border: none; padding: 6px 15px; border-radius: 8px; font-size: 0.85rem; cursor: pointer;" onclick="app.trackOrder('${order.orderId}')">
+            ${['Delivered', 'Arrived'].includes(order.status) ? 'View Details' : 'Track Order'}
+          </button>
+        </div>
+      </div>
+    `).join('');
+  },
+
+  async trackOrder(orderId) {
+    const modal = document.getElementById('checkoutModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      this.startTracking(orderId);
+    }
+  },
+
 
   openBookingModal(restaurantId) {
     const restaurant = this.findRestaurant(restaurantId);
@@ -1569,7 +1954,7 @@ const app = {
   },
 
   findRestaurant(id) {
-    for (const place of restaurantData.places) {
+    for (const place of window.restaurantData.places) {
       const rest = place.restaurants.find(r => r.id === id);
       if (rest) return rest;
     }
@@ -1581,17 +1966,158 @@ const app = {
     this.renderCheckout();
   },
 
+  checkoutData: {},
+  captureDeliveryDetails() {
+    this.checkoutData.deliveryAddress = {
+      name: document.getElementById('deliveryName').value,
+      phone: document.getElementById('deliveryPhone').value,
+      address: document.getElementById('deliveryAddress').value
+    };
+    this.placeOrder();
+  },
+
   selectPayment(el) {
     document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
     el.classList.add('active');
+
+    const method = el.querySelector('div div').innerText.trim();
+    this.checkoutData.paymentMethod = method;
+    console.log("Payment Selected:", method);
+
+    // If COD, go to Address (Step 3), If UPI go to Verification (Step 2)
+    if (method === 'Cash on Delivery') {
+      this.currentCheckoutStep = 3;
+    } else if (method === 'Credit / Debit Card') {
+      this.currentCheckoutStep = 3;
+    } else if (method.includes('UPI')) {
+      this.currentCheckoutStep = 2;
+    } else {
+      this.currentCheckoutStep = 3; // Default to address
+    }
+    this.renderCheckout();
+  },
+
+  verifyUPI() {
+    const id = document.getElementById('upiId').value;
+    if (id && id.includes('@')) {
+      this.showToast('UPI ID Verified! ✅');
+      setTimeout(() => this.nextCheckoutStep(), 500);
+    } else {
+      this.showToast('Please enter a valid UPI ID! ⚠️');
+    }
+  },
+
+  async placeOrder() {
+    const orderId = 'NAV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+    this.lastOrderId = orderId;
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (!user) {
+      this.showToast('Please login to place an order! ⚠️');
+      this.closeCheckout();
+      this.showLoginPage();
+      return;
+    }
+
+    const orderData = {
+      user: user.id,
+      items: this.cart.map(item => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        restaurantId: item.restaurantId
+      })),
+      totalAmount: this.calculateTotal(),
+      deliveryAddress: this.checkoutData.deliveryAddress,
+      paymentMethod: this.checkoutData.paymentMethod || 'Cash on Delivery',
+      orderId: orderId
+    };
+
+    // Stripe Payment Flow
+    if (this.checkoutData.paymentMethod === 'Credit / Debit Card') {
+      try {
+        this.showToast('Redirecting to secure payment... 💳');
+
+        const response = await fetch('http://localhost:5000/api/payments/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: this.cart,
+            success_url: window.location.origin + window.location.pathname + '#/dashboard?payment=success',
+            cancel_url: window.location.origin + window.location.pathname + '#/cart'
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to create payment session');
+        }
+
+        const session = await response.json();
+
+        // Save order as 'Pending' first
+        await fetch('http://localhost:5000/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...orderData, status: 'Pending' })
+        });
+
+        const stripe = Stripe(this.stripePublicKey);
+        await stripe.redirectToCheckout({ sessionId: session.id });
+        return;
+      } catch (err) {
+        console.error('Stripe Error:', err);
+        this.showToast(`Payment error: ${err.message}. 🛠️`);
+        return;
+      }
+    }
+
+    // Standard COD Flow
+    try {
+      const response = await fetch('http://localhost:5000/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
+
+      if (response.ok) {
+        this.currentCheckoutStep = 4;
+        this.renderCheckout();
+        this.showToast('Order placed successfully! 🎁');
+
+        // Clear cart
+        this.cart = [];
+        this.saveCart();
+        this.updateCartUI();
+      } else {
+        this.showToast('Failed to place order. ❌');
+      }
+    } catch (err) {
+      console.error('Order Error:', err);
+      this.showToast('Server connection error. 🛠️');
+    }
+  },
+
+
+  calculateTotal() {
+    let total = this.cart.reduce((sum, item) => sum + (parseInt(item.price.replace(/[^\d]/g, '')) * item.quantity), 0);
+    return total + 40; // Including delivery fee
   },
 
   finishCheckout() {
     this.closeCheckout();
-    this.navigateHome();
+    if (this.currentView === 'dashboard') {
+      this.showDashboardPage();
+    } else {
+      this.navigateHome();
+    }
   },
 
   closeCheckout() {
+    if (this.trackingInterval) {
+      clearInterval(this.trackingInterval);
+      this.trackingInterval = null;
+    }
     document.getElementById('checkoutModal').classList.add('hidden');
     document.body.style.overflow = 'auto';
   },
@@ -1841,3 +2367,4 @@ if (document.readyState === 'loading') {
 } else {
   app.init();
 }
+

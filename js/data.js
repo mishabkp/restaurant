@@ -1,5 +1,5 @@
 // Sample data for Restaurant Location Navigator
-const restaurantData = {
+window.restaurantData = {
     "places": [
         {
             "id": 1,

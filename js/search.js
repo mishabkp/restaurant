@@ -47,8 +47,15 @@ const search = {
     performSearch(query) {
         const results = [];
 
+        // Wait for data to be loaded
+        if (!window.restaurantData || !window.restaurantData.places) {
+            this.searchResults.innerHTML = '<div class="no-results">Loading data...</div>';
+            this.showResults();
+            return;
+        }
+
         // Search through all places, restaurants, and food items
-        restaurantData.places.forEach(place => {
+        window.restaurantData.places.forEach(place => {
             place.restaurants.forEach(restaurant => {
                 // Check if restaurant name matches
                 if (restaurant.name.toLowerCase().includes(query)) {

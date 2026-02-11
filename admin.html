@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Vista | Admin Portal ⚙️</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css">
+    <style>
+        :root {
+            --sidebar-width: 260px;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--card-border);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 100;
+        }
+
+        .admin-main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            max-width: calc(100vw - var(--sidebar-width));
+        }
+
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-items {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .nav-item {
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(0, 242, 254, 0.1);
+            color: var(--accent-color);
+        }
+
+        .nav-item.active {
+            font-weight: 600;
+            border: 1px solid rgba(0, 242, 254, 0.2);
+        }
+
+        .logout-section {
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1.5rem;
+        }
+
+        /* Utility */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .admin-page-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logout-btn {
+            background: rgba(255, 61, 113, 0.1);
+            color: #ff3d71;
+            border: 1px solid rgba(255, 61, 113, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #ff3d71;
+            color: white;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            background: var(--card-bg);
+            border-radius: 15px;
+            border: 1px solid var(--card-border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.02);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        select {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.4rem;
+            border-radius: 5px;
+            outline: none;
+        }
+    </style>
+</head>
+
+<body class="dark-theme">
+    <div id="adminAuth" class="modal-overlay" style="z-index: 1000;">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <h2 class="section-title">Admin Login</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Access Restricted</p>
+            <form onsubmit="adminPortal.login(event)">
+                <input type="email" id="adminEmail" class="form-control" style="margin-bottom: 1rem;"
+                    placeholder="Admin Email" required>
+                <input type="password" id="adminPass" class="form-control" style="margin-bottom: 1.5rem;"
+                    placeholder="Password" required>
+                <button type="submit" class="checkout-btn" id="loginBtn">Enter Portal ➔</button>
+            </form>
+        </div>
+    </div>
+
+    <aside id="adminSidebar" class="admin-sidebar hidden">
+        <div class="sidebar-logo">VISTA ⚙️</div>
+        <ul class="nav-items">
+            <li class="nav-item active" onclick="adminPortal.switchPage('orders', this)">
+                <span>📦</span> Orders
+            </li>
+            <li class="nav-item" onclick="adminPortal.switchPage('menu', this)">
+                <span>🍴</span> Menu Management
+            </li>
+            <li class="nav-item" onclick="adminPortal.switchPage('analytics', this)">
+                <span>📊</span> Analytics
+            </li>
+            <li class="nav-item" onclick="adminPortal.switchPage('reviews', this)">
+                <span>⭐</span> Reviews
+            </li>
+            <li class="nav-item" onclick="adminPortal.switchPage('users', this)">
+                <span>👥</span> Users
+            </li>
+        </ul>
+        <div class="logout-section">
+            <button class="logout-btn" style="width: 100%;" onclick="adminPortal.logout()">Logout</button>
+        </div>
+    </aside>
+
+    <main id="adminContent" class="admin-main hidden">
+        <!-- Dashboard Content Areas -->
+        <div id="ordersPage" class="page active">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 class="section-title" style="margin: 0;">Order Management</h2>
+                <div
+                    style="background: rgba(0, 242, 254, 0.1); padding: 0.5rem 1rem; border-radius: 10px; border: 1px solid var(--accent-color);">
+                    <span id="totalOrders" style="font-weight: 700;">0</span> Orders
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="menuPage" class="page">
+            <h2 class="section-title">Menu Management</h2>
+            <p style="color: var(--text-muted);">Dynamically manage your restaurants and food items.</p>
+            <div id="menuContent" style="margin-top: 2rem;">
+                <!-- Menu management UI will be injected here -->
+                <div class="loading-state">Coming Soon: CRUD Interface</div>
+            </div>
+        </div>
+
+        <div id="analyticsPage" class="page">
+            <h2 class="section-title">Business Analytics</h2>
+            <div id="analyticsContent"></div>
+        </div>
+
+        <div id="reviewsPage" class="page">
+            <h2 class="section-title">Review Moderation</h2>
+            <div id="reviewsContent"></div>
+        </div>
+
+        <div id="usersPage" class="page">
+            <h2 class="section-title">User Management</h2>
+            <div id="usersContent"></div>
+        </div>
+    </main>
+
+    <!-- Modals for Menu Management -->
+    <div id="restaurantModal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <h2 class="section-title">Restaurant Details</h2>
+            <form id="restaurantForm" onsubmit="adminPortal.saveRestaurant(event)">
+                <input type="hidden" id="editRestId">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Restaurant Name</label>
+                    <input type="text" id="restName" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Cuisine (comma separated)</label>
+                    <input type="text" id="restCuisine" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Image URL</label>
+                    <input type="text" id="restImage" class="form-control" required>
+                </div>
+                <button type="submit" class="checkout-btn">Save Restaurant</button>
+                <button type="button" class="logout-btn"
+                    style="margin-top: 1rem; width: 100%; border: none; background: none; color: var(--text-muted);"
+                    onclick="adminPortal.closeModals()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Food Item Management Modal -->
+    <div id="foodModal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 800px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 class="section-title" id="foodModalTitle" style="margin: 0;">Food Items</h2>
+                <button class="checkout-btn" style="padding: 0.5rem 1rem;" onclick="adminPortal.showAddFood()">+ Add
+                    Food</button>
+            </div>
+            <div class="table-responsive" style="max-height: 400px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Price</th>
+                            <th>Veg</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="foodItemsBody"></tbody>
+                </table>
+            </div>
+            <button class="checkout-btn" style="margin-top: 2rem; background: var(--card-bg); color: white;"
+                onclick="adminPortal.closeModals()">Close</button>
+        </div>
+    </div>
+
+    <!-- Food Item Entry/Edit Modal -->
+    <div id="foodItemEntryModal" class="modal-overlay hidden" style="z-index: 1100;">
+        <div class="modal-content" style="max-width: 450px;">
+            <h2 class="section-title" id="foodEntryTitle">Food Item Details</h2>
+            <form id="foodItemForm" onsubmit="adminPortal.saveFoodItem(event)">
+                <input type="hidden" id="editFoodIndex">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Food Name</label>
+                    <input type="text" id="foodName" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Price (e.g. ₹250)</label>
+                    <input type="text" id="foodPrice" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Description</label>
+                    <textarea id="foodDesc" class="form-control" style="height: 80px;"></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Image URL</label>
+                    <input type="text" id="foodImage" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="checkbox" id="foodIsVeg" style="width: auto;">
+                    <label>Is Vegetarian?</label>
+                </div>
+                <button type="submit" class="checkout-btn">Save Item</button>
+                <button type="button" class="logout-btn"
+                    style="margin-top: 1rem; width: 100%; border: none; background: none; color: var(--text-muted);"
+                    onclick="adminPortal.closeFoodEntryModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toastContainer" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;"></div>
+
+    <script src="js/admin-page.js"></script>
+</body>
+
+</html>
