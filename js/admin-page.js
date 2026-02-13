@@ -192,7 +192,7 @@ const adminPortal = {
         const body = document.getElementById('foodItemsBody');
         body.innerHTML = items.map((item, idx) => `
             <tr>
-                <td><b>${item.name}</b><br><small>${item.description || ''}</small></td>
+                <td><b>${item.name}</b><br><small>${item.category || '<span style="color:red">NULL</span>'} - ${item.description || ''}</small></td>
                 <td>${item.price}</td>
                 <td>${item.isVeg ? '🟢 Veg' : '🔴 Non-Veg'}</td>
                 <td>
@@ -230,6 +230,7 @@ const adminPortal = {
             // Populate form
             document.getElementById('foodName').value = item.name;
             document.getElementById('foodPrice').value = item.price;
+            document.getElementById('foodCategory').value = item.category || '';
             document.getElementById('foodDesc').value = item.description || '';
             document.getElementById('foodImage').value = item.image;
             document.getElementById('foodIsVeg').checked = item.isVeg;
@@ -277,6 +278,7 @@ const adminPortal = {
         const foodData = {
             name: document.getElementById('foodName').value,
             price: document.getElementById('foodPrice').value,
+            category: document.getElementById('foodCategory').value,
             description: document.getElementById('foodDesc').value,
             image: document.getElementById('foodImage').value,
             isVeg: document.getElementById('foodIsVeg').checked
@@ -323,6 +325,7 @@ const adminPortal = {
     showAddRestaurant() {
         document.getElementById('restaurantForm').reset();
         document.getElementById('editRestId').value = '';
+        if (document.getElementById('restPlaceId')) document.getElementById('restPlaceId').value = '';
         document.getElementById('restaurantModal').classList.remove('hidden');
     },
 
@@ -332,28 +335,42 @@ const adminPortal = {
             name: document.getElementById('restName').value,
             cuisine: document.getElementById('restCuisine').value,
             image: document.getElementById('restImage').value,
-            id: document.getElementById('editRestId').value || Date.now() // Simple ID generation
+            id: document.getElementById('editRestId').value || Math.floor(Math.random() * 10000)
         };
 
-        try {
-            const method = data.id && document.getElementById('editRestId').value ? 'PUT' : 'POST';
-            const url = method === 'PUT' ? `http://localhost:5000/api/admin/restaurants/${data.id}` : 'http://localhost:5000/api/admin/restaurants';
+        const placeId = document.getElementById('restPlaceId')?.value;
+        const isEdit = document.getElementById('editRestId').value !== '';
 
-            const resp = await fetch(url, {
-                method,
+        try {
+            // 1. Save/Update Restaurant
+            const restUrl = isEdit
+                ? `http://localhost:5000/api/admin/restaurants/${data.id}`
+                : 'http://localhost:5000/api/admin/restaurants';
+
+            const restResp = await fetch(restUrl, {
+                method: isEdit ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
 
-            if (resp.ok) {
-                this.showToast('Restaurant Saved! 🏪 Content updated in Database.');
-                this.closeModals();
-                this.fetchMenuData(); // Refresh list
-            } else {
-                this.showToast('Server down! Changes not saved to Database. ❌');
+            if (!restResp.ok) throw new Error('Failed to save restaurant');
+
+            // 2. If it's a new restaurant, we MUST link it to a Place
+            if (!isEdit && placeId) {
+                const linkResp = await fetch(`http://localhost:5000/api/admin/places/${placeId}/link-restaurant`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ restaurantId: data.id })
+                });
+                if (!linkResp.ok) throw new Error('Failed to link restaurant to place');
             }
+
+            this.showToast('✅ Restaurant saved and synced!');
+            this.closeModals();
+            this.fetchMenuData(); // Refresh list
         } catch (err) {
-            this.showToast('Network error! Check if Backend is running. 🛠️');
+            console.error(err);
+            this.showToast('❌ Error: ' + err.message);
         }
     },
 

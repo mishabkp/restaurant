@@ -75,24 +75,25 @@ const app = {
   },
 
   async fetchInitialData() {
+    // Try backend first (MongoDB) — so admin changes are reflected
     try {
       const response = await fetch('http://localhost:5000/api/restaurants/places');
       if (response.ok) {
         const data = await response.json();
-        window.restaurantData = { places: data };
-      } else {
-        throw new Error('Backend unresponsive');
-      }
-    } catch (err) {
-      console.warn('Backend not available, using local data.js source.');
-      // window.restaurantData is already populated by data.js script inclusion
-      if (!window.restaurantData || !window.restaurantData.places) {
-        // Fallback to the globally declared restaurantData if it exists
-        if (typeof restaurantData !== 'undefined') {
-          window.restaurantData = restaurantData;
-        } else {
-          this.showToast('Failed to load any restaurant data. 🛠️');
+        if (data && data.length > 0) {
+          window.restaurantData = { places: data };
+          console.log('📡 Using backend data (' + data.length + ' places)');
+          return;
         }
+      }
+      throw new Error('Backend returned no data');
+    } catch (err) {
+      console.warn('Backend not available, falling back to local data.js');
+      // Fallback: use static data.js (already loaded via script tag)
+      if (window.restaurantData && window.restaurantData.places) {
+        console.log('✅ Using local data.js as fallback');
+      } else {
+        this.showToast('Failed to load restaurant data. 🛠️');
       }
     }
   },
@@ -1538,7 +1539,7 @@ const app = {
     const isFav = this.favorites.items.includes(itemId);
 
     modalBody.innerHTML = `
-      ${item.image ? `<img src="${item.image}" alt="${item.name}" class="modal-hero-image">` : ''}
+      ${item.image ? `<a href="${item.image}" target="_blank" title="Click to view full image"><img src="${item.image}" alt="${item.name}" class="modal-hero-image"></a>` : ''}
 <div class="modal-details">
   <div class="modal-header">
     <h2 class="modal-title">${item.name}</h2>
