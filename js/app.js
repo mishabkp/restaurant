@@ -64,36 +64,57 @@ const app = {
   async init() {
     this.initTheme();
     this.checkAuth();
-    await this.loadFavorites();
+    this.loadFavorites(); // Non-blocking
     this.loadCart();
     this.setupEventListeners();
-    await this.fetchInitialData();
+
+    // Render initial content immediately (using fallback from data.js)
     this.handleRoute();
+
+    // Fetch live data in background
+    this.fetchInitialData().then(() => {
+      // Re-handle route if data loaded successfully to show updated live content
+      if (this.currentView === 'home' || this.currentView === 'place') {
+        this.handleRoute();
+      }
+    });
+
     this.initModalEvents();
     this.initLottie();
     window.addEventListener('hashchange', () => this.handleRoute());
   },
 
   async fetchInitialData() {
-    // Try backend first (MongoDB) — so admin changes are reflected
+    console.log('📡 Fetching live data from backend...');
     try {
-      const response = await fetch('https://restaurant-99en.onrender.com/api/restaurants/places');
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
+
+      const response = await fetch('https://restaurant-99en.onrender.com/api/restaurants/places', {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
       if (response.ok) {
         const data = await response.json();
         if (data && data.length > 0) {
           window.restaurantData = { places: data };
-          console.log('📡 Using backend data (' + data.length + ' places)');
+          console.log('✅ Live data loaded successfully (' + data.length + ' places)');
           return;
         }
       }
       throw new Error('Backend returned no data');
     } catch (err) {
-      console.warn('Backend not available, falling back to local data.js');
-      // Fallback: use static data.js (already loaded via script tag)
-      if (window.restaurantData && window.restaurantData.places) {
-        console.log('✅ Using local data.js as fallback');
+      if (err.name === 'AbortError') {
+        console.warn('⚠️ Backend request timed out (cold start), using local fallback');
       } else {
-        this.showToast('Failed to load restaurant data. 🛠️');
+        console.warn('⚠️ backend error:', err.message);
+      }
+
+      if (window.restaurantData && window.restaurantData.places) {
+        console.log('🔄 Continuing with local fallback data.js');
+      } else {
+        this.showToast('Failed to load live data. 🛠️');
       }
     }
   },
