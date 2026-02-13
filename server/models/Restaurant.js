@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const FoodItemSchema = new mongoose.Schema({
     name: { type: String, required: true },
+    category: { type: String }, // New field for dish category
     price: { type: String, required: true },
     description: { type: String },
     image: { type: String },

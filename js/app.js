@@ -45,7 +45,7 @@ const app = {
 
   async handleSurpriseMe() {
     try {
-      const resp = await fetch('http://localhost:5000/api/restaurants/places');
+      const resp = await fetch('https://restaurant-99en.onrender.com/api/restaurants/places');
       const places = await resp.json();
       const allRestaurants = [];
       places.forEach(p => {
@@ -77,7 +77,7 @@ const app = {
   async fetchInitialData() {
     // Try backend first (MongoDB) — so admin changes are reflected
     try {
-      const response = await fetch('http://localhost:5000/api/restaurants/places');
+      const response = await fetch('https://restaurant-99en.onrender.com/api/restaurants/places');
       if (response.ok) {
         const data = await response.json();
         if (data && data.length > 0) {
@@ -193,7 +193,7 @@ const app = {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const response = await fetch('http://localhost:5000/api/auth/me', {
+        const response = await fetch('https://restaurant-99en.onrender.com/api/auth/me', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.ok) {
@@ -214,7 +214,7 @@ const app = {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        await fetch('http://localhost:5000/api/auth/favorites', {
+        await fetch('https://restaurant-99en.onrender.com/api/auth/favorites', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -957,7 +957,7 @@ const app = {
 
   async fetchReviews(restaurantId) {
     try {
-      const response = await fetch(`http://localhost:5000/api/reviews/${restaurantId}`);
+      const response = await fetch(`https://restaurant-99en.onrender.com/api/reviews/${restaurantId}`);
       const reviews = await response.json();
       const reviewsList = document.getElementById('reviewsList');
       if (reviewsList) {
@@ -1028,7 +1028,7 @@ const app = {
     const userData = JSON.parse(localStorage.getItem('user')) || { name: 'Anonymous' };
 
     try {
-      const response = await fetch('http://localhost:5000/api/reviews', {
+      const response = await fetch('https://restaurant-99en.onrender.com/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1240,7 +1240,7 @@ const app = {
     const body = this.isSignup ? { name, email, password } : { email, password };
 
     try {
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
+      const response = await fetch(`https://restaurant-99en.onrender.com${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -1327,7 +1327,7 @@ const app = {
     this.showSkeletons('dashboard');
 
     try {
-      const ordersResponse = await fetch(`http://localhost:5000/api/orders/${user.id}`);
+      const ordersResponse = await fetch(`https://restaurant-99en.onrender.com/api/orders/${user.id}`);
       const orders = await ordersResponse.json();
       this.renderDashboardPage(orders);
     } catch (err) {
@@ -1751,7 +1751,7 @@ const app = {
     // Polling function
     const fetchStatus = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/orders/track/${orderId}`);
+        const response = await fetch(`https://restaurant-99en.onrender.com/api/orders/track/${orderId}`);
         const data = await response.json();
         this.updateTrackingUI(data.status);
 
@@ -2101,7 +2101,7 @@ const app = {
       try {
         this.showToast('Redirecting to secure payment... 💳');
 
-        const response = await fetch('http://localhost:5000/api/payments/create-checkout-session', {
+        const response = await fetch('https://restaurant-99en.onrender.com/api/payments/create-checkout-session', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -2119,7 +2119,7 @@ const app = {
         const session = await response.json();
 
         // Save order as 'Pending' first
-        await fetch('http://localhost:5000/api/orders', {
+        await fetch('https://restaurant-99en.onrender.com/api/orders', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...orderData, status: 'Pending' })
@@ -2137,7 +2137,7 @@ const app = {
 
     // Standard COD Flow
     try {
-      const response = await fetch('http://localhost:5000/api/orders', {
+      const response = await fetch('https://restaurant-99en.onrender.com/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
