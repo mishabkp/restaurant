@@ -931,30 +931,42 @@ const app = {
     overlay.innerHTML = `
       <div class="status-card-modal">
         <button class="modal-close" onclick="document.getElementById('shareModal').remove()">×</button>
-        <div class="status-card" id="statusCard">
-           <div class="status-card-image" style="background-image: url('${restaurant.image}')">
+        <div class="status-card-wrapper" id="statusCard">
+           <div class="status-card-inner" style="background-image: url('${restaurant.image}')">
               <div class="status-card-overlay"></div>
-              <div class="status-card-top">
-                 <div class="sc-logo">FOOD VISTA</div>
-                 <div class="sc-location">📍 ${place.name}, Kerala</div>
-              </div>
-              <div class="status-card-bottom">
-                 <div class="sc-rating">⭐ ${restaurant.rating}</div>
-                 <h1 class="sc-name">${restaurant.name}</h1>
-                 <p class="sc-cuisine">${restaurant.cuisine}</p>
+              
+              <div class="status-card-content">
+                 <div class="sc-header">
+                    <div class="sc-brand">
+                       <span class="sc-dot"></span>
+                       FOOD VISTA
+                    </div>
+                    <div class="sc-location">
+                       <span class="sc-icon">📍</span> ${place.name}
+                    </div>
+                 </div>
+
+                 <div class="sc-main">
+                    <div class="sc-category">${restaurant.cuisine}</div>
+                    <h1 class="sc-name">${restaurant.name}</h1>
+                    <div class="sc-rating">
+                       <span class="sc-stars">${'★'.repeat(Math.floor(restaurant.rating))}</span>
+                       <span class="sc-rating-val">${restaurant.rating}</span>
+                    </div>
+                 </div>
+
                  <div class="sc-footer">
-                    <span>Order Live @ mishabkp.github.io/restaurant</span>
+                    <div class="sc-promo">DISCOVER KERALA'S BEST TASTE</div>
+                    <div class="sc-url">mishabkp.github.io/restaurant</div>
                  </div>
               </div>
            </div>
         </div>
         <div class="share-actions">
-           <button class="checkout-btn" onclick="app.shareToWhatsApp(${restaurant.id})">
-              Share to WhatsApp
+           <button class="premium-share-btn" onclick="app.shareToWhatsApp(${restaurant.id})">
+              <span class="btn-icon">💬</span> Share to WhatsApp
            </button>
-           <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem; text-align: center;">
-              Tip: Long press or screenshot the card to save as image!
-           </p>
+           <p class="share-tip">Tip: Long press or screenshot to save!</p>
         </div>
       </div>
     `;
