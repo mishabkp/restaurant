@@ -3535,3 +3535,183 @@ body {
     padding: 0 1rem;
   }
 }
+
+/* ========================================
+   WHATSAPP STATUS CARD STYLES - PREMIUM
+   ======================================== */
+.status-card-modal {
+    max-width: 420px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    animation: modalIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.status-card-wrapper {
+    aspect-ratio: 9 / 16;
+    width: 100%;
+    border-radius: 30px;
+    padding: 12px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.status-card-inner {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.status-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, 
+        rgba(0,0,0,0.5) 0%, 
+        transparent 40%, 
+        rgba(0,0,0,0.3) 60%, 
+        rgba(0,0,0,0.95) 100%);
+}
+
+.status-card-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2.5rem 2rem;
+}
+
+.sc-brand {
+    font-weight: 800;
+    letter-spacing: 3px;
+    font-size: 1rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.sc-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent-color);
+}
+
+.sc-location {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.7);
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+
+.sc-main {
+    margin-bottom: auto;
+    margin-top: 50%;
+}
+
+.sc-category {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: var(--accent-color);
+    margin-bottom: 0.8rem;
+    font-weight: 700;
+}
+
+.sc-name {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: white;
+    margin-bottom: 1rem;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.sc-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.sc-stars {
+    color: #ffd700;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+}
+
+.sc-rating-val {
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.sc-footer {
+    text-align: center;
+}
+
+.sc-promo {
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.sc-url {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    color: white;
+    font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.share-actions {
+    background: rgba(15, 20, 25, 0.6);
+    backdrop-filter: blur(20px);
+    padding: 1.5rem;
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.premium-share-btn {
+    width: 100%;
+    padding: 1.2rem;
+    border-radius: 16px;
+    border: none;
+    background: var(--primary-gradient);
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.premium-share-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.share-tip {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 1.2rem;
+    text-align: center;
+    font-weight: 500;
+}
