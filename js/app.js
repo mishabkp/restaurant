@@ -908,6 +908,72 @@ const app = {
     this.renderRestaurantPage(restaurant);
   },
 
+  showShareCard(restaurantId) {
+    let restaurant = null;
+    let place = null;
+
+    for (const p of window.restaurantData.places) {
+      const r = p.restaurants.find(r => r.id === restaurantId);
+      if (r) {
+        restaurant = r;
+        place = p;
+        break;
+      }
+    }
+
+    if (!restaurant) return;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.id = 'shareModal';
+
+    // Status Card Format (9:16 aspect ratio look)
+    overlay.innerHTML = `
+      <div class="status-card-modal">
+        <button class="modal-close" onclick="document.getElementById('shareModal').remove()">×</button>
+        <div class="status-card" id="statusCard">
+           <div class="status-card-image" style="background-image: url('${restaurant.image}')">
+              <div class="status-card-overlay"></div>
+              <div class="status-card-top">
+                 <div class="sc-logo">FOOD VISTA</div>
+                 <div class="sc-location">📍 ${place.name}, Kerala</div>
+              </div>
+              <div class="status-card-bottom">
+                 <div class="sc-rating">⭐ ${restaurant.rating}</div>
+                 <h1 class="sc-name">${restaurant.name}</h1>
+                 <p class="sc-cuisine">${restaurant.cuisine}</p>
+                 <div class="sc-footer">
+                    <span>Order Live @ mishabkp.github.io/restaurant</span>
+                 </div>
+              </div>
+           </div>
+        </div>
+        <div class="share-actions">
+           <button class="checkout-btn" onclick="app.shareToWhatsApp(${restaurant.id})">
+              Share to WhatsApp
+           </button>
+           <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem; text-align: center;">
+              Tip: Long press or screenshot the card to save as image!
+           </p>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+  },
+
+  shareToWhatsApp(restaurantId) {
+    let restaurant = null;
+    for (const p of window.restaurantData.places) {
+      const r = p.restaurants.find(r => r.id === restaurantId);
+      if (r) { restaurant = r; break; }
+    }
+
+    const text = `Check out this amazing place I found on Food Vista! 🤤\n\n🍴 *${restaurant.name}*\n⭐ ${restaurant.rating} Rating\n📍 Kochi, Kerala\n\nOrder here: https://mishabkp.github.io/restaurant/#restaurant/${restaurantId}`;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  },
+
   renderRestaurantPage(restaurant) {
     const content = `
       <div class="restaurant-header">
@@ -928,6 +994,10 @@ const app = {
           <span class="info-badge" style="cursor: pointer; background: var(--accent-gradient); color: white;" onclick="app.openBookingModal(${restaurant.id})">
             <span>📅</span>
             Book a Table
+          </span>
+          <span class="info-badge" style="cursor: pointer; background: var(--secondary-gradient); color: white;" onclick="app.showShareCard(${restaurant.id})">
+            <span>🤳</span>
+            Share Status
           </span>
         </div>
       </div>
