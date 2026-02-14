@@ -10,6 +10,7 @@ const adminPortal = {
             document.getElementById('adminSidebar').classList.remove('hidden');
             document.getElementById('adminContent').classList.remove('hidden');
 
+            this.loadDashboard();
             this.fetchOrders();
         }
     },
@@ -24,10 +25,93 @@ const adminPortal = {
         document.getElementById(pageId + 'Page').classList.add('active');
 
         // Load specific content if needed
+        if (pageId === 'dashboard') this.loadDashboard();
+        if (pageId === 'orders') this.fetchOrders();
         if (pageId === 'menu') this.fetchMenuData();
         if (pageId === 'analytics') this.fetchAnalytics();
         if (pageId === 'reviews') this.fetchReviews();
         if (pageId === 'users') this.fetchUsers();
+    },
+
+    async loadDashboard() {
+        try {
+            const statsResp = await fetch('https://restaurant-99en.onrender.com/api/admin/stats');
+            const stats = await statsResp.json();
+
+            const ordersResp = await fetch('https://restaurant-99en.onrender.com/api/admin/orders');
+            const orders = await ordersResp.json();
+
+            const placesResp = await fetch('https://restaurant-99en.onrender.com/api/restaurants/places');
+            const places = await placesResp.json();
+
+            // Update Stat Cards
+            document.getElementById('statRevenue').innerText = `₹${stats.totalRevenue.toLocaleString()}`;
+            document.getElementById('statOrders').innerText = stats.totalOrders;
+
+            this.renderDashboardCharts(places, orders);
+        } catch (err) {
+            console.error('Dashboard Load Error:', err);
+        }
+    },
+
+    renderDashboardCharts(places, orders) {
+        // 1. Places Distribution Chart (Doughnut)
+        const placesCtx = document.getElementById('placesChart').getContext('2d');
+        if (window.pChart) window.pChart.destroy();
+
+        window.pChart = new Chart(placesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: places.map(p => p.name),
+                datasets: [{
+                    data: places.map(p => p.restaurants?.length || 0),
+                    backgroundColor: ['#00f2fe', '#4facfe', '#706fd3', '#ff3d71', '#fdb931', '#00ff88'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#fff' } }
+                }
+            }
+        });
+
+        // 2. Orders Status Chart (Bar)
+        const ordersCtx = document.getElementById('ordersChart').getContext('2d');
+        if (window.oChart) window.oChart.destroy();
+
+        const statusCounts = orders.reduce((acc, curr) => {
+            const status = curr.status || 'Pending';
+            acc[status] = (acc[status] || 0) + 1;
+            return acc;
+        }, {});
+
+        window.oChart = new Chart(ordersCtx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(statusCounts),
+                datasets: [{
+                    label: 'Orders',
+                    data: Object.values(statusCounts),
+                    backgroundColor: 'rgba(0, 242, 254, 0.5)',
+                    borderColor: '#00f2fe',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff' } },
+                    x: { grid: { display: false }, ticks: { color: '#fff' } }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
     },
 
     async fetchMenuData() {
