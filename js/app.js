@@ -1566,23 +1566,21 @@ const app = {
         </div>
         
         <div class="about-content">
-          <section class="about-story-section">
-            <div class="about-story-image-wrap">
-              <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1080&h=720&fit=crop" alt="God's Own Country" class="about-image">
+          <div class="about-story-block">
+            <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1280&h=720&fit=crop" alt="God's Own Country" class="about-image-premium">
+            <div class="about-text-premium">
+              <h2 class="about-title-premium">Our Journey</h2>
+              <p>FOOD VISTA started as a college project with a simple mission: to make finding great food in Kerala as easy as possible. Inspired by the rich culinary heritage of God's Own Country, we curate the best dining experiences across Kochi, Kozhikode, Thrissur, and beyond.</p>
             </div>
-            <div class="about-story-text">
-              <h2 class="about-story-title">Our Journey</h2>
-              <p>FOOD VISTA started as a college project with a simple mission: to make finding great food in Kerala as easy as possible.</p>
-              <p>Inspired by the rich culinary heritage of Kerala, we curate the best dining experiences across Kochi, Kozhikode, Thrissur, and beyond. Whether it's a hidden gem in the backwaters or a bustling bistro in the city, we help you find the perfect taste.</p>
-            </div>
-          </section>
+          </div>
 
-          <section class="visionaries-section">
-            <div class="visionaries-header">
+          <div class="visionaries-section-premium">
+            <div class="visionaries-header-premium">
               <h2 class="section-title-small">The Minds Behind The Vision</h2>
               <p class="vision-subtitle">A collective of innovators dedicated to documenting Kerala's food map.</p>
             </div>
-            <div class="founder-grid">
+            
+            <div class="founder-grid-premium">
               <div class="founder-card">
                 <div class="founder-info">
                   <h3 class="founder-name">Fina</h3>
@@ -1612,7 +1610,7 @@ const app = {
                 <div class="founder-badge">Elite</div>
               </div>
             </div>
-          </section>
+          </div>
         </div>
       </div>
   `;
