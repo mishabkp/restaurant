@@ -98,7 +98,7 @@ const app = {
       if (response.ok) {
         const data = await response.json();
         if (data && data.length > 0) {
-          window.restaurantData = { places: data };
+          window.restaurantData.places = data;
           console.log('✅ Live data loaded successfully (' + data.length + ' places)');
           return;
         }
@@ -435,7 +435,9 @@ const app = {
     let type = 'home';
     if (parts[0] === 'place') type = 'place';
     if (parts[0] === 'restaurant') type = 'restaurant';
-    if (parts[0] === 'blog') type = 'blog';
+    if (parts[0] === 'blog') {
+      type = parts[1] ? 'story-detail' : 'blog';
+    }
     if (parts[0] === 'gallery') type = 'gallery';
     if (parts[0] === 'dashboard') type = 'dashboard';
 
@@ -1228,6 +1230,16 @@ const app = {
         <div class="skeleton-text skeleton text-center" style="width: 60%; margin: 0 auto 3rem;"></div>
         <div class="gallery-grid-elite">
           ${Array(6).fill('<div class="skeleton" style="height: 350px; border-radius: 24px; margin-bottom: 2rem;"></div>').join('')}
+        </div>
+      `;
+    } else if (type === 'story-detail') {
+      skeletonHtml = `
+        <div class="skeleton" style="height: 400px; width: 100%; border-radius: 0 0 40px 40px;"></div>
+        <div class="story-detail-content">
+          <div class="skeleton" style="height: 100px; width: 100%; margin-bottom: 2rem;"></div>
+          <div class="skeleton" style="height: 20px; width: 100%; margin-bottom: 1rem;"></div>
+          <div class="skeleton" style="height: 20px; width: 90%; margin-bottom: 1rem;"></div>
+          <div class="skeleton" style="height: 20px; width: 80%; margin-bottom: 1rem;"></div>
         </div>
       `;
     }
