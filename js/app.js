@@ -1716,9 +1716,28 @@ const app = {
                 </div>
               </div>
             </div>
+
+            <!-- New FAQ Hub Section -->
+            <div class="faq-section-elite">
+              <h2 class="sub-section-title-elite">FAQ Hub</h2>
+              <div class="faq-container-elite">
+                <div class="faq-item-elite" onclick="app.toggleFAQ(this)">
+                  <div class="faq-question">How can I list my restaurant? <i class="fas fa-chevron-down"></i></div>
+                  <div class="faq-answer">Contact any of our leads via the Direct Access buttons above or send a message through the Concierge form. We'll handle the onboarding manually.</div>
+                </div>
+                <div class="faq-item-elite" onclick="app.toggleFAQ(this)">
+                  <div class="faq-question">Is Food Vista available in other states? <i class="fas fa-chevron-down"></i></div>
+                  <div class="faq-answer">Currently, we are focused on documenting Kerala's culinary map, but we have plans to expand to neighboring states soon.</div>
+                </div>
+                <div class="faq-item-elite" onclick="app.toggleFAQ(this)">
+                  <div class="faq-question">How do you verify restaurant data? <i class="fas fa-chevron-down"></i></div>
+                  <div class="faq-answer">Our team performs on-ground verification and crowdsources updates from our community of food enthusiasts to ensure accuracy.</div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <!-- Digital Concierge Form -->
+          <!-- Digital Concierge & Map -->
           <div class="digital-concierge-section">
             <h2 class="sub-section-title-elite">Digital Concierge</h2>
             <div class="modern-form-card-elite">
@@ -1744,6 +1763,12 @@ const app = {
                 </button>
               </form>
             </div>
+
+            <!-- New Map Section -->
+            <div class="map-section-elite">
+              <h2 class="sub-section-title-elite">Campus Intel</h2>
+              <div id="contactHubMap" class="hub-map-elite"></div>
+            </div>
           </div>
         </div>
 
@@ -1756,6 +1781,23 @@ const app = {
       </div>
 `;
     document.getElementById('mainContent').innerHTML = content;
+
+    // Initialize Map for MGM Campus
+    setTimeout(() => {
+      this.initMap('contactHubMap', [10.8972, 76.1139], 15, [{
+        coords: [10.8972, 76.1139],
+        name: "MGM Technological Campus",
+        type: "Base Station"
+      }]);
+    }, 100);
+  },
+
+  toggleFAQ(el) {
+    const allItems = document.querySelectorAll('.faq-item-elite');
+    const isActive = el.classList.contains('active');
+
+    allItems.forEach(item => item.classList.remove('active'));
+    if (!isActive) el.classList.add('active');
   },
 
   handleContactSubmit(event) {
