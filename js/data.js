@@ -2406,5 +2406,45 @@ window.restaurantData = {
             ],
             "coords": [11.0510, 76.0711]
         }
+    ],
+    "foodStories": [
+        {
+            "id": 1,
+            "title": "The Legend of Thalassery Biriyani",
+            "excerpt": "Discover how a unique blend of Khaima rice and Malabar spices created a culinary icon.",
+            "author": "Fina",
+            "date": "Feb 15, 2026",
+            "image": "https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?w=800&h=500&fit=crop",
+            "category": "Heritage",
+            "content": "Thalassery Biriyani is not just a dish; it's a testament to the cultural fusion of the Malabar coast..."
+        },
+        {
+            "id": 2,
+            "title": "Kochi's Street Food Secrets",
+            "excerpt": "Beyond the cafes of Fort Kochi lies a world of hidden snacks and local favorites.",
+            "author": "Mishab",
+            "date": "Feb 10, 2026",
+            "image": "https://images.unsplash.com/photo-1601050633647-8f8f1f3ce7ff?w=800&h=500&fit=crop",
+            "category": "Street Food",
+            "content": "Walking through the narrow lanes of Mattancherry at dusk, the aroma of frying pazham pori..."
+        },
+        {
+            "id": 3,
+            "title": "The Art of Slow-Cooked Sadhya",
+            "excerpt": "A deep dive into the 24-item vegetarian feast that defines Kerala's festivals.",
+            "author": "Shareef",
+            "date": "Feb 05, 2026",
+            "image": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=800&h=500&fit=crop",
+            "category": "Tradition",
+            "content": "Sadhya is a rhythmic experience. From the placement of the banana leaf to the final payasam..."
+        }
+    ],
+    "hiddenGems": [
+        { "id": 1, "name": "Backwater Toddy Shop", "location": "Alappuzha", "image": "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600&h=800&fit=crop", "tag": "Authentic" },
+        { "id": 2, "name": "Cliff-side Tea Stall", "location": "Varkala", "image": "https://images.unsplash.com/photo-1590001158193-798d30d2d7bc?w=600&h=800&fit=crop", "tag": "Scenic" },
+        { "id": 3, "name": "Highland Spice Hut", "location": "Munnar", "image": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600&h=800&fit=crop", "tag": "Cozy" },
+        { "id": 4, "name": "Ancient Port Cafe", "location": "Muziris", "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=800&fit=crop", "tag": "Historic" },
+        { "id": 5, "name": "Island Fish Grill", "location": "Kumarakom", "image": "https://images.unsplash.com/photo-1551218808-94e220e031eb?w=600&h=800&fit=crop", "tag": "Fresh" },
+        { "id": 6, "name": "Forest Edge Eatery", "location": "Wayanad", "image": "https://images.unsplash.com/photo-1502301103665-0b95cc738def?w=600&h=800&fit=crop", "tag": "Nature" }
     ]
 };

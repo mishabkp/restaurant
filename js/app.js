@@ -450,6 +450,14 @@ const app = {
         this.showDashboardPage();
       } else if (parts[0] === 'about') {
         this.showAboutPage();
+      } else if (parts[0] === 'blog') {
+        if (parts[1]) {
+          this.showStoryDetail(parseInt(parts[1]));
+        } else {
+          this.showBlogPage();
+        }
+      } else if (parts[0] === 'gallery') {
+        this.showGalleryPage();
       } else if (parts[0] === 'contact') {
         this.showContactPage();
       } else {
@@ -1649,6 +1657,123 @@ const app = {
         </section>
       </div>
   `;
+    this.updateContent(content);
+  },
+
+  showBlogPage() {
+    this.toggleUIElements(true);
+    this.currentView = 'blog';
+    this.updateBreadcrumb([
+      { label: 'Home', onClick: () => this.navigateHome() },
+      { label: 'Kerala Food Stories' }
+    ]);
+
+    const stories = window.restaurantData.foodStories;
+    const content = `
+      <div class="blog-elite-wrapper">
+        <section class="blog-hero-elite">
+          <span class="section-tag-elite text-center">Kerala Food Stories</span>
+          <h1 class="hero-title-elite text-center">Culinary <span class="highlight-text">Chronicles</span></h1>
+          <p class="hero-subtitle-elite text-center" style="max-width: 600px; margin: 0 auto 3rem;">Deep dives into the flavors, traditions, and legends of God's Own Country.</p>
+        </section>
+
+        <div class="blog-grid-elite">
+          ${stories.map((story, index) => `
+            <div class="story-card-elite" style="animation-delay: ${index * 0.1}s" onclick="window.location.hash = '/blog/${story.id}'">
+              <div class="story-card-img-wrapper">
+                <img src="${story.image}" alt="${story.title}" class="story-card-img">
+                <div class="story-card-tag">${story.category}</div>
+              </div>
+              <div class="story-card-content">
+                <div class="story-card-meta">
+                  <span><i class="far fa-user"></i> ${story.author}</span>
+                  <span><i class="far fa-calendar-alt"></i> ${story.date}</span>
+                </div>
+                <h2 class="story-card-title">${story.title}</h2>
+                <p class="story-card-excerpt">${story.excerpt}</p>
+                <a href="#/blog/${story.id}" class="story-card-link">Read Full Story ➔</a>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    this.updateContent(content);
+  },
+
+  showStoryDetail(id) {
+    const story = window.restaurantData.foodStories.find(s => s.id === id);
+    if (!story) { this.showBlogPage(); return; }
+
+    this.toggleUIElements(true);
+    this.updateBreadcrumb([
+      { label: 'Home', onClick: () => this.navigateHome() },
+      { label: 'Stories', onClick: () => window.location.hash = '/blog' },
+      { label: story.title }
+    ]);
+
+    const content = `
+      <div class="story-detail-wrapper">
+        <div class="story-detail-hero" style="background-image: url('${story.image}')">
+          <div class="story-detail-overlay"></div>
+          <div class="story-detail-header">
+            <span class="story-detail-tag">${story.category}</span>
+            <h1 class="story-detail-title">${story.title}</h1>
+            <div class="story-detail-meta">
+              <span>By ${story.author}</span> • <span>${story.date}</span>
+            </div>
+          </div>
+        </div>
+        <div class="story-detail-content">
+          <p class="story-lead">${story.excerpt}</p>
+          <div class="story-body">
+            <p>${story.content}</p>
+            <p>More detailed content and high-resolution visuals are being added by our team of food historians. Stay tuned for the complete culinary map of Kerala.</p>
+          </div>
+          <div class="story-footer">
+            <button class="magic-btn" onclick="window.location.hash = '/blog'">Back to All Stories</button>
+          </div>
+        </div>
+      </div>
+    `;
+    this.updateContent(content);
+  },
+
+  showGalleryPage() {
+    this.toggleUIElements(true);
+    this.currentView = 'gallery';
+    this.updateBreadcrumb([
+      { label: 'Home', onClick: () => this.navigateHome() },
+      { label: 'Hidden Gems Gallery' }
+    ]);
+
+    const gems = window.restaurantData.hiddenGems;
+    const content = `
+      <div class="gallery-elite-wrapper">
+        <section class="gallery-hero-elite">
+          <span class="section-tag-elite text-center">Visual Discovery</span>
+          <h1 class="hero-title-elite text-center">Hidden <span class="highlight-text">Gems</span></h1>
+          <p class="hero-subtitle-elite text-center" style="max-width: 600px; margin: 0 auto 3rem;">A visual journey through Kerala's most authentic and undocumented food spots.</p>
+        </section>
+
+        <div class="gallery-grid-elite">
+          ${gems.map((gem, index) => `
+            <div class="gallery-item-elite" style="animation-delay: ${index * 0.1}s">
+              <div class="gallery-img-wrapper">
+                <img src="${gem.image}" alt="${gem.name}" class="gallery-img">
+                <div class="gallery-overlay-elite">
+                  <div class="gallery-info-elite">
+                    <span class="gallery-tag-elite">${gem.tag}</span>
+                    <h3 class="gallery-name-elite">${gem.name}</h3>
+                    <p class="gallery-loc-elite"><i class="fas fa-map-marker-alt"></i> ${gem.location}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
     this.updateContent(content);
   },
 
