@@ -1660,20 +1660,97 @@ const app = {
       { label: 'Contact Us' }
     ]);
     const content = `
-    <div class="contact-container">
-        <h1 class="page-title">Get In Touch</h1>
-        <div class="contact-grid">
-          <div class="contact-info">
-            <div class="info-item"><span>📍</span> MGM Technological campus Valanchery</div>
-            <div class="info-item"><span>📧</span> mgmcampus@gmail.com</div>
+    <div class="contact-elite-wrapper">
+        <section class="contact-hero-elite">
+          <h1 class="hero-title-elite">Elite <span class="highlight-text">Support Hub</span></h1>
+          <p class="hero-subtitle-elite">Direct access to the architects of Kerala's culinary digital future.</p>
+        </section>
+
+        <div class="contact-grid-elite">
+          <!-- Founder Direct Access -->
+          <div class="founder-access-section">
+            <h2 class="sub-section-title-elite">Direct Access</h2>
+            <div class="founder-contact-scroll">
+              <div class="f-contact-card-elite">
+                <div class="f-avatar-elite">F</div>
+                <div class="f-info-elite">
+                  <h3 class="f-name-elite">Fina</h3>
+                  <p class="f-role-elite">Lead Architect</p>
+                </div>
+                <div class="f-actions-elite">
+                  <a href="https://wa.me/91XXXXXXXXXX" class="f-btn-elite whatsapp"><i class="fab fa-whatsapp"></i> Chat</a>
+                  <a href="tel:+91XXXXXXXXXX" class="f-btn-elite call"><i class="fas fa-phone-alt"></i> Call</a>
+                </div>
+              </div>
+              <div class="f-contact-card-elite">
+                <div class="f-avatar-elite">M</div>
+                <div class="f-info-elite">
+                  <h3 class="f-name-elite">Mishab</h3>
+                  <p class="f-role-elite">Full Stack Strategist</p>
+                </div>
+                <div class="f-actions-elite">
+                  <a href="https://wa.me/91XXXXXXXXXX" class="f-btn-elite whatsapp"><i class="fab fa-whatsapp"></i> Chat</a>
+                  <a href="tel:+91XXXXXXXXXX" class="f-btn-elite call"><i class="fas fa-phone-alt"></i> Call</a>
+                </div>
+              </div>
+              <div class="f-contact-card-elite">
+                <div class="f-avatar-elite">S</div>
+                <div class="f-info-elite">
+                  <h3 class="f-name-elite">Shareef</h3>
+                  <p class="f-role-elite">Cloud Specialist</p>
+                </div>
+                <div class="f-actions-elite">
+                  <a href="https://wa.me/91XXXXXXXXXX" class="f-btn-elite whatsapp"><i class="fab fa-whatsapp"></i> Chat</a>
+                  <a href="tel:+91XXXXXXXXXX" class="f-btn-elite call"><i class="fas fa-phone-alt"></i> Call</a>
+                </div>
+              </div>
+              <div class="f-contact-card-elite">
+                <div class="f-avatar-elite">V</div>
+                <div class="f-info-elite">
+                  <h3 class="f-name-elite">Vimal</h3>
+                  <p class="f-role-elite">Innovation Lead</p>
+                </div>
+                <div class="f-actions-elite">
+                  <a href="https://wa.me/91XXXXXXXXXX" class="f-btn-elite whatsapp"><i class="fab fa-whatsapp"></i> Chat</a>
+                  <a href="tel:+91XXXXXXXXXX" class="f-btn-elite call"><i class="fas fa-phone-alt"></i> Call</a>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="contact-card">
-            <form id="contactForm" onsubmit="app.handleContactSubmit(event)">
-              <input type="text" class="contact-input" placeholder="Your Name" required>
-              <input type="email" class="contact-input" placeholder="Email" required>
-              <textarea class="contact-input" rows="5" placeholder="Message" required></textarea>
-              <button type="submit" class="submit-btn" id="contactSubmit">Send Message</button>
-            </form>
+
+          <!-- Digital Concierge Form -->
+          <div class="digital-concierge-section">
+            <h2 class="sub-section-title-elite">Digital Concierge</h2>
+            <div class="modern-form-card-elite">
+              <form id="contactForm" onsubmit="app.handleContactSubmit(event)">
+                <div class="form-group-elite">
+                  <input type="text" class="elite-input" id="name" required>
+                  <label for="name" class="elite-label">Your Name</label>
+                  <div class="elite-line"></div>
+                </div>
+                <div class="form-group-elite">
+                  <input type="email" class="elite-input" id="email" required>
+                  <label for="email" class="elite-label">Email Address</label>
+                  <div class="elite-line"></div>
+                </div>
+                <div class="form-group-elite">
+                  <textarea class="elite-input" id="message" rows="4" required></textarea>
+                  <label for="message" class="elite-label">How can we help you?</label>
+                  <div class="elite-line"></div>
+                </div>
+                <button type="submit" class="elite-submit-btn" id="contactSubmit">
+                  <span>Send Transmission</span>
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-footer-elite">
+          <div class="footer-info-elite">
+            <span class="info-tag-elite"><i class="fas fa-map-marker-alt"></i> MGM Technological Campus, Valanchery</span>
+            <span class="info-tag-elite"><i class="fas fa-envelope"></i> mgmcampus@gmail.com</span>
           </div>
         </div>
       </div>
