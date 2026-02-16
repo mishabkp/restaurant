@@ -1564,46 +1564,55 @@ const app = {
           <h1 class="page-title">Kerala's Culinary Compass</h1>
           <p class="page-subtitle">Connecting you to the authentic flavors of God's Own Country</p>
         </div>
+        
         <div class="about-content">
-          <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1080&h=720&fit=crop" alt="God's Own Country" class="about-image">
-          <div class="about-text">
-            <h2>Our Journey</h2>
-            <p>FOOD VISTA started as a college project with a simple mission: to make finding great food in Kerala as easy as possible.</p>
-            <p style="margin-top: 1rem;">We curate the best dining experiences across Kochi, Kozhikode, Thrissur, and beyond.</p>
-            <div class="visionaries-section">
+          <section class="about-story-section">
+            <div class="about-story-image-wrap">
+              <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1080&h=720&fit=crop" alt="God's Own Country" class="about-image">
+            </div>
+            <div class="about-story-text">
+              <h2 class="about-story-title">Our Journey</h2>
+              <p>FOOD VISTA started as a college project with a simple mission: to make finding great food in Kerala as easy as possible.</p>
+              <p>Inspired by the rich culinary heritage of Kerala, we curate the best dining experiences across Kochi, Kozhikode, Thrissur, and beyond. Whether it's a hidden gem in the backwaters or a bustling bistro in the city, we help you find the perfect taste.</p>
+            </div>
+          </section>
+
+          <section class="visionaries-section">
+            <div class="visionaries-header">
               <h2 class="section-title-small">The Minds Behind The Vision</h2>
-              <div class="founder-grid">
-                <div class="founder-card">
-                  <div class="founder-info">
-                    <h3 class="founder-name">Fina</h3>
-                    <p class="founder-role">Lead UI/UX Architect</p>
-                  </div>
-                  <div class="founder-badge">Elite</div>
+              <p class="vision-subtitle">A collective of innovators dedicated to documenting Kerala's food map.</p>
+            </div>
+            <div class="founder-grid">
+              <div class="founder-card">
+                <div class="founder-info">
+                  <h3 class="founder-name">Fina</h3>
+                  <p class="founder-role">Lead UI/UX Architect</p>
                 </div>
-                <div class="founder-card">
-                  <div class="founder-info">
-                    <h3 class="founder-name">Mishab</h3>
-                    <p class="founder-role">Full Stack Strategist</p>
-                  </div>
-                  <div class="founder-badge">Elite</div>
+                <div class="founder-badge">Elite</div>
+              </div>
+              <div class="founder-card">
+                <div class="founder-info">
+                  <h3 class="founder-name">Mishab</h3>
+                  <p class="founder-role">Full Stack Strategist</p>
                 </div>
-                <div class="founder-card">
-                  <div class="founder-info">
-                    <h3 class="founder-name">Shareef</h3>
-                    <p class="founder-role">Cloud & Data Specialist</p>
-                  </div>
-                  <div class="founder-badge">Elite</div>
+                <div class="founder-badge">Elite</div>
+              </div>
+              <div class="founder-card">
+                <div class="founder-info">
+                  <h3 class="founder-name">Shareef</h3>
+                  <p class="founder-role">Cloud & Data Specialist</p>
                 </div>
-                <div class="founder-card">
-                  <div class="founder-info">
-                    <h3 class="founder-name">Vimal</h3>
-                    <p class="founder-role">Innovation Lead</p>
-                  </div>
-                  <div class="founder-badge">Elite</div>
+                <div class="founder-badge">Elite</div>
+              </div>
+              <div class="founder-card">
+                <div class="founder-info">
+                  <h3 class="founder-name">Vimal</h3>
+                  <p class="founder-role">Innovation Lead</p>
                 </div>
+                <div class="founder-badge">Elite</div>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </div>
   `;
