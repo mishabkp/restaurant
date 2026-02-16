@@ -1570,11 +1570,38 @@ const app = {
             <h2>Our Journey</h2>
             <p>FOOD VISTA started as a college project with a simple mission: to make finding great food in Kerala as easy as possible.</p>
             <p style="margin-top: 1rem;">We curate the best dining experiences across Kochi, Kozhikode, Thrissur, and beyond.</p>
-            <div style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
-              <p style="font-family: 'Playfair Display', serif; font-size: 1.2rem; font-style: italic; color: var(--text-muted); margin-bottom: 0.5rem;">Brought to life by the visionaries</p>
-              <p style="font-size: 1.1rem; font-weight: 700; background: linear-gradient(to right, #FFD700, #FDB931); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0.5px; text-transform: uppercase;">
-                Fina • Mishab • Shareef • Vimal
-              </p>
+            <div class="visionaries-section">
+              <h2 class="section-title-small">The Minds Behind The Vision</h2>
+              <div class="founder-grid">
+                <div class="founder-card">
+                  <div class="founder-info">
+                    <h3 class="founder-name">Fina</h3>
+                    <p class="founder-role">Lead UI/UX Architect</p>
+                  </div>
+                  <div class="founder-badge">Elite</div>
+                </div>
+                <div class="founder-card">
+                  <div class="founder-info">
+                    <h3 class="founder-name">Mishab</h3>
+                    <p class="founder-role">Full Stack Strategist</p>
+                  </div>
+                  <div class="founder-badge">Elite</div>
+                </div>
+                <div class="founder-card">
+                  <div class="founder-info">
+                    <h3 class="founder-name">Shareef</h3>
+                    <p class="founder-role">Cloud & Data Specialist</p>
+                  </div>
+                  <div class="founder-badge">Elite</div>
+                </div>
+                <div class="founder-card">
+                  <div class="founder-info">
+                    <h3 class="founder-name">Vimal</h3>
+                    <p class="founder-role">Innovation Lead</p>
+                  </div>
+                  <div class="founder-badge">Elite</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
