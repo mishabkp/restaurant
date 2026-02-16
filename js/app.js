@@ -435,6 +435,9 @@ const app = {
     let type = 'home';
     if (parts[0] === 'place') type = 'place';
     if (parts[0] === 'restaurant') type = 'restaurant';
+    if (parts[0] === 'blog') type = 'blog';
+    if (parts[0] === 'gallery') type = 'gallery';
+    if (parts[0] === 'dashboard') type = 'dashboard';
 
     this.showSkeletons(type);
 
@@ -1202,6 +1205,31 @@ const app = {
           ${Array(6).fill('<div class="skeleton" style="height: 250px;"></div>').join('')}
         </div>
       `;
+    } else if (type === 'blog') {
+      skeletonHtml = `
+        <div class="skeleton-title skeleton text-center" style="width: 40%; margin: 2rem auto;"></div>
+        <div class="skeleton-text skeleton text-center" style="width: 60%; margin: 0 auto 3rem;"></div>
+        <div class="blog-grid-elite">
+          ${Array(3).fill(`
+            <div class="story-card-elite">
+              <div class="skeleton" style="height: 250px;"></div>
+              <div style="padding: 2rem;">
+                <div class="skeleton" style="height: 20px; width: 40%; margin-bottom: 1rem;"></div>
+                <div class="skeleton" style="height: 30px; width: 80%; margin-bottom: 1rem;"></div>
+                <div class="skeleton" style="height: 60px; width: 100%;"></div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    } else if (type === 'gallery') {
+      skeletonHtml = `
+        <div class="skeleton-title skeleton text-center" style="width: 40%; margin: 2rem auto;"></div>
+        <div class="skeleton-text skeleton text-center" style="width: 60%; margin: 0 auto 3rem;"></div>
+        <div class="gallery-grid-elite">
+          ${Array(6).fill('<div class="skeleton" style="height: 350px; border-radius: 24px; margin-bottom: 2rem;"></div>').join('')}
+        </div>
+      `;
     }
 
 
@@ -1668,7 +1696,18 @@ const app = {
       { label: 'Kerala Food Stories' }
     ]);
 
-    const stories = window.restaurantData.foodStories;
+    const stories = (window.restaurantData && window.restaurantData.foodStories) || [];
+    if (stories.length === 0) {
+      this.updateContent(`
+        <div class="empty-state" style="padding: 10rem 2rem;">
+          <div class="empty-state-icon">📖</div>
+          <p class="empty-state-text">Stories are being written by our food historians. Check back soon!</p>
+          <button class="magic-btn" style="margin-top: 2rem;" onclick="app.navigateHome()">Back to Home</button>
+        </div>
+      `);
+      return;
+    }
+
     const content = `
       <div class="blog-elite-wrapper">
         <section class="blog-hero-elite">
@@ -1747,7 +1786,18 @@ const app = {
       { label: 'Hidden Gems Gallery' }
     ]);
 
-    const gems = window.restaurantData.hiddenGems;
+    const gems = (window.restaurantData && window.restaurantData.hiddenGems) || [];
+    if (gems.length === 0) {
+      this.updateContent(`
+        <div class="empty-state" style="padding: 10rem 2rem;">
+          <div class="empty-state-icon">🖼️</div>
+          <p class="empty-state-text">Our photographers are capturing Kerala's hidden corners. Stay tuned!</p>
+          <button class="magic-btn" style="margin-top: 2rem;" onclick="app.navigateHome()">Back to Home</button>
+        </div>
+      `);
+      return;
+    }
+
     const content = `
       <div class="gallery-elite-wrapper">
         <section class="gallery-hero-elite">
