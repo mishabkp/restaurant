@@ -1559,59 +1559,94 @@ const app = {
     ]);
 
     const content = `
-    <div class="about-container">
-        <div class="about-hero">
-          <h1 class="page-title">Kerala's Culinary Compass</h1>
-          <p class="page-subtitle">Connecting you to the authentic flavors of God's Own Country</p>
-        </div>
-        
-        <div class="about-content">
-          <div class="about-story-block">
-            <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1280&h=720&fit=crop" alt="God's Own Country" class="about-image-premium">
-            <div class="about-text-premium">
-              <h2 class="about-title-premium">Our Journey</h2>
-              <p>FOOD VISTA started as a college project with a simple mission: to make finding great food in Kerala as easy as possible. Inspired by the rich culinary heritage of God's Own Country, we curate the best dining experiences across Kochi, Kozhikode, Thrissur, and beyond.</p>
-            </div>
+    <div class="about-elite-wrapper">
+        <section class="about-hero-elite">
+          <div class="hero-glow-blob"></div>
+          <h1 class="hero-title-elite">Kerala's <span class="highlight-text">Culinary Compass</span></h1>
+          <p class="hero-subtitle-elite">Connecting the world to the authentic soul of God's Own Country.</p>
+          <div class="scroll-indicator-elite">
+            <span>Explore Our Soul</span>
+            <div class="mouse-icon"></div>
           </div>
+        </section>
 
-          <div class="visionaries-section-premium">
-            <div class="visionaries-header-premium">
-              <h2 class="section-title-small">The Minds Behind The Vision</h2>
-              <p class="vision-subtitle">A collective of innovators dedicated to documenting Kerala's food map.</p>
+        <section class="about-story-elite">
+          <div class="story-container-elite">
+            <div class="story-visual-elite">
+              <div class="image-stack-elite">
+                <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1280&h=720&fit=crop" alt="Kerala Landscape" class="main-img-elite">
+                <div class="floating-badge-elite">Since 2024</div>
+              </div>
             </div>
-            
-            <div class="founder-grid-premium">
-              <div class="founder-card">
-                <div class="founder-info">
-                  <h3 class="founder-name">Fina</h3>
-                  <p class="founder-role">Lead UI/UX Architect</p>
+            <div class="story-content-elite">
+              <span class="section-tag-elite">The Origin</span>
+              <h2 class="section-title-elite">A Journey of Taste</h2>
+              <p class="story-paragraph-elite">FOOD VISTA was born from a simple college epiphany: that Kerala's culinary map is as vast as its backwaters, yet undocumented in its fullest glory.</p>
+              <p class="story-paragraph-elite">We didn't just build a directory; we crafted a tribute to the mothers, the local chefs, and the hidden gems across Kochi, Kozhikode, and Thrissur. We are here to ensure that every flavor of Kerala finds its home in your heart.</p>
+              <div class="stats-grid-elite">
+                <div class="stat-item-elite">
+                  <span class="stat-val">50+</span>
+                  <span class="stat-label">Cities Covered</span>
                 </div>
-                <div class="founder-badge">Elite</div>
-              </div>
-              <div class="founder-card">
-                <div class="founder-info">
-                  <h3 class="founder-name">Mishab</h3>
-                  <p class="founder-role">Full Stack Strategist</p>
+                <div class="stat-item-elite">
+                  <span class="stat-val">1000+</span>
+                  <span class="stat-label">Restaurants</span>
                 </div>
-                <div class="founder-badge">Elite</div>
-              </div>
-              <div class="founder-card">
-                <div class="founder-info">
-                  <h3 class="founder-name">Shareef</h3>
-                  <p class="founder-role">Cloud & Data Specialist</p>
-                </div>
-                <div class="founder-badge">Elite</div>
-              </div>
-              <div class="founder-card">
-                <div class="founder-info">
-                  <h3 class="founder-name">Vimal</h3>
-                  <p class="founder-role">Innovation Lead</p>
-                </div>
-                <div class="founder-badge">Elite</div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
+
+        <section class="visionaries-hub-elite">
+          <div class="hub-header-elite">
+            <span class="section-tag-elite text-center">The Architects</span>
+            <h2 class="section-title-elite text-center">The Minds Behind The Vision</h2>
+            <p class="hub-subtitle-elite">A collective of innovators dedicated to documenting Kerala's food map.</p>
+          </div>
+          
+          <div class="visionary-cards-elite">
+            <div class="v-card-elite">
+              <div class="v-card-inner">
+                <div class="v-card-front">
+                  <div class="v-initial">F</div>
+                  <h3 class="v-name">Fina</h3>
+                  <p class="v-role">Lead UI/UX Architect</p>
+                  <div class="v-badge-elite">Visionary</div>
+                </div>
+              </div>
+            </div>
+            <div class="v-card-elite">
+              <div class="v-card-inner">
+                <div class="v-card-front">
+                  <div class="v-initial">M</div>
+                  <h3 class="v-name">Mishab</h3>
+                  <p class="v-role">Full Stack Strategist</p>
+                  <div class="v-badge-elite">Visionary</div>
+                </div>
+              </div>
+            </div>
+            <div class="v-card-elite">
+              <div class="v-card-inner">
+                <div class="v-card-front">
+                  <div class="v-initial">S</div>
+                  <h3 class="v-name">Shareef</h3>
+                  <p class="v-role">Cloud & Data Specialist</p>
+                  <div class="v-badge-elite">Visionary</div>
+                </div>
+              </div>
+            </div>
+            <div class="v-card-elite">
+              <div class="v-card-inner">
+                <div class="v-card-front">
+                  <div class="v-initial">V</div>
+                  <h3 class="v-name">Vimal</h3>
+                  <p class="v-role">Innovation Lead</p>
+                  <div class="v-badge-elite">Visionary</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
   `;
     this.updateContent(content);
