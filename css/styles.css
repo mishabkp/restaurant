@@ -3908,10 +3908,185 @@ body {
    WHATSAPP STATUS CARD STYLES - PREMIUM
    ======================================== */
 .status-card-modal {
-  /* ... previously implemented ... */
+  max-width: 380px;
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: modalIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 95vh;
 }
 
-/* ... existing styles ... */
+.status-card-wrapper {
+  aspect-ratio: 9 / 16;
+  width: 100%;
+  max-height: 70vh;
+  /* Ensure card doesn't take too much height */
+  border-radius: 20px;
+  padding: 8px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 0 auto;
+}
+
+.status-card-inner {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.status-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.4) 0%,
+      transparent 30%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.9) 100%);
+}
+
+.status-card-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.5rem 1.2rem;
+}
+
+.sc-brand {
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-size: 0.8rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sc-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent-color);
+}
+
+.sc-location {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.2rem;
+  font-weight: 500;
+}
+
+.sc-main {
+  margin-bottom: auto;
+  margin-top: 40%;
+}
+
+.sc-category {
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 1.5px;
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.sc-name {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: white;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.sc-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sc-stars {
+  color: #ffd700;
+  font-size: 1rem;
+  letter-spacing: 1px;
+}
+
+.sc-rating-val {
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.sc-footer {
+  text-align: center;
+}
+
+.sc-promo {
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+}
+
+.sc-url {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 0.6rem;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  color: white;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.share-actions {
+  background: rgba(15, 20, 25, 0.6);
+  backdrop-filter: blur(20px);
+  padding: 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.premium-share-btn {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 12px;
+  border: none;
+  background: var(--primary-gradient);
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.premium-share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.share-tip {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.8rem;
+  text-align: center;
+  font-weight: 500;
+}
 
 /* ========================================
    CONTACT PAGE ELITE HUB REDESIGN
