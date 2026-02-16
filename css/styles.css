@@ -3537,49 +3537,39 @@ body {
 }
 
 /* ========================================
-   ABOUT PAGE REFINED LAYOUT
+/* ========================================
+   ABOUT PAGE REFINED LAYOUT (FIXED)
    ======================================== */
 .about-container {
-  max-width: 1100px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 4rem 1rem;
 }
 
 .about-hero {
   text-align: center;
-  margin-bottom: 5rem;
+  margin-bottom: 4rem;
 }
 
-/* About Story Section */
-.about-story-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: center;
-  margin-bottom: 8rem;
+/* Story Block */
+.about-story-block {
+  margin-bottom: 6rem;
+  text-align: center;
 }
 
-.about-story-image-wrap {
-  position: relative;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
-}
-
-.about-image {
+.about-image-premium {
   width: 100%;
-  height: auto;
-  display: block;
-  transition: transform 0.8s ease;
+  max-height: 450px;
+  object-fit: cover;
+  border-radius: 30px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  margin-bottom: 3rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.about-story-image-wrap:hover .about-image {
-  transform: scale(1.05);
-}
-
-.about-story-title {
+.about-title-premium {
   font-family: var(--font-display);
-  font-size: 2.8rem;
+  font-size: 3rem;
   font-weight: 800;
   margin-bottom: 1.5rem;
   background: var(--primary-gradient);
@@ -3587,59 +3577,51 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-.about-story-text p {
-  font-size: 1.15rem;
+.about-text-premium p {
+  font-size: 1.2rem;
   line-height: 1.8;
   color: var(--text-secondary);
-  margin-bottom: 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-/* Visionaries Styles (Updated) */
-.visionaries-section {
-  margin-top: 5rem;
+/* Visionaries Section */
+.visionaries-section-premium {
+  padding-top: 4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.visionaries-header-premium {
   text-align: center;
+  margin-bottom: 4rem;
 }
 
-.visionaries-header {
-  max-width: 700px;
-  margin: 0 auto 4rem;
-}
-
-.vision-subtitle {
-  color: var(--text-muted);
-  font-size: 1rem;
-  margin-top: 0.5rem;
-}
-
-.founder-grid {
+.founder-grid-premium {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 2rem;
-  justify-content: center;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
 }
 
 .founder-card {
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 2.5rem 2rem;
-  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 2rem 1.5rem;
+  border-radius: 20px;
   text-align: center;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  display: block;
-  /* Vertical stacking in cards */
+  transition: all 0.4s ease;
 }
 
 .founder-card:hover {
-  transform: translateY(-12px);
-  background: rgba(255, 255, 255, 0.07);
+  transform: translateY(-10px);
+  background: rgba(255, 255, 255, 0.06);
   border-color: var(--accent-color);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
 }
 
 .founder-name {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 800;
   color: white;
   margin-bottom: 0.5rem;
@@ -3650,15 +3632,15 @@ body {
   color: var(--accent-color);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 1.5rem;
+  letter-spacing: 1.5px;
+  margin-bottom: 1.2rem;
 }
 
 .founder-badge {
   display: inline-block;
   background: rgba(255, 215, 0, 0.1);
   color: #ffd700;
-  padding: 5px 15px;
+  padding: 4px 12px;
   border-radius: 50px;
   font-size: 0.7rem;
   font-weight: 800;
@@ -3667,16 +3649,17 @@ body {
 
 /* Mobile Responsive */
 @media (max-width: 900px) {
-  .about-story-section {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-    margin-bottom: 5rem;
-  }
-
-  .about-story-image-wrap {
-    order: -1;
+  .founder-grid-premium {
+    grid-template-columns: 1fr 1fr;
   }
 }
+
+@media (max-width: 600px) {
+  .founder-grid-premium {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 
 /* ========================================
