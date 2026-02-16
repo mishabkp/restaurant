@@ -4092,26 +4092,53 @@ body {
    CONTACT PAGE ELITE HUB REDESIGN
    ======================================== */
 .contact-elite-wrapper {
-  padding: 4rem 2rem;
-  max-width: 1400px;
+  padding: 6rem 2rem;
+  max-width: 1200px;
   margin: 0 auto;
   min-height: 100vh;
 }
 
 .contact-hero-elite {
   text-align: center;
-  margin-bottom: 6rem;
+  margin-bottom: 8rem;
+}
+
+.hero-title-elite {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  font-weight: 900;
+  line-height: 1.2;
+  color: white;
+  margin-bottom: 1.5rem;
+  letter-spacing: -1px;
+}
+
+.hero-title-elite .highlight-text {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  /* Changed for cleaner flow */
+}
+
+.hero-subtitle-elite {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
 }
 
 .sub-section-title-elite {
   font-family: var(--font-display);
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 800;
   color: white;
   margin-bottom: 2.5rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
+  letter-spacing: 1px;
 }
 
 .sub-section-title-elite::after {

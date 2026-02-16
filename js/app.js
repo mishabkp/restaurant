@@ -1678,8 +1678,8 @@ const app = {
                   <p class="f-role-elite">Lead Architect</p>
                 </div>
                 <div class="f-actions-elite">
-                  <a href="https://wa.me/91XXXXXXXXXX" class="f-btn-elite whatsapp"><i class="fab fa-whatsapp"></i> Chat</a>
-                  <a href="tel:+91XXXXXXXXXX" class="f-btn-elite call"><i class="fas fa-phone-alt"></i> Call</a>
+                  <a href="https://wa.me/919496906158" class="f-btn-elite whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat</a>
+                  <a href="tel:+919496906158" class="f-btn-elite call"><i class="fas fa-phone-alt"></i> Call</a>
                 </div>
               </div>
               <div class="f-contact-card-elite">
@@ -1689,8 +1689,8 @@ const app = {
                   <p class="f-role-elite">Full Stack Strategist</p>
                 </div>
                 <div class="f-actions-elite">
-                  <a href="https://wa.me/91XXXXXXXXXX" class="f-btn-elite whatsapp"><i class="fab fa-whatsapp"></i> Chat</a>
-                  <a href="tel:+91XXXXXXXXXX" class="f-btn-elite call"><i class="fas fa-phone-alt"></i> Call</a>
+                  <a href="https://wa.me/919656760092" class="f-btn-elite whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat</a>
+                  <a href="tel:+919656760092" class="f-btn-elite call"><i class="fas fa-phone-alt"></i> Call</a>
                 </div>
               </div>
               <div class="f-contact-card-elite">
@@ -1700,8 +1700,8 @@ const app = {
                   <p class="f-role-elite">Cloud Specialist</p>
                 </div>
                 <div class="f-actions-elite">
-                  <a href="https://wa.me/91XXXXXXXXXX" class="f-btn-elite whatsapp"><i class="fab fa-whatsapp"></i> Chat</a>
-                  <a href="tel:+91XXXXXXXXXX" class="f-btn-elite call"><i class="fas fa-phone-alt"></i> Call</a>
+                  <a href="https://wa.me/917907470882" class="f-btn-elite whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat</a>
+                  <a href="tel:+917907470882" class="f-btn-elite call"><i class="fas fa-phone-alt"></i> Call</a>
                 </div>
               </div>
               <div class="f-contact-card-elite">
@@ -1711,8 +1711,8 @@ const app = {
                   <p class="f-role-elite">Innovation Lead</p>
                 </div>
                 <div class="f-actions-elite">
-                  <a href="https://wa.me/91XXXXXXXXXX" class="f-btn-elite whatsapp"><i class="fab fa-whatsapp"></i> Chat</a>
-                  <a href="tel:+91XXXXXXXXXX" class="f-btn-elite call"><i class="fas fa-phone-alt"></i> Call</a>
+                  <a href="https://wa.me/918075790266" class="f-btn-elite whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Chat</a>
+                  <a href="tel:+918075790266" class="f-btn-elite call"><i class="fas fa-phone-alt"></i> Call</a>
                 </div>
               </div>
             </div>
