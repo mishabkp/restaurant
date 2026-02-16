@@ -2440,11 +2440,11 @@ window.restaurantData = {
         }
     ],
     "hiddenGems": [
-        { "id": 1, "name": "Backwater Toddy Shop", "location": "Alappuzha", "image": "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600&h=800&fit=crop", "tag": "Authentic" },
-        { "id": 2, "name": "Cliff-side Tea Stall", "location": "Varkala", "image": "https://images.unsplash.com/photo-1590001158193-798d30d2d7bc?w=600&h=800&fit=crop", "tag": "Scenic" },
-        { "id": 3, "name": "Highland Spice Hut", "location": "Munnar", "image": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600&h=800&fit=crop", "tag": "Cozy" },
-        { "id": 4, "name": "Ancient Port Cafe", "location": "Muziris", "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=800&fit=crop", "tag": "Historic" },
-        { "id": 5, "name": "Island Fish Grill", "location": "Kumarakom", "image": "https://images.unsplash.com/photo-1551218808-94e220e031eb?w=600&h=800&fit=crop", "tag": "Fresh" },
-        { "id": 6, "name": "Forest Edge Eatery", "location": "Wayanad", "image": "https://images.unsplash.com/photo-1502301103665-0b95cc738def?w=600&h=800&fit=crop", "tag": "Nature" }
+        { "id": 1, "name": "Backwater Toddy Shop", "location": "Alappuzha", "image": "https://images.pexels.com/photos/962464/pexels-photo-962464.jpeg?auto=compress&cs=tinysrgb&w=800", "tag": "Authentic" },
+        { "id": 2, "name": "Cliff-side Tea Stall", "location": "Varkala", "image": "https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800", "tag": "Scenic" },
+        { "id": 3, "name": "Highland Spice Hut", "location": "Munnar", "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800", "tag": "Cozy" },
+        { "id": 4, "name": "Ancient Port Cafe", "location": "Muziris", "image": "https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?auto=compress&cs=tinysrgb&w=800", "tag": "Historic" },
+        { "id": 5, "name": "Island Fish Grill", "location": "Kumarakom", "image": "https://images.pexels.com/photos/262978/pexels-photo-262978.jpeg?auto=compress&cs=tinysrgb&w=800", "tag": "Fresh" },
+        { "id": 6, "name": "Forest Edge Eatery", "location": "Wayanad", "image": "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&w=800", "tag": "Nature" }
     ]
 };
