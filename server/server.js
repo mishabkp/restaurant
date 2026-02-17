@@ -30,8 +30,13 @@ app.get('/', (req, res) => {
 });
 
 // Database Connection
+const checkAndSeedData = require('./utils/autoSeed');
+
 mongoose.connect(process.env.MONGODB_URI, { family: 4 })
-    .then(() => console.log('✅ MongoDB Connected Ready!'))
+    .then(() => {
+        console.log('✅ MongoDB Connected Ready!');
+        checkAndSeedData();
+    })
     .catch(err => console.error('❌ MongoDB Connection Error:', err));
 
 
