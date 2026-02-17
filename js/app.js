@@ -514,45 +514,38 @@ const app = {
 
     const content = `
       <div class="hero-premium fade-slide-up">
-      <div class="hero-split">
-        <div class="hero-left">
-          <span class="hero-badge">PREMIUM DINING GUIDE</span>
-          <h1 class="hero-title">Experience the Art of <span class="text-gradient">Kerala Flavors</span></h1>
-          <p class="hero-subtitle">Discover curated dining experiences, from hidden gems to world-class restaurants across the heart of Kerala.</p>
-          <div class="hero-actions">
-            <button class="magic-btn" onclick="app.handleSurpriseMe()">✨ Surprise Me!</button>
-          </div>
-          <div class="hero-stats">
-            <div class="stat-item">
-              <span class="stat-value">50+</span>
-              <span class="stat-label">Restaurants</span>
+        <!-- VIDEO BACKGROUND -->
+        <video autoplay muted loop playsinline class="video-background">
+          <source src="https://videos.pexels.com/video-files/3196238/3196238-uhd_2560_1440_25fps.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        
+        <div class="hero-split">
+          <div class="hero-left">
+            <span class="hero-badge">PREMIUM DINING GUIDE</span>
+            <h1 class="hero-title">Experience the Art of <span class="text-gradient">Kerala Flavors</span></h1>
+            <p class="hero-subtitle">Discover curated dining experiences, from hidden gems to world-class restaurants across the heart of Kerala.</p>
+            <div class="hero-actions">
+              <button class="magic-btn" onclick="app.handleSurpriseMe()">✨ Surprise Me!</button>
             </div>
-            <div class="stat-item">
-              <span class="stat-value">12</span>
-              <span class="stat-label">Locations</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-value">4.8</span>
-              <span class="stat-label">Avg Rating</span>
-            </div>
-          </div>
-        </div>
-        <div class="hero-right">
-          <div class="hero-visual">
-            <div class="hero-visual-frame">
-              <img src="https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Kerala Signature Dish" class="hero-dish-img">
-              <div class="hero-visual-badge">
-                <span class="badge-icon">⭐</span>
-                <span class="badge-text">Chef's Choice</span>
+            <div class="hero-stats">
+              <div class="stat-item">
+                <span class="stat-value">50+</span>
+                <span class="stat-label">Restaurants</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">12</span>
+                <span class="stat-label">Locations</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">4.8</span>
+                <span class="stat-label">Avg Rating</span>
               </div>
             </div>
-            <div class="hero-glow"></div>
           </div>
+          <!-- No right visual needed for full-screen video impact, keeping text centered or split as per CSS -->
         </div>
       </div>
-    </div>
-
-
 
       ${this.renderMoodPicker()}
       
@@ -755,6 +748,29 @@ const app = {
       const x = e.pageX - slider.offsetLeft;
       const walk = (x - startX) * 2;
       slider.scrollLeft = scrollLeft - walk;
+    });
+  },
+
+  initTiltEffect() {
+    const cards = document.querySelectorAll('.tilt-card');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = ((y - centerY) / centerY) * -10; // Max 10 deg rotation
+        const rotateY = ((x - centerX) / centerX) * 10;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+      });
     });
   },
 
