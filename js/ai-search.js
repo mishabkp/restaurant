@@ -45,13 +45,41 @@ class VoiceAssistant {
         this.recognition.onresult = async (event) => {
             const transcript = event.results[0][0].transcript;
             this.input.value = transcript;
-            app.showToast(`🎤 Recognized: "${transcript}"`);
+            this.showProcessingOverlay(transcript);
 
-            // Step 2: Process with Gemini for Smart Intent
-            await this.processIntent(transcript);
+            // Process with Smart Intent
+            setTimeout(() => this.processIntent(transcript), 1000);
         };
 
         this.btn.addEventListener('click', () => this.toggleListening());
+    }
+
+    showProcessingOverlay(text) {
+        let overlay = document.getElementById('voiceProcessingOverlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'voiceProcessingOverlay';
+            overlay.className = 'voice-overlay hidden';
+            document.body.appendChild(overlay);
+        }
+
+        overlay.innerHTML = `
+            <div class="voice-overlay-content">
+                <div class="voice-wave">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <p class="voice-transcript">"${text}"</p>
+                <p class="voice-status">Analyzing intent...</p>
+            </div>
+        `;
+        overlay.classList.remove('hidden');
+        setTimeout(() => overlay.classList.add('active'), 10);
+
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+            overlay.classList.remove('active');
+            setTimeout(() => overlay.classList.add('hidden'), 500);
+        }, 3000);
     }
 
     toggleListening() {
@@ -63,43 +91,68 @@ class VoiceAssistant {
     }
 
     async processIntent(text) {
-        if (!this.apiKey || this.apiKey === "YOUR_GEMINI_API_KEY_HERE") {
-            // Fallback to basic search if no API key
-            console.log("No Gemini API key found, using basic search.");
-            search.handleSearch(this.input.value);
+        const transcript = text.toLowerCase();
+        app.showToast(`🤖 Analyzing Intent...`, "info");
+
+        if (!window.restaurantData || !window.restaurantData.places) {
+            app.showToast("Data loading, please wait... ⏳", "info");
             return;
         }
 
-        app.showToast("🤖 AI is analyzing your request...");
+        // 1. EXTRACT DATA FOR MATCHING
+        const places = window.restaurantData.places;
+        let matchedPlace = null;
+        let matchedRestaurant = null;
+        let matchedFoodItem = null;
 
-        try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${this.apiKey}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: `Analyze this restaurant search query: "${text}". 
-                            Extract only the main search term (dish or restaurant name) and the location if mentioned.
-                            Return ONLY a JSON object like {"term": "biryani", "location": "kochi"}. 
-                            If no location, leave it null.`
-                        }]
-                    }]
-                })
+        // Efficient loop through all data to find the BEST match
+        places.forEach(p => {
+            if (transcript.includes(p.name.toLowerCase())) matchedPlace = p;
+
+            p.restaurants.forEach(r => {
+                if (transcript.includes(r.name.toLowerCase())) matchedRestaurant = r;
+
+                r.foodItems.forEach(item => {
+                    if (transcript.includes(item.name.toLowerCase())) {
+                        matchedFoodItem = { ...item, restaurantId: r.id, restaurantName: r.name };
+                    }
+                });
             });
+        });
 
-            const data = await response.json();
-            const resultText = data.candidates[0].content.parts[0].text;
-            const intent = JSON.parse(resultText.replace(/```json|```/g, ''));
+        // 2. EXECUTE SMART NAVIGATION (Proactive)
+        if (matchedRestaurant) {
+            this.hideOverlay();
+            app.showToast(`🚀 Opening ${matchedRestaurant.name}...`, "success");
+            app.navigateToRestaurant(matchedRestaurant.id);
+            return;
+        }
 
-            if (intent.term) {
-                this.input.value = intent.term + (intent.location ? ` in ${intent.location}` : "");
-                search.handleSearch(this.input.value);
-            }
-        } catch (error) {
-            console.error("Gemini Error:", error);
-            // Fallback
-            window.searchManager.handleSearch({ target: this.input });
+        if (matchedFoodItem) {
+            this.hideOverlay();
+            app.showToast(`✨ Found ${matchedFoodItem.name} at ${matchedFoodItem.restaurantName}!`, "success");
+            app.navigateToRestaurant(matchedFoodItem.restaurantId);
+            return;
+        }
+
+        if (matchedPlace) {
+            this.hideOverlay();
+            app.showToast(`📍 Destination: ${matchedPlace.name}`, "success");
+            app.navigateToPlace(matchedPlace.id);
+            return;
+        }
+
+        // Fallback: Default Search
+        this.hideOverlay();
+        app.showToast("🔍 Searching...", "info");
+        search.handleSearch(transcript);
+    }
+
+    hideOverlay() {
+        const overlay = document.getElementById('voiceProcessingOverlay');
+        if (overlay) {
+            overlay.classList.remove('active');
+            setTimeout(() => overlay.classList.add('hidden'), 500);
         }
     }
 }

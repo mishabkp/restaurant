@@ -421,7 +421,7 @@ const app = {
       padding: 1rem 2rem;
       border-radius: var(--radius-full);
       box-shadow: var(--shadow-glow);
-      z-index: 5000;
+      z-index: 15000;
       font-weight: 600;
     `;
     toast.innerHTML = message;

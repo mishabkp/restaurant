@@ -45,18 +45,39 @@ const search = {
 
     // Perform the actual search
     performSearch(query) {
+        console.log('🔍 Performing Search for:', query);
         const results = [];
 
         // Wait for data to be loaded
         if (!window.restaurantData || !window.restaurantData.places) {
-            this.searchResults.innerHTML = '<div class="no-results">Loading data...</div>';
-            this.showResults();
+            console.warn('⚠️ Search: window.restaurantData not ready');
+            if (this.searchResults) {
+                this.searchResults.innerHTML = '<div class="no-results">Loading data...</div>';
+                this.showResults();
+            }
             return;
         }
 
         // Search through all places, restaurants, and food items
         window.restaurantData.places.forEach(place => {
+            if (!place) return;
+
+            // NEW: Check if place name matches
+            if (place.name.toLowerCase().includes(query)) {
+                results.push({
+                    type: 'place',
+                    id: place.id,
+                    title: `📍 ${place.name}`,
+                    subtitle: `Explore ${place.restaurants?.length || 0} restaurants in ${place.name}`,
+                    place: place
+                });
+            }
+
+            if (!place.restaurants) return;
+
             place.restaurants.forEach(restaurant => {
+                if (!restaurant) return;
+
                 // Check if restaurant name matches
                 if (restaurant.name.toLowerCase().includes(query)) {
                     results.push({
@@ -70,66 +91,78 @@ const search = {
                 }
 
                 // Check if cuisine matches
-                if (restaurant.cuisine.toLowerCase().includes(query)) {
-                    if (!results.find(r => r.id === restaurant.id && r.type === 'restaurant')) {
-                        results.push({
-                            type: 'restaurant',
-                            id: restaurant.id,
-                            title: restaurant.name,
-                            subtitle: `${restaurant.cuisine} • ${place.name}`,
-                            place: place,
-                            restaurant: restaurant
-                        });
-                    }
+                else if (restaurant.cuisine && restaurant.cuisine.toLowerCase().includes(query)) {
+                    results.push({
+                        type: 'restaurant',
+                        id: restaurant.id,
+                        title: restaurant.name,
+                        subtitle: `${restaurant.cuisine} • ${place.name}`,
+                        place: place,
+                        restaurant: restaurant
+                    });
                 }
 
                 // Search through food items
-                restaurant.foodItems.forEach(item => {
-                    if (item.name.toLowerCase().includes(query) ||
-                        item.description.toLowerCase().includes(query) ||
-                        item.category.toLowerCase().includes(query)) {
-                        results.push({
-                            type: 'food',
-                            id: `${restaurant.id}-${item.name}`,
-                            title: item.name,
-                            subtitle: `${item.category} • ${restaurant.name} • ${place.name}`,
-                            price: item.price,
-                            place: place,
-                            restaurant: restaurant,
-                            foodItem: item
-                        });
-                    }
-                });
+                if (restaurant.foodItems) {
+                    restaurant.foodItems.forEach(item => {
+                        if (!item) return;
+                        if (item.name.toLowerCase().includes(query) ||
+                            (item.description && item.description.toLowerCase().includes(query)) ||
+                            (item.category && item.category.toLowerCase().includes(query))) {
+                            results.push({
+                                type: 'food',
+                                id: `${restaurant.id}-${item.name}`,
+                                title: item.name,
+                                subtitle: `${item.category} • ${restaurant.name} • ${place.name}`,
+                                price: item.price,
+                                place: place,
+                                restaurant: restaurant,
+                                foodItem: item
+                            });
+                        }
+                    });
+                }
             });
         });
 
-        // Limit results to 10 for better performance
+        // Limit results and display
         this.displayResults(results.slice(0, 10));
     },
 
     // Display search results
     displayResults(results) {
+        console.log('🔍 Displaying Search Results:', results.length);
         if (results.length === 0) {
-            this.searchResults.innerHTML = '<div class="no-results">No results found</div>';
+            this.searchResults.innerHTML = '<div class="no-results">No matches found for your query.</div>';
             this.showResults();
             return;
         }
 
         const html = results.map(result => {
+            if (result.type === 'place') {
+                return `
+                  <div class="search-result-item" onclick="search.navigateToResult('${result.place.id}', 'place')">
+                    <div class="search-result-title">${result.title}</div>
+                    <div class="search-result-subtitle">${result.subtitle}</div>
+                  </div>
+                `;
+            }
+
+            const clickAction = `search.navigateToResult(${result.restaurant.id}, 'restaurant')`;
             if (result.type === 'restaurant') {
                 return `
-          <div class="search-result-item" onclick="search.navigateToResult(${result.restaurant.id}, 'restaurant')">
-            <div class="search-result-title">🍴 ${result.title}</div>
-            <div class="search-result-subtitle">${result.subtitle}</div>
-          </div>
-        `;
+                  <div class="search-result-item" onclick="${clickAction}">
+                    <div class="search-result-title">🍴 ${result.title}</div>
+                    <div class="search-result-subtitle">${result.subtitle}</div>
+                  </div>
+                `;
             } else {
                 return `
-          <div class="search-result-item" onclick="search.navigateToResult(${result.restaurant.id}, 'food')">
-            <div class="search-result-title">🍽️ ${result.title} <span style="color: var(--accent-color); font-size: 0.9rem;">${result.price}</span></div>
-            <div class="search-result-subtitle">${result.subtitle}</div>
-          </div>
-        `;
+                  <div class="search-result-item" onclick="${clickAction}">
+                    <div class="search-result-title">🍽️ ${result.title} <span style="color: var(--accent-color); font-size: 0.9rem;">${result.price}</span></div>
+                    <div class="search-result-subtitle">${result.subtitle}</div>
+                  </div>
+                `;
             }
         }).join('');
 
@@ -138,10 +171,16 @@ const search = {
     },
 
     // Navigate to search result
-    navigateToResult(restaurantId, type) {
+    navigateToResult(id, type) {
+        console.log('🚀 Navigating to:', type, id);
         this.hideResults();
         this.searchInput.value = '';
-        app.navigateToRestaurant(restaurantId);
+
+        if (type === 'place') {
+            app.navigateToPlace(id);
+        } else {
+            app.navigateToRestaurant(id);
+        }
     },
 
     // Show search results
