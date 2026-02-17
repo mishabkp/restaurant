@@ -513,12 +513,7 @@ const app = {
 
 
     const content = `
-      <div class="hero-premium fade-slide-up">
-        <!-- Cinematic Video Background -->
-        <video autoplay muted loop playsinline class="video-background" id="heroVideo" 
-               poster="https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?auto=compress&cs=tinysrgb&w=1920">
-          <source src="https://assets.mixkit.co/videos/preview/mixkit-chef-preparing-a-dish-in-a-professional-kitchen-40544-large.mp4" type="video/mp4">
-        </video>
+      <div class="hero-premium fade-slide-up" style="background-image: url('https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?auto=compress&cs=tinysrgb&w=1920'); background-size: cover; background-position: center;">
         <div class="hero-overlay"></div>
         
         <div class="hero-split">
@@ -579,14 +574,6 @@ const app = {
 
     this.updateContent(content);
     this.initCarouselDrag();
-
-    // Force play video (Ensure autoplay works)
-    setTimeout(() => {
-      const video = document.getElementById('heroVideo');
-      if (video) {
-        video.play().catch(err => console.log("Autoplay nudge failed:", err));
-      }
-    }, 100);
 
     // Initialize Home Map
     const cityMarkers = window.restaurantData.places.map(p => ({

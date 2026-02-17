@@ -4919,17 +4919,7 @@ body {
   /* Solid black base for video */
 }
 
-.video-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-  opacity: 1;
-  filter: brightness(0.6) contrast(1.1);
-}
+/* Hero background image is now handled via inline style in JS for dynamic loading */
 
 .hero-overlay {
   position: absolute;
