@@ -33,13 +33,13 @@ const stories = [
     },
     {
         id: 3,
-        title: "The Art of Slow-Cooked Sadhya",
-        excerpt: "A deep dive into the 24-item vegetarian feast that defines Kerala's festivals.",
-        author: "Shareef",
+        title: "Karimeen Pollichathu: The Pearl of Backwaters",
+        excerpt: "Explore the art of marinating pearl spot fish in spicy masalas and slow-cooking it inside a banana leaf.",
+        author: "Ashwin",
         date: "Feb 05, 2026",
-        image: "https://images.pexels.com/photos/675951/pexels-photo-675951.jpeg?auto=compress&cs=tinysrgb&w=800",
-        category: "Tradition",
-        content: "Sadhya is a rhythmic experience. From the placement of the banana leaf to the final payasam..."
+        image: "https://image.pollinations.ai/prompt/karimeen_pollichathu_pearl_spot_fish_wrapped_in_burned_banana_leaf_served_on_traditional_plate_kerala_backwater_background_hyper_realistic_food_photography?width=800&height=500&nologo=true",
+        category: "Seafood",
+        content: "Karimeen Pollichathu is the crown jewel of Kerala's backwater cuisine. The pearl spot fish is marinated in a rich paste of ginger, garlic, and locally sourced spices, then wrapped tightly in a fresh banana leaf and pan-fried to perfection. The leaf infuses the fish with a unique smoky aroma, making it a must-try for every food lover visiting Kerala."
     }
 ];
 
