@@ -43,7 +43,7 @@ window.restaurantData = {
                             "price": "₹280",
                             "isVeg": false,
                             "description": "Fresh prawns with tangy cocktail sauce",
-                            "image": "https://source.unsplash.com/600x400/?prawn,cocktail,seafood"
+                            "image": "https://images.pexels.com/photos/566345/pexels-photo-566345.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Fish Fingers",
@@ -51,7 +51,7 @@ window.restaurantData = {
                             "price": "₹220",
                             "isVeg": false,
                             "description": "Crispy golden fried fish strips",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Fish%20Fingers%20(Crispy%20golden%20fried%20fish%20strips)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1015568/pexels-photo-1015568.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Grilled Calamari",
@@ -59,7 +59,7 @@ window.restaurantData = {
                             "price": "₹320",
                             "isVeg": false,
                             "description": "Tender squid rings with herbs",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Grilled%20Calamari%20(Tender%20squid%20rings%20with%20herbs)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Lobster Thermidor",
@@ -67,7 +67,7 @@ window.restaurantData = {
                             "price": "₹1200",
                             "isVeg": false,
                             "description": "Creamy lobster in rich sauce",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Lobster%20Thermidor%20(Creamy%20lobster%20in%20rich%20sauce)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Grilled Salmon",
@@ -75,7 +75,7 @@ window.restaurantData = {
                             "price": "₹850",
                             "isVeg": false,
                             "description": "Atlantic salmon with lemon butter",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Grilled%20Salmon%20(Atlantic%20salmon%20with%20lemon%20butter)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/3763847/pexels-photo-3763847.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Seafood Platter",
@@ -83,7 +83,7 @@ window.restaurantData = {
                             "price": "₹950",
                             "isVeg": false,
                             "description": "Assorted fresh seafood",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Seafood%20Platter%20(Assorted%20fresh%20seafood)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1015568/pexels-photo-1015568.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Fish and Chips",
@@ -91,7 +91,7 @@ window.restaurantData = {
                             "price": "₹480",
                             "isVeg": false,
                             "description": "Classic British favorite",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Fish%20and%20Chips%20(Classic%20British%20favorite)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Tiramisu",
@@ -99,7 +99,7 @@ window.restaurantData = {
                             "price": "₹250",
                             "isVeg": true,
                             "description": "Classic Italian dessert",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Tiramisu%20(Classic%20Italian%20dessert)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Chocolate Lava Cake",
@@ -107,7 +107,7 @@ window.restaurantData = {
                             "price": "₹280",
                             "isVeg": true,
                             "description": "Warm chocolate with liquid center",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Chocolate%20Lava%20Cake%20(Warm%20chocolate%20with%20liquid%20center)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/45202/brownie-dessert-cake-sweet-45202.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Panna Cotta",
@@ -115,7 +115,7 @@ window.restaurantData = {
                             "price": "₹220",
                             "isVeg": true,
                             "description": "Silky Italian cream dessert",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Panna%20Cotta%20(Silky%20Italian%20cream%20dessert)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1174399/pexels-photo-1174399.jpeg?auto=compress&cs=tinysrgb&w=800"
                         }
                     ],
                     "coords": [
@@ -157,7 +157,7 @@ window.restaurantData = {
                             "price": "₹180",
                             "isVeg": false,
                             "description": "Spicy Kerala chicken fry",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Kozhi%20Ularthiyathu%20(Spicy%20Kerala%20chicken%20fry)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/2611917/pexels-photo-2611917.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Kallummakaya Fry",
@@ -165,7 +165,7 @@ window.restaurantData = {
                             "price": "₹250",
                             "isVeg": false,
                             "description": "Crispy mussel fry",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Kallummakaya%20Fry%20(Crispy%20mussel%20fry)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/2290070/pexels-photo-2290070.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Banana Chips",
@@ -173,7 +173,7 @@ window.restaurantData = {
                             "price": "₹80",
                             "isVeg": true,
                             "description": "Crispy traditional chips",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Banana%20Chips%20(Crispy%20traditional%20chips)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/566345/pexels-photo-566345.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Kerala Sadya",
@@ -181,7 +181,7 @@ window.restaurantData = {
                             "price": "₹350",
                             "isVeg": true,
                             "description": "Traditional feast on banana leaf",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Kerala%20Sadya%20(Traditional%20feast%20on%20banana%20leaf)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Karimeen Pollichathu",
@@ -189,7 +189,7 @@ window.restaurantData = {
                             "price": "₹480",
                             "isVeg": false,
                             "description": "Pearl spot fish in banana leaf",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Karimeen%20Pollichathu%20(Pearl%20spot%20fish%20in%20banana%20leaf)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Beef Fry",
@@ -197,7 +197,7 @@ window.restaurantData = {
                             "price": "₹220",
                             "isVeg": false,
                             "description": "Spicy Kerala style beef",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Beef%20Fry%20(Spicy%20Kerala%20style%20beef)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/675951/pexels-photo-675951.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Appam with Stew",
@@ -205,7 +205,7 @@ window.restaurantData = {
                             "price": "₹180",
                             "isVeg": true,
                             "description": "Soft rice pancakes with coconut stew",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Appam%20with%20Stew%20(Soft%20rice%20pancakes%20with%20coconut%20stew)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Payasam",
@@ -213,7 +213,7 @@ window.restaurantData = {
                             "price": "₹120",
                             "isVeg": true,
                             "description": "Sweet rice pudding",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Payasam%20(Sweet%20rice%20pudding)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Unniyappam",
@@ -221,7 +221,7 @@ window.restaurantData = {
                             "price": "₹100",
                             "isVeg": true,
                             "description": "Sweet rice fritters",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Unniyappam%20(Sweet%20rice%20fritters)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Ada Pradhaman",
@@ -229,7 +229,7 @@ window.restaurantData = {
                             "price": "₹140",
                             "isVeg": true,
                             "description": "Rice flakes in coconut milk",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Ada%20Pradhaman%20(Rice%20flakes%20in%20coconut%20milk)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
                         }
                     ],
                     "coords": [
@@ -254,70 +254,70 @@ window.restaurantData = {
                             "category": "Starters",
                             "price": "₹200",
                             "description": "Toasted bread with tomato basil",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Bruschetta%20(Toasted%20bread%20with%20tomato%20basil)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/566345/pexels-photo-566345.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Caesar Salad",
                             "category": "Starters",
                             "price": "₹250",
                             "description": "Crisp romaine with parmesan",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Caesar%20Salad%20(Crisp%20romaine%20with%20parmesan)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/406152/pexels-photo-406152.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Garlic Bread",
                             "category": "Starters",
                             "price": "₹150",
                             "description": "Buttery herb bread",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Garlic%20Bread%20(Buttery%20herb%20bread)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Truffle Pasta",
                             "category": "Main Course",
                             "price": "₹480",
                             "description": "Creamy pasta with truffle oil",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Truffle%20Pasta%20(Creamy%20pasta%20with%20truffle%20oil)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1437267/pexels-photo-1437267.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Margherita Pizza",
                             "category": "Main Course",
                             "price": "₹420",
                             "description": "Classic tomato and mozzarella",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Margherita%20Pizza%20(Classic%20tomato%20and%20mozzarella)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1146760/pexels-photo-1146760.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Grilled Chicken",
                             "category": "Main Course",
                             "price": "₹550",
                             "description": "Herb marinated chicken breast",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Grilled%20Chicken%20(Herb%20marinated%20chicken%20breast)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/2673353/pexels-photo-2673353.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Lasagna",
                             "category": "Main Course",
                             "price": "₹380",
                             "description": "Layered pasta with meat sauce",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Lasagna%20(Layered%20pasta%20with%20meat%20sauce)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1437267/pexels-photo-1437267.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Cheesecake",
                             "category": "Desserts",
                             "price": "₹280",
                             "description": "New York style cheesecake",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Cheesecake%20(New%20York%20style%20cheesecake)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Gelato",
                             "category": "Desserts",
                             "price": "₹180",
                             "description": "Italian ice cream trio",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Gelato%20(Italian%20ice%20cream%20trio)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1352243/pexels-photo-1352243.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Brownie Sundae",
                             "category": "Desserts",
                             "price": "₹240",
                             "description": "Warm brownie with ice cream",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Brownie%20Sundae%20(Warm%20brownie%20with%20ice%20cream)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/45202/brownie-dessert-cake-sweet-45202.jpeg?auto=compress&cs=tinysrgb&w=800"
                         }
                     ],
                     "coords": [
@@ -338,70 +338,70 @@ window.restaurantData = {
                             "category": "Starters",
                             "price": "₹280",
                             "description": "Grilled cottage cheese cubes",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Paneer%20Tikka%20(Grilled%20cottage%20cheese%20cubes)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/3928854/pexels-photo-3928854.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Tandoori Chicken",
                             "category": "Starters",
                             "price": "₹320",
                             "description": "Spiced chicken from clay oven",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Tandoori%20Chicken%20(Spiced%20chicken%20from%20clay%20oven)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/2673353/pexels-photo-2673353.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Samosa Platter",
                             "category": "Starters",
                             "price": "₹150",
                             "description": "Crispy pastry with potato filling",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Samosa%20Platter%20(Crispy%20pastry%20with%20potato%20filling)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Butter Chicken",
                             "category": "Main Course",
                             "price": "₹380",
                             "description": "Creamy tomato chicken curry",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Butter%20Chicken%20(Creamy%20tomato%20chicken%20curry)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Dal Makhani",
                             "category": "Main Course",
                             "price": "₹250",
                             "description": "Black lentils in cream",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Dal%20Makhani%20(Black%20lentils%20in%20cream)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Biryani",
                             "category": "Main Course",
                             "price": "₹350",
                             "description": "Fragrant rice with meat",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Biryani%20(Fragrant%20rice%20with%20meat)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Naan Basket",
                             "category": "Main Course",
                             "price": "₹180",
                             "description": "Assorted Indian breads",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Naan%20Basket%20(Assorted%20Indian%20breads)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Gulab Jamun",
                             "category": "Desserts",
                             "price": "₹120",
                             "description": "Sweet milk dumplings",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Gulab%20Jamun%20(Sweet%20milk%20dumplings)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Rasmalai",
                             "category": "Desserts",
                             "price": "₹140",
                             "description": "Soft cheese in sweet cream",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Rasmalai%20(Soft%20cheese%20in%20sweet%20cream)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Kulfi",
                             "category": "Desserts",
                             "price": "₹100",
                             "description": "Traditional Indian ice cream",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Kulfi%20(Traditional%20Indian%20ice%20cream)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
                         }
                     ],
                     "coords": [
@@ -422,70 +422,70 @@ window.restaurantData = {
                             "category": "Starters",
                             "price": "₹320",
                             "description": "Spicy chicken in ghee",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Chicken%20Ghee%20Roast%20(Spicy%20chicken%20in%20ghee)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/2673353/pexels-photo-2673353.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Prawn Gassi",
                             "category": "Starters",
                             "price": "₹380",
                             "description": "Prawns in coconut curry",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Prawn%20Gassi%20(Prawns%20in%20coconut%20curry)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/566345/pexels-photo-566345.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Kori Rotti",
                             "category": "Starters",
                             "price": "₹280",
                             "description": "Chicken curry with crispy rotti",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Kori%20Rotti%20(Chicken%20curry%20with%20crispy%20rotti)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/2673353/pexels-photo-2673353.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Fish Curry Rice",
                             "category": "Main Course",
                             "price": "₹350",
                             "description": "Tangy fish curry with rice",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Fish%20Curry%20Rice%20(Tangy%20fish%20curry%20with%20rice)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Neer Dosa",
                             "category": "Main Course",
                             "price": "₹180",
                             "description": "Thin rice crepes",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Neer%20Dosa%20(Thin%20rice%20crepes)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Kane Fry",
                             "category": "Main Course",
                             "price": "₹420",
                             "description": "Crispy ladyfish fry",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Kane%20Fry%20(Crispy%20ladyfish%20fry)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Pulimunchi",
                             "category": "Main Course",
                             "price": "₹300",
                             "description": "Spicy and tangy fish curry",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Pulimunchi%20(Spicy%20and%20tangy%20fish%20curry)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Patoleo",
                             "category": "Desserts",
                             "price": "₹100",
                             "description": "Sweet rice coconut rolls",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Patoleo%20(Sweet%20rice%20coconut%20rolls)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Halwa",
                             "category": "Desserts",
                             "price": "₹120",
                             "description": "Traditional wheat dessert",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Halwa%20(Traditional%20wheat%20dessert)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
                             "name": "Banana Halwa",
                             "category": "Desserts",
                             "price": "₹110",
                             "description": "Sweet banana pudding",
-                            "image": "https://gen.pollinations.ai/image/professional%20food%20photography%20of%20Banana%20Halwa%20(Sweet%20banana%20pudding)%2C%20high%20resolution%2C%20gourmet%20styling%2C%20appetizing%2C%208k%2C%20sharp%20focus?width=400&height=300&seed=42&model=flux"
+                            "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
                         }
                     ],
                     "coords": [

@@ -1305,7 +1305,7 @@ const app = {
             <h3 class="food-item-name">${item.name}</h3>
             <p class="food-item-description">${item.description}</p>
             <div class="food-item-footer">
-              <span class="food-item-category">${item.category}</span>
+              <span class="food-item-category">${item.category || 'Specialty'}</span>
               <button class="add-to-cart-btn" onclick="event.stopPropagation(); app.addToCart(${restaurant.id}, '${item.name.replace(/'/g, "\\'")}', event)">
                 <span>Add</span> 🛒
               </button>
