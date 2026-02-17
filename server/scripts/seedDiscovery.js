@@ -17,7 +17,7 @@ const stories = [
         excerpt: "Discover how a unique blend of Khaima rice and Malabar spices created a culinary icon.",
         author: "Fina",
         date: "Feb 15, 2026",
-        image: "https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?w=800&h=500&fit=crop",
+        image: "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Heritage",
         content: "Thalassery Biriyani is not just a dish; it's a testament to the cultural fusion of the Malabar coast..."
     },
@@ -27,7 +27,7 @@ const stories = [
         excerpt: "Beyond the cafes of Fort Kochi lies a world of hidden snacks and local favorites.",
         author: "Mishab",
         date: "Feb 10, 2026",
-        image: "https://images.unsplash.com/photo-1601050633647-8f8f1f3ce7ff?w=800&h=500&fit=crop",
+        image: "https://images.pexels.com/photos/604969/pexels-photo-604969.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Street Food",
         content: "Walking through the narrow lanes of Mattancherry at dusk, the aroma of frying pazham pori..."
     },
@@ -37,7 +37,7 @@ const stories = [
         excerpt: "A deep dive into the 24-item vegetarian feast that defines Kerala's festivals.",
         author: "Shareef",
         date: "Feb 05, 2026",
-        image: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=800&h=500&fit=crop",
+        image: "https://images.pexels.com/photos/674574/pexels-photo-674574.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Tradition",
         content: "Sadhya is a rhythmic experience. From the placement of the banana leaf to the final payasam..."
     }

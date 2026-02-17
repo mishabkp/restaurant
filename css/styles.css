@@ -4525,7 +4525,7 @@ body {
 /* Kerala Food Stories (Blog) */
 .blog-elite-wrapper,
 .gallery-elite-wrapper {
-  padding: 4rem 2rem;
+  padding: 1rem 2rem 4rem;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -4734,8 +4734,8 @@ body {
 /* Gallery Hero Section */
 .gallery-hero-elite {
   text-align: center;
-  padding: 4rem 2rem 2rem;
-  margin-bottom: 1rem;
+  padding: 0.5rem 2rem 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .gallery-hero-elite .hero-title-elite {

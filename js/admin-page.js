@@ -102,20 +102,37 @@ const adminPortal = {
     async editStory(id) {
         try {
             const resp = await fetch(`https://restaurant-99en.onrender.com/api/discovery/stories/${id}`);
-            const story = await resp.json();
-            document.getElementById('editStoryId').value = story.id;
-            document.getElementById('storyTitle').value = story.title;
-            document.getElementById('storyExcerpt').value = story.excerpt || '';
-            document.getElementById('storyContent').value = story.content || '';
-            document.getElementById('storyAuthor').value = story.author || '';
-            document.getElementById('storyCategory').value = story.category || '';
-            document.getElementById('storyImage').value = story.image || '';
-            document.getElementById('storyDate').value = story.date || '';
-            document.getElementById('storyModalTitle').innerText = 'Edit Story';
-            document.getElementById('storyModal').classList.remove('hidden');
+            let story;
+            if (resp.ok) {
+                story = await resp.json();
+            } else {
+                throw new Error('Backend failed');
+            }
+            this.populateStoryModal(story);
         } catch (err) {
+            console.warn('Backend story fetch failed, using local fallback');
+            if (window.restaurantData && window.restaurantData.foodStories) {
+                const story = window.restaurantData.foodStories.find(s => s.id === id);
+                if (story) {
+                    this.populateStoryModal(story);
+                    return;
+                }
+            }
             this.showToast('Failed to load story details');
         }
+    },
+
+    populateStoryModal(story) {
+        document.getElementById('editStoryId').value = story.id;
+        document.getElementById('storyTitle').value = story.title;
+        document.getElementById('storyExcerpt').value = story.excerpt || '';
+        document.getElementById('storyContent').value = story.content || '';
+        document.getElementById('storyAuthor').value = story.author || '';
+        document.getElementById('storyCategory').value = story.category || '';
+        document.getElementById('storyImage').value = story.image || '';
+        document.getElementById('storyDate').value = story.date || '';
+        document.getElementById('storyModalTitle').innerText = 'Edit Story';
+        document.getElementById('storyModal').classList.remove('hidden');
     },
 
     async saveStory(e) {
@@ -175,19 +192,36 @@ const adminPortal = {
     async editGalleryItem(id) {
         try {
             const resp = await fetch('https://restaurant-99en.onrender.com/api/discovery/gallery');
-            const items = await resp.json();
-            const item = items.find(g => g.id === id);
-            if (!item) throw new Error('Not found');
-            document.getElementById('editGalleryId').value = item.id;
-            document.getElementById('galleryName').value = item.name;
-            document.getElementById('galleryLocation').value = item.location || '';
-            document.getElementById('galleryTag').value = item.tag || '';
-            document.getElementById('galleryImage').value = item.image || '';
-            document.getElementById('galleryModalTitle').innerText = 'Edit Gallery Item';
-            document.getElementById('galleryModal').classList.remove('hidden');
+            if (resp.ok) {
+                const items = await resp.json();
+                const item = items.find(g => g.id === id);
+                if (item) {
+                    this.populateGalleryModal(item);
+                    return;
+                }
+            }
+            throw new Error('Not found on backend');
         } catch (err) {
+            console.warn('Backend gallery fetch failed, using local fallback');
+            if (window.restaurantData && window.restaurantData.hiddenGems) {
+                const item = window.restaurantData.hiddenGems.find(g => g.id === id);
+                if (item) {
+                    this.populateGalleryModal(item);
+                    return;
+                }
+            }
             this.showToast('Failed to load gallery item');
         }
+    },
+
+    populateGalleryModal(item) {
+        document.getElementById('editGalleryId').value = item.id;
+        document.getElementById('galleryName').value = item.name;
+        document.getElementById('galleryLocation').value = item.location || '';
+        document.getElementById('galleryTag').value = item.tag || '';
+        document.getElementById('galleryImage').value = item.image || '';
+        document.getElementById('galleryModalTitle').innerText = 'Edit Gallery Item';
+        document.getElementById('galleryModal').classList.remove('hidden');
     },
 
     async saveGalleryItem(e) {
