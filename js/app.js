@@ -514,20 +514,18 @@ const app = {
 
     const content = `
       <div class="hero-premium fade-slide-up">
-        <!-- VIDEO BACKGROUND -->
-        <video autoplay muted loop playsinline class="video-background">
-          <source src="https://videos.pexels.com/video-files/3196238/3196238-uhd_2560_1440_25fps.mp4" type="video/mp4">
+        <!-- Cinematic Video Background -->
+        <video autoplay muted loop playsinline class="video-background" id="heroVideo" 
+               poster="https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?auto=compress&cs=tinysrgb&w=1920">
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-chef-preparing-a-dish-in-a-professional-kitchen-40544-large.mp4" type="video/mp4">
         </video>
         <div class="hero-overlay"></div>
         
         <div class="hero-split">
           <div class="hero-left">
-            <span class="hero-badge">PREMIUM DINING GUIDE</span>
-            <h1 class="hero-title">Experience the Art of <span class="text-gradient">Kerala Flavors</span></h1>
-            <p class="hero-subtitle">Discover curated dining experiences, from hidden gems to world-class restaurants across the heart of Kerala.</p>
-            <div class="hero-actions">
-              <button class="magic-btn" onclick="app.handleSurpriseMe()">✨ Surprise Me!</button>
-            </div>
+            <span class="hero-badge">Curated Excellence</span>
+            <h1 class="hero-title">Experience the Art of <span class="fancy">Kerala's Finest Flavors</span></h1>
+            <p class="hero-subtitle">Embark on a culinary journey through the heart of Kerala. From heritage recipes to modern gastronomic wonders.</p>
             <div class="hero-stats">
               <div class="stat-item">
                 <span class="stat-value">50+</span>
@@ -558,6 +556,8 @@ const app = {
         <div id="mainMap" class="map-container"></div>
       </div>
 
+      ${this.renderTrendingRadar()}
+
       <h1 class="page-title">Discover Kerala's Best Restaurants</h1>
       <p class="page-subtitle">Choose a location to explore amazing dining experiences</p>
       
@@ -580,6 +580,14 @@ const app = {
     this.updateContent(content);
     this.initCarouselDrag();
 
+    // Force play video (Ensure autoplay works)
+    setTimeout(() => {
+      const video = document.getElementById('heroVideo');
+      if (video) {
+        video.play().catch(err => console.log("Autoplay nudge failed:", err));
+      }
+    }, 100);
+
     // Initialize Home Map
     const cityMarkers = window.restaurantData.places.map(p => ({
       name: p.name,
@@ -589,6 +597,75 @@ const app = {
       linkText: "View Restaurants"
     }));
     this.initMap('mainMap', [10.5, 76.5], 7, cityMarkers);
+
+    // Start live trending updates
+    this.startTrendingUpdates();
+  },
+
+  renderTrendingRadar() {
+    // Pick 3 random restaurants from different places for variety
+    const allRestaurants = [];
+    window.restaurantData.places.forEach(p => {
+      p.restaurants.forEach(r => allRestaurants.push({ ...r, placeName: p.name }));
+    });
+
+    const trending = allRestaurants.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+    return `
+      <section class="trending-radar-section fade-slide-up">
+        <div class="radar-header">
+          <div class="section-header">
+            <span class="section-badge">LIVE ACTIVITY</span>
+            <h2 class="section-title">🔥 Trending Now Radar</h2>
+            <p class="section-subtitle">See what's capturing hearts across Kerala right now</p>
+          </div>
+          <div class="live-indicator">
+            <div class="pulse-dot"></div>
+            <span class="live-text">Real-time Pulse</span>
+          </div>
+        </div>
+
+        <div class="radar-grid" id="trendingRadarGrid">
+          ${trending.map((r, i) => `
+            <div class="trending-card fade-in" style="animation-delay: ${i * 0.2}s" onclick="app.navigateToRestaurant(${r.id})">
+              <span class="flash-tag">Hot</span>
+              <img src="${r.image}" alt="${r.name}" class="trending-img">
+              <div class="trending-info">
+                <h3 class="trending-name">${r.name}</h3>
+                <p class="trending-stat" id="stat-${r.id}">
+                  <span>👁️</span> Calculating...
+                </p>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </section>
+    `;
+  },
+
+  startTrendingUpdates() {
+    const updateStats = () => {
+      const cards = document.querySelectorAll('.trending-card');
+      cards.forEach(card => {
+        const idPart = card.querySelector('.trending-stat').id;
+        const statEl = document.getElementById(idPart);
+        if (statEl) {
+          const count = Math.floor(Math.random() * (120 - 45 + 1)) + 45;
+          statEl.style.opacity = '0';
+          setTimeout(() => {
+            statEl.innerHTML = `<span>🔥</span> ${count} people are viewing this now`;
+            statEl.style.opacity = '1';
+            statEl.style.transition = 'opacity 0.5s ease';
+          }, 500);
+        }
+      });
+    };
+
+    // Initial update
+    setTimeout(updateStats, 1000);
+    // Recurring updates
+    if (this.trendingInterval) clearInterval(this.trendingInterval);
+    this.trendingInterval = setInterval(updateStats, 5000);
   },
 
 
