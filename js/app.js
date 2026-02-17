@@ -1725,7 +1725,7 @@ const app = {
         <section class="blog-hero-elite">
           <span class="section-tag-elite text-center">Kerala Food Stories</span>
           <h1 class="hero-title-elite text-center">Culinary <span class="highlight-text">Chronicles</span></h1>
-          <p class="hero-subtitle-elite text-center" style="max-width: 600px; margin: 0 auto 3rem;">Deep dives into the flavors, traditions, and legends of God's Own Country.</p>
+          <p class="hero-subtitle-elite text-center" style="max-width: 600px; margin: 0 auto 2rem;">Deep dives into the flavors, traditions, and legends of God's Own Country.</p>
         </section>
 
         <div class="blog-grid-elite">
