@@ -13,13 +13,13 @@ const Gallery = require('../models/Gallery');
 const stories = [
     {
         id: 1,
-        title: "The Legend of Thalassery Biriyani",
-        excerpt: "Discover how a unique blend of Khaima rice and Malabar spices created a culinary icon.",
-        author: "Fina",
-        date: "Feb 15, 2026",
-        image: "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=800",
-        category: "Heritage",
-        content: "Thalassery Biriyani is not just a dish; it's a testament to the cultural fusion of the Malabar coast..."
+        title: "The Legend of the Sadya",
+        excerpt: "A deep dive into the 24-item vegetarian feast that defines Kerala's festivals.",
+        content: "Sadhya is a rhythmic experience. From the placement of the banana leaf to the final payasam...",
+        author: "Shareef",
+        category: "Tradition",
+        image: "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=800",
+        date: "Feb 10, 2026"
     },
     {
         id: 2,
@@ -27,7 +27,7 @@ const stories = [
         excerpt: "Beyond the cafes of Fort Kochi lies a world of hidden snacks and local favorites.",
         author: "Mishab",
         date: "Feb 10, 2026",
-        image: "https://images.pexels.com/photos/604969/pexels-photo-604969.jpeg?auto=compress&cs=tinysrgb&w=800",
+        image: "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Street Food",
         content: "Walking through the narrow lanes of Mattancherry at dusk, the aroma of frying pazham pori..."
     },
@@ -37,7 +37,7 @@ const stories = [
         excerpt: "A deep dive into the 24-item vegetarian feast that defines Kerala's festivals.",
         author: "Shareef",
         date: "Feb 05, 2026",
-        image: "https://images.pexels.com/photos/674574/pexels-photo-674574.jpeg?auto=compress&cs=tinysrgb&w=800",
+        image: "https://images.pexels.com/photos/675951/pexels-photo-675951.jpeg?auto=compress&cs=tinysrgb&w=800",
         category: "Tradition",
         content: "Sadhya is a rhythmic experience. From the placement of the banana leaf to the final payasam..."
     }
