@@ -19,6 +19,7 @@ app.use('/api/orders', require('./routes/orders'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/restaurants', require('./routes/restaurants'));
+app.use('/api/discovery', require('./routes/discovery'));
 
 
 

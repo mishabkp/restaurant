@@ -31,7 +31,209 @@ const adminPortal = {
         if (pageId === 'analytics') this.fetchAnalytics();
         if (pageId === 'reviews') this.fetchReviews();
         if (pageId === 'users') this.fetchUsers();
+        if (pageId === 'discovery') this.fetchDiscoveryData();
     },
+
+    // ==================== DISCOVERY MANAGEMENT ====================
+    async fetchDiscoveryData() {
+        const storiesBody = document.getElementById('storiesBody');
+        const galleryBody = document.getElementById('galleryBody');
+        storiesBody.innerHTML = '<tr><td colspan="5">Loading stories...</td></tr>';
+        galleryBody.innerHTML = '<tr><td colspan="5">Loading gallery...</td></tr>';
+
+        try {
+            const [storiesResp, galleryResp] = await Promise.all([
+                fetch('https://restaurant-99en.onrender.com/api/discovery/stories'),
+                fetch('https://restaurant-99en.onrender.com/api/discovery/gallery')
+            ]);
+            const stories = await storiesResp.json();
+            const gallery = await galleryResp.json();
+            this.renderStoriesTable(stories);
+            this.renderGalleryTable(gallery);
+        } catch (err) {
+            console.error('Discovery fetch error:', err);
+            // Fallback to local data
+            if (window.restaurantData) {
+                this.renderStoriesTable(window.restaurantData.foodStories || []);
+                this.renderGalleryTable(window.restaurantData.hiddenGems || []);
+            }
+        }
+    },
+
+    renderStoriesTable(stories) {
+        const body = document.getElementById('storiesBody');
+        body.innerHTML = stories.map(s => `
+            <tr>
+                <td><img src="${s.image}" alt="${s.title}" style="width: 80px; height: 50px; object-fit: cover; border-radius: 8px;"></td>
+                <td><b>${s.title}</b><br><small style="color: var(--text-muted);">${(s.excerpt || '').substring(0, 50)}...</small></td>
+                <td>${s.author || '-'}</td>
+                <td><span style="background: rgba(0,242,254,0.1); padding: 0.2rem 0.6rem; border-radius: 5px; font-size: 0.75rem;">${s.category || '-'}</span></td>
+                <td>
+                    <button class="nav-btn" onclick="adminPortal.editStory(${s.id})" style="font-size: 0.7rem; margin-right: 0.5rem;">✏️ Edit</button>
+                    <button class="logout-btn" onclick="adminPortal.deleteStory(${s.id})" style="padding: 0.3rem 0.6rem; font-size: 0.7rem; background: rgba(255,0,0,0.1); color: #ff3d71;">🗑️</button>
+                </td>
+            </tr>
+        `).join('') || '<tr><td colspan="5" style="text-align:center;">No stories yet. Add your first story!</td></tr>';
+    },
+
+    renderGalleryTable(items) {
+        const body = document.getElementById('galleryBody');
+        body.innerHTML = items.map(g => `
+            <tr>
+                <td><img src="${g.image}" alt="${g.name}" style="width: 80px; height: 50px; object-fit: cover; border-radius: 8px;"></td>
+                <td><b>${g.name}</b></td>
+                <td>${g.location || '-'}</td>
+                <td><span style="background: rgba(0,242,254,0.1); padding: 0.2rem 0.6rem; border-radius: 5px; font-size: 0.75rem;">${g.tag || '-'}</span></td>
+                <td>
+                    <button class="nav-btn" onclick="adminPortal.editGalleryItem(${g.id})" style="font-size: 0.7rem; margin-right: 0.5rem;">✏️ Edit</button>
+                    <button class="logout-btn" onclick="adminPortal.deleteGalleryItem(${g.id})" style="padding: 0.3rem 0.6rem; font-size: 0.7rem; background: rgba(255,0,0,0.1); color: #ff3d71;">🗑️</button>
+                </td>
+            </tr>
+        `).join('') || '<tr><td colspan="5" style="text-align:center;">No gallery items yet. Add your first gem!</td></tr>';
+    },
+
+    showAddStory() {
+        document.getElementById('storyForm').reset();
+        document.getElementById('editStoryId').value = '';
+        document.getElementById('storyModalTitle').innerText = 'Add New Story';
+        document.getElementById('storyModal').classList.remove('hidden');
+    },
+
+    async editStory(id) {
+        try {
+            const resp = await fetch(`https://restaurant-99en.onrender.com/api/discovery/stories/${id}`);
+            const story = await resp.json();
+            document.getElementById('editStoryId').value = story.id;
+            document.getElementById('storyTitle').value = story.title;
+            document.getElementById('storyExcerpt').value = story.excerpt || '';
+            document.getElementById('storyContent').value = story.content || '';
+            document.getElementById('storyAuthor').value = story.author || '';
+            document.getElementById('storyCategory').value = story.category || '';
+            document.getElementById('storyImage').value = story.image || '';
+            document.getElementById('storyDate').value = story.date || '';
+            document.getElementById('storyModalTitle').innerText = 'Edit Story';
+            document.getElementById('storyModal').classList.remove('hidden');
+        } catch (err) {
+            this.showToast('Failed to load story details');
+        }
+    },
+
+    async saveStory(e) {
+        e.preventDefault();
+        const editId = document.getElementById('editStoryId').value;
+        const data = {
+            title: document.getElementById('storyTitle').value,
+            excerpt: document.getElementById('storyExcerpt').value,
+            content: document.getElementById('storyContent').value,
+            author: document.getElementById('storyAuthor').value,
+            category: document.getElementById('storyCategory').value,
+            image: document.getElementById('storyImage').value,
+            date: document.getElementById('storyDate').value || new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
+        };
+
+        try {
+            const url = editId
+                ? `https://restaurant-99en.onrender.com/api/discovery/stories/${editId}`
+                : 'https://restaurant-99en.onrender.com/api/discovery/stories';
+            const resp = await fetch(url, {
+                method: editId ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (resp.ok) {
+                this.showToast(editId ? 'Story Updated! ✅' : 'New Story Added! 📖');
+                document.getElementById('storyModal').classList.add('hidden');
+                this.fetchDiscoveryData();
+            } else {
+                throw new Error('Save failed');
+            }
+        } catch (err) {
+            this.showToast('Failed to save story ❌');
+        }
+    },
+
+    async deleteStory(id) {
+        if (!confirm('Delete this story?')) return;
+        try {
+            const resp = await fetch(`https://restaurant-99en.onrender.com/api/discovery/stories/${id}`, { method: 'DELETE' });
+            if (resp.ok) {
+                this.showToast('Story deleted! 🗑️');
+                this.fetchDiscoveryData();
+            }
+        } catch (err) {
+            this.showToast('Failed to delete story');
+        }
+    },
+
+    showAddGallery() {
+        document.getElementById('galleryForm').reset();
+        document.getElementById('editGalleryId').value = '';
+        document.getElementById('galleryModalTitle').innerText = 'Add New Gem';
+        document.getElementById('galleryModal').classList.remove('hidden');
+    },
+
+    async editGalleryItem(id) {
+        try {
+            const resp = await fetch('https://restaurant-99en.onrender.com/api/discovery/gallery');
+            const items = await resp.json();
+            const item = items.find(g => g.id === id);
+            if (!item) throw new Error('Not found');
+            document.getElementById('editGalleryId').value = item.id;
+            document.getElementById('galleryName').value = item.name;
+            document.getElementById('galleryLocation').value = item.location || '';
+            document.getElementById('galleryTag').value = item.tag || '';
+            document.getElementById('galleryImage').value = item.image || '';
+            document.getElementById('galleryModalTitle').innerText = 'Edit Gallery Item';
+            document.getElementById('galleryModal').classList.remove('hidden');
+        } catch (err) {
+            this.showToast('Failed to load gallery item');
+        }
+    },
+
+    async saveGalleryItem(e) {
+        e.preventDefault();
+        const editId = document.getElementById('editGalleryId').value;
+        const data = {
+            name: document.getElementById('galleryName').value,
+            location: document.getElementById('galleryLocation').value,
+            tag: document.getElementById('galleryTag').value,
+            image: document.getElementById('galleryImage').value
+        };
+
+        try {
+            const url = editId
+                ? `https://restaurant-99en.onrender.com/api/discovery/gallery/${editId}`
+                : 'https://restaurant-99en.onrender.com/api/discovery/gallery';
+            const resp = await fetch(url, {
+                method: editId ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (resp.ok) {
+                this.showToast(editId ? 'Gallery Item Updated! ✅' : 'New Gem Added! 🖼️');
+                document.getElementById('galleryModal').classList.add('hidden');
+                this.fetchDiscoveryData();
+            } else {
+                throw new Error('Save failed');
+            }
+        } catch (err) {
+            this.showToast('Failed to save gallery item ❌');
+        }
+    },
+
+    async deleteGalleryItem(id) {
+        if (!confirm('Delete this gallery item?')) return;
+        try {
+            const resp = await fetch(`https://restaurant-99en.onrender.com/api/discovery/gallery/${id}`, { method: 'DELETE' });
+            if (resp.ok) {
+                this.showToast('Gallery item deleted! 🗑️');
+                this.fetchDiscoveryData();
+            }
+        } catch (err) {
+            this.showToast('Failed to delete gallery item');
+        }
+    },
+
 
     async loadDashboard() {
         try {

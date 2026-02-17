@@ -232,6 +232,9 @@
             <li class="nav-item" onclick="adminPortal.switchPage('users', this)">
                 <span>👥</span> Users
             </li>
+            <li class="nav-item" onclick="adminPortal.switchPage('discovery', this)">
+                <span>📖</span> Discovery
+            </li>
         </ul>
         <div class="logout-section">
             <button class="logout-btn" style="width: 100%;" onclick="adminPortal.logout()">Logout</button>
@@ -329,6 +332,62 @@
         <div id="usersPage" class="page">
             <h2 class="section-title">User Management</h2>
             <div id="usersContent"></div>
+        </div>
+
+        <div id="discoveryPage" class="page">
+            <h2 class="section-title">Discovery Management</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Manage Kerala Food Stories and Hidden Gems Gallery
+                items.</p>
+
+            <!-- Stories Section -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.1rem;">📖 Food Stories</h3>
+                <button class="checkout-btn" style="padding: 0.5rem 1.5rem;" onclick="adminPortal.showAddStory()">+ Add
+                    Story</button>
+            </div>
+            <div class="table-responsive" style="margin-bottom: 3rem;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Category</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="storiesBody">
+                        <tr>
+                            <td colspan="5">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Gallery Section -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.1rem;">🖼️ Hidden Gems Gallery</h3>
+                <button class="checkout-btn" style="padding: 0.5rem 1.5rem;" onclick="adminPortal.showAddGallery()">+
+                    Add Gem</button>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Tag</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="galleryBody">
+                        <tr>
+                            <td colspan="5">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
 
@@ -436,6 +495,81 @@
 
     <!-- Toast container -->
     <div id="toastContainer" style="position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;"></div>
+
+    <!-- Story Entry/Edit Modal -->
+    <div id="storyModal" class="modal-overlay hidden" style="z-index: 1100;">
+        <div class="modal-content" style="max-width: 550px;">
+            <h2 class="section-title" id="storyModalTitle">Add New Story</h2>
+            <form id="storyForm" onsubmit="adminPortal.saveStory(event)">
+                <input type="hidden" id="editStoryId">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Title</label>
+                    <input type="text" id="storyTitle" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Excerpt (Short Description)</label>
+                    <textarea id="storyExcerpt" class="form-control" style="height: 60px;" required></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Full Content</label>
+                    <textarea id="storyContent" class="form-control" style="height: 100px;"></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group">
+                        <label>Author</label>
+                        <input type="text" id="storyAuthor" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <input type="text" id="storyCategory" class="form-control"
+                            placeholder="e.g. Heritage, Street Food" required>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Image URL</label>
+                    <input type="text" id="storyImage" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label>Date</label>
+                    <input type="text" id="storyDate" class="form-control" placeholder="e.g. Feb 17, 2026">
+                </div>
+                <button type="submit" class="checkout-btn">Save Story</button>
+                <button type="button" class="logout-btn"
+                    style="margin-top: 1rem; width: 100%; border: none; background: none; color: var(--text-muted);"
+                    onclick="document.getElementById('storyModal').classList.add('hidden')">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Gallery Entry/Edit Modal -->
+    <div id="galleryModal" class="modal-overlay hidden" style="z-index: 1100;">
+        <div class="modal-content" style="max-width: 450px;">
+            <h2 class="section-title" id="galleryModalTitle">Add New Gem</h2>
+            <form id="galleryForm" onsubmit="adminPortal.saveGalleryItem(event)">
+                <input type="hidden" id="editGalleryId">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Name</label>
+                    <input type="text" id="galleryName" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Location</label>
+                    <input type="text" id="galleryLocation" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Tag (e.g. Authentic, Scenic)</label>
+                    <input type="text" id="galleryTag" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label>Image URL</label>
+                    <input type="text" id="galleryImage" class="form-control" required>
+                </div>
+                <button type="submit" class="checkout-btn">Save Gallery Item</button>
+                <button type="button" class="logout-btn"
+                    style="margin-top: 1rem; width: 100%; border: none; background: none; color: var(--text-muted);"
+                    onclick="document.getElementById('galleryModal').classList.add('hidden')">Cancel</button>
+            </form>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/data.js"></script>

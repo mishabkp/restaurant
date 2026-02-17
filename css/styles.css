@@ -4705,20 +4705,88 @@ body {
   margin-bottom: 2rem;
 }
 
-/* Hidden Gems Gallery */
-.gallery-grid-elite {
-  columns: 3;
-  column-gap: 2rem;
-  margin-top: 2rem;
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+.text-center {
+  text-align: center;
 }
 
+/* ========================================
+   HIDDEN GEMS GALLERY — PREMIUM REDESIGN
+   ======================================== */
+
+/* Section Tag Badge */
+.section-tag-elite {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--accent-color);
+  background: rgba(255, 215, 0, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  padding: 0.5rem 1.5rem;
+  border-radius: 100px;
+  margin-bottom: 1.5rem;
+}
+
+/* Gallery Hero Section */
+.gallery-hero-elite {
+  text-align: center;
+  padding: 4rem 2rem 2rem;
+  margin-bottom: 1rem;
+}
+
+.gallery-hero-elite .hero-title-elite {
+  margin-bottom: 1rem;
+}
+
+.gallery-hero-elite .hero-subtitle-elite {
+  max-width: 520px;
+  margin: 0 auto 2rem;
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* Gallery Grid */
+.gallery-grid-elite {
+  columns: 3;
+  column-gap: 1.5rem;
+  margin-top: 0;
+}
+
+/* Gallery Card */
 .gallery-item-elite {
   break-inside: avoid;
-  margin-bottom: 2rem;
-  border-radius: 24px;
+  margin-bottom: 1.5rem;
+  border-radius: 20px;
   overflow: hidden;
   position: relative;
   cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: galleryFadeIn 0.6s ease forwards;
+  opacity: 0;
+}
+
+@keyframes galleryFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gallery-item-elite:hover {
+  border-color: rgba(255, 215, 0, 0.2);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  transform: translateY(-4px);
 }
 
 .gallery-img-wrapper {
@@ -4728,18 +4796,18 @@ body {
 .gallery-img {
   width: 100%;
   display: block;
-  transition: transform 0.5s ease;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .gallery-overlay-elite {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%);
   opacity: 0;
   transition: opacity 0.4s ease;
   display: flex;
   align-items: flex-end;
-  padding: 2rem;
+  padding: 1.8rem;
 }
 
 .gallery-item-elite:hover .gallery-overlay-elite {
@@ -4747,12 +4815,12 @@ body {
 }
 
 .gallery-item-elite:hover .gallery-img {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .gallery-info-elite {
-  transform: translateY(20px);
-  transition: transform 0.4s ease;
+  transform: translateY(15px);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .gallery-item-elite:hover .gallery-info-elite {
@@ -4761,21 +4829,25 @@ body {
 
 .gallery-tag-elite {
   color: var(--accent-color);
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 2.5px;
 }
 
 .gallery-name-elite {
   color: white;
-  font-size: 1.2rem;
-  margin: 0.5rem 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0.4rem 0 0.25rem;
+  line-height: 1.3;
 }
 
 .gallery-loc-elite {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.78rem;
+  font-weight: 500;
 }
 
 @media (max-width: 1000px) {

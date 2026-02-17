@@ -90,20 +90,39 @@ const app = {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
 
-      const response = await fetch('https://restaurant-99en.onrender.com/api/restaurants/places', {
-        signal: controller.signal
-      });
+      const [placesResp, storiesResp, galleryResp] = await Promise.all([
+        fetch('https://restaurant-99en.onrender.com/api/restaurants/places', { signal: controller.signal }),
+        fetch('https://restaurant-99en.onrender.com/api/discovery/stories', { signal: controller.signal }).catch(() => null),
+        fetch('https://restaurant-99en.onrender.com/api/discovery/gallery', { signal: controller.signal }).catch(() => null)
+      ]);
       clearTimeout(timeoutId);
 
-      if (response.ok) {
-        const data = await response.json();
+      if (placesResp.ok) {
+        const data = await placesResp.json();
         if (data && data.length > 0) {
           window.restaurantData.places = data;
-          console.log('✅ Live data loaded successfully (' + data.length + ' places)');
-          return;
+          console.log('✅ Live places loaded (' + data.length + ' places)');
         }
       }
-      throw new Error('Backend returned no data');
+
+      // Load stories from backend
+      if (storiesResp && storiesResp.ok) {
+        const stories = await storiesResp.json();
+        if (stories && stories.length > 0) {
+          window.restaurantData.foodStories = stories;
+          console.log('✅ Live stories loaded (' + stories.length + ' stories)');
+        }
+      }
+
+      // Load gallery from backend
+      if (galleryResp && galleryResp.ok) {
+        const gallery = await galleryResp.json();
+        if (gallery && gallery.length > 0) {
+          window.restaurantData.hiddenGems = gallery;
+          console.log('✅ Live gallery loaded (' + gallery.length + ' items)');
+        }
+      }
+
     } catch (err) {
       if (err.name === 'AbortError') {
         console.warn('⚠️ Backend request timed out (cold start), using local fallback');
@@ -1813,21 +1832,21 @@ const app = {
     const content = `
       <div class="gallery-elite-wrapper">
         <section class="gallery-hero-elite">
-          <span class="section-tag-elite text-center">Visual Discovery</span>
-          <h1 class="hero-title-elite text-center">Hidden <span class="highlight-text">Gems</span></h1>
-          <p class="hero-subtitle-elite text-center" style="max-width: 600px; margin: 0 auto 3rem;">A visual journey through Kerala's most authentic and undocumented food spots.</p>
+          <span class="section-tag-elite">Visual Discovery</span>
+          <h1 class="hero-title-elite">Hidden <span class="highlight-text">Gems</span></h1>
+          <p class="hero-subtitle-elite">A visual journey through Kerala's most authentic and undocumented food spots.</p>
         </section>
 
         <div class="gallery-grid-elite">
           ${gems.map((gem, index) => `
-            <div class="gallery-item-elite" style="animation-delay: ${index * 0.1}s">
+            <div class="gallery-item-elite" style="animation-delay: ${index * 0.08}s">
               <div class="gallery-img-wrapper">
                 <img src="${gem.image}" alt="${gem.name}" class="gallery-img">
                 <div class="gallery-overlay-elite">
                   <div class="gallery-info-elite">
                     <span class="gallery-tag-elite">${gem.tag}</span>
                     <h3 class="gallery-name-elite">${gem.name}</h3>
-                    <p class="gallery-loc-elite"><i class="fas fa-map-marker-alt"></i> ${gem.location}</p>
+                    <p class="gallery-loc-elite">📍 ${gem.location}</p>
                   </div>
                 </div>
               </div>
