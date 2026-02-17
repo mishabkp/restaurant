@@ -26,7 +26,11 @@ app.use('/api/discovery', require('./routes/discovery'));
 
 // Basic Route
 app.get('/', (req, res) => {
-    res.send('Restaurant Navigator API is running...');
+    res.json({
+        msg: 'Restaurant Navigator API is running...',
+        version: '1.2.0',
+        deployment_time: new Date().toISOString()
+    });
 });
 
 // Database Connection
