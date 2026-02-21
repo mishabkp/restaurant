@@ -579,6 +579,68 @@
         </div>
     </div>
 
+    <!-- Room Management Modal -->
+    <div id="roomsModal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 800px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 class="section-title" id="roomsModalTitle" style="margin: 0;">Rooms</h2>
+                <button class="checkout-btn" style="padding: 0.5rem 1rem;" onclick="adminPortal.showAddRoom()">+ Add
+                    Room</button>
+            </div>
+            <div class="table-responsive" style="max-height: 400px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type/Amenities</th>
+                            <th>Price</th>
+                            <th>Image</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roomsBody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            <button class="logout-btn"
+                style="margin-top: 1rem; width: 100%; border: none; background: none; color: var(--text-muted);"
+                onclick="adminPortal.closeModals()">Close</button>
+        </div>
+    </div>
+
+    <!-- Add/Edit Room Entry Form -->
+    <div id="roomEntryModal" class="modal-overlay hidden" style="z-index: 1002;">
+        <div class="modal-content" style="max-width: 400px;">
+            <h2 class="section-title" id="roomEntryTitle">Add New Room</h2>
+            <form id="roomEntryForm" onsubmit="adminPortal.saveRoom(event)">
+                <input type="hidden" id="editRoomIndex">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Room Type</label>
+                    <input type="text" id="roomType" class="form-control" placeholder="e.g. Sea View Suite" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Price</label>
+                    <input type="text" id="roomPrice" class="form-control" placeholder="e.g. ₹8500" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Amenities (comma separated)</label>
+                    <input type="text" id="roomAmenities" class="form-control" placeholder="e.g. AC, WiFi, Pool">
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Image URL</label>
+                    <input type="text" id="roomImage" class="form-control" required>
+                </div>
+                <button type="submit" class="checkout-btn">Save Room</button>
+                <button type="button" class="logout-btn"
+                    style="margin-top: 1rem; width: 100%; border: none; background: none; color: var(--text-muted);"
+                    onclick="adminPortal.closeRoomEntryModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toastContainer" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; pointer-events: none;">
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/data.js"></script>
     <script src="js/admin-page.js"></script>

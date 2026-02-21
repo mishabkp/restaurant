@@ -132,9 +132,172 @@ const adminPortal = {
         document.getElementById('storyImage').value = story.image || '';
         document.getElementById('storyDate').value = story.date || '';
         document.getElementById('storyModalTitle').innerText = 'Edit Story';
-        document.getElementById('storyModal').classList.remove('hidden');
+        document.getElementById('foodModal').classList.remove('hidden');
     },
 
+    // --- Room Management ---
+    async manageRooms(restaurantId) {
+        this.currentManagingRest = restaurantId;
+        const modal = document.getElementById('roomsModal');
+        const title = document.getElementById('roomsModalTitle');
+        const body = document.getElementById('roomsBody');
+
+        modal.classList.remove('hidden');
+        body.innerHTML = '<tr><td colspan="4">Loading items...</td></tr>';
+
+        try {
+            const resp = await fetch(`https://restaurant-99en.onrender.com/api/restaurants/${restaurantId}`);
+            if (resp.ok) {
+                const rest = await resp.json();
+                title.innerText = `Manage Rooms: ${rest.name}`;
+                this.renderRooms(rest.rooms || []);
+            } else {
+                throw new Error('Fallback to local');
+            }
+        } catch (err) {
+            console.warn("Using local data for room items");
+            if (window.restaurantData && window.restaurantData.places) {
+                let foundRest;
+                window.restaurantData.places.forEach(p => {
+                    const r = p.restaurants.find(res => res.id === restaurantId);
+                    if (r) foundRest = r;
+                });
+                if (foundRest) {
+                    title.innerText = `Manage Rooms: ${foundRest.name} (Local)`;
+                    this.renderRooms(foundRest.rooms || []);
+                }
+            }
+        }
+    },
+
+    renderRooms(items) {
+        const body = document.getElementById('roomsBody');
+        body.innerHTML = items.map((item, idx) => `
+            <tr>
+                <td><b>${item.type}</b><br><small>${(item.amenities || []).join(', ')}</small></td>
+                <td>${item.price}</td>
+                <td><img src="${item.image}" width="50" style="border-radius:4px;"></td>
+                <td>
+                    <button class="nav-btn" onclick="adminPortal.editRoom(${idx})" style="padding: 0.3rem 0.6rem; font-size: 0.7rem; margin-right: 0.5rem;">✏️ Edit</button>
+                    <button class="logout-btn" onclick="adminPortal.deleteRoom(${idx})" style="padding: 0.3rem 0.6rem; font-size: 0.7rem; background: rgba(255,0,0,0.1); color: #ff3d71;">Delete</button>
+                </td>
+            </tr>
+        `).join('') || '<tr><td colspan="4" style="text-align:center;">No rooms added yet.</td></tr>';
+    },
+
+    async editRoom(index) {
+        try {
+            let item;
+            try {
+                const resp = await fetch(`https://restaurant-99en.onrender.com/api/restaurants/${this.currentManagingRest}`);
+                const rest = await resp.json();
+                item = rest.rooms[index];
+            } catch (e) {
+                if (window.restaurantData) {
+                    let foundRest;
+                    window.restaurantData.places.forEach(p => {
+                        const r = p.restaurants.find(res => res.id === this.currentManagingRest);
+                        if (r) foundRest = r;
+                    });
+                    item = foundRest.rooms[index];
+                }
+            }
+
+            if (!item) throw new Error('Room not found');
+
+            document.getElementById('roomsModal').classList.add('hidden');
+
+            document.getElementById('roomType').value = item.type;
+            document.getElementById('roomPrice').value = item.price;
+            document.getElementById('roomAmenities').value = (item.amenities || []).join(', ');
+            document.getElementById('roomImage').value = item.image;
+            document.getElementById('editRoomIndex').value = index;
+            document.getElementById('roomEntryTitle').innerText = 'Edit Room';
+            document.getElementById('roomEntryModal').classList.remove('hidden');
+        } catch (err) {
+            this.showToast('Failed to load room details');
+        }
+    },
+
+    async deleteRoom(index) {
+        if (!confirm('Delete this room?')) return;
+        try {
+            const resp = await fetch(`https://restaurant-99en.onrender.com/api/restaurants/${this.currentManagingRest}`);
+            const rest = await resp.json();
+
+            rest.rooms.splice(index, 1);
+
+            const updateResp = await fetch(`https://restaurant-99en.onrender.com/api/admin/restaurants/${this.currentManagingRest}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rooms: rest.rooms })
+            });
+
+            if (updateResp.ok) {
+                this.showToast('Room removed! 🗑️');
+                this.manageRooms(this.currentManagingRest);
+            }
+        } catch (err) {
+            this.showToast('Failed to delete room');
+        }
+    },
+
+    showAddRoom() {
+        document.getElementById('roomEntryForm').reset();
+        document.getElementById('editRoomIndex').value = '';
+        document.getElementById('roomEntryTitle').innerText = 'Add New Room';
+        document.getElementById('roomEntryModal').classList.remove('hidden');
+    },
+
+    async saveRoom(e) {
+        e.preventDefault();
+
+        const amenitiesStr = document.getElementById('roomAmenities').value;
+        const roomData = {
+            type: document.getElementById('roomType').value,
+            price: document.getElementById('roomPrice').value,
+            amenities: amenitiesStr ? amenitiesStr.split(',').map(s => s.trim()) : [],
+            image: document.getElementById('roomImage').value
+        };
+
+        const editIndex = document.getElementById('editRoomIndex').value;
+
+        try {
+            const resp = await fetch(`https://restaurant-99en.onrender.com/api/restaurants/${this.currentManagingRest}`);
+            const rest = await resp.json();
+
+            if (!rest.rooms) rest.rooms = [];
+
+            if (editIndex !== '') {
+                rest.rooms[parseInt(editIndex)] = roomData;
+            } else {
+                rest.rooms.push(roomData);
+            }
+
+            const updateResp = await fetch(`https://restaurant-99en.onrender.com/api/admin/restaurants/${this.currentManagingRest}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rooms: rest.rooms })
+            });
+
+            if (updateResp.ok) {
+                this.showToast(editIndex !== '' ? 'Room Updated! ✅' : 'New Room Added! 🛏️');
+                this.closeRoomEntryModal();
+                this.manageRooms(this.currentManagingRest);
+            }
+        } catch (err) {
+            this.showToast('Failed to save room details');
+        }
+    },
+
+    closeRoomEntryModal() {
+        document.getElementById('roomEntryModal').classList.add('hidden');
+        if (this.currentManagingRest) {
+            document.getElementById('roomsModal').classList.remove('hidden');
+        }
+    },
+
+    // --- Stories Management ---
     async saveStory(e) {
         e.preventDefault();
         const editId = document.getElementById('editStoryId').value;
@@ -440,6 +603,7 @@ const adminPortal = {
                 <div style="display: flex; gap: 0.5rem;">
                     <button class="nav-btn" onclick="adminPortal.editRestaurant(${r.id})" style="font-size: 0.7rem;">✏️ Edit</button>
                     <button class="nav-btn" onclick="adminPortal.manageMenu(${r.id})" style="font-size: 0.7rem;">🍴 Menu</button>
+                    <button class="nav-btn" onclick="adminPortal.manageRooms(${r.id})" style="font-size: 0.7rem; background: rgba(102, 126, 234, 0.2); color: #667eea;">🛏️ Rooms</button>
                 </div>
             </div>
         `).join('') || 'No restaurants';
