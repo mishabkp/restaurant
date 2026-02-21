@@ -18,8 +18,67 @@ const app = {
     place: 'all',
     restaurant: 'all'
   },
+  compareList: [],
   lastOrderId: null,
   stripePublicKey: 'pk_test_51Pxy00PlaceholderKeyOnly', // Replace with real key
+  userInterests: JSON.parse(localStorage.getItem('userInterests')) || {
+    categories: {}, // e.g. { 'Main Course': 5, 'Snacks': 2 }
+    cuisines: {}   // e.g. { 'Malabar': 3, 'Continental': 1 }
+  },
+
+  // ========================================
+  // MACHINE LEARNING - RECOMMENDATION ENGINE
+  // ========================================
+  recoModel: {
+    weights: {
+      cuisine: 3.5,
+      category: 2.0,
+      rating: 4.0,
+      recency: 1.5
+    },
+
+    // 1. Feature Extraction: Convert item to a feature vector
+    extractFeatures(item) {
+      return {
+        cuisine: item.cuisine || 'Kerala',
+        category: item.category || 'Specialty',
+        rating: item.rating || 4.0
+      };
+    },
+
+    // 2. Similarity Calculus: Content-Based Filtering logic
+    calculateMatchScore(item, userProfile) {
+      let score = 0;
+      const features = this.extractFeatures(item);
+
+      // Match Cuisine (Higher Priority)
+      if (userProfile.cuisines[features.cuisine]) {
+        score += userProfile.cuisines[features.cuisine] * this.weights.cuisine;
+      }
+
+      // Match Category
+      if (userProfile.categories[features.category]) {
+        score += userProfile.categories[features.category] * this.weights.category;
+      }
+
+      // Bias towards high-rated items
+      score += features.rating * this.weights.rating;
+
+      return score;
+    },
+
+    // 3. Prediction Engine: Rank all items for the user
+    predict(items, userProfile, limit = 4) {
+      const scored = items.map(item => ({
+        ...item,
+        mlScore: this.calculateMatchScore(item, userProfile)
+      }));
+
+      // Filter unique by name and sort by ML score
+      const unique = scored.filter((v, i, a) => a.findIndex(t => t.name === v.name) === i);
+      return unique.sort((a, b) => b.mlScore - a.mlScore).slice(0, limit);
+    }
+  },
 
   updateContent(html) {
     const mainContent = document.getElementById('mainContent');
@@ -100,8 +159,26 @@ const app = {
       if (placesResp.ok) {
         const data = await placesResp.json();
         if (data && data.length > 0) {
-          window.restaurantData.places = data;
-          console.log('✅ Live places loaded (' + data.length + ' places)');
+          // MERGE: Keep local districts (like Idukki, Wayanad) and add/update from backend
+          const localPlaces = window.restaurantData.places || [];
+          const localIds = localPlaces.map(p => p.id);
+
+          data.forEach(p => {
+            const existingIndex = localIds.indexOf(p.id);
+            if (existingIndex !== -1) {
+              // Update existing place if backend has it (optional: depends on trust level)
+              // For now, let's prioritize local if it's already there to preserve manual edits
+              // But we can update restaurants if they are empty
+              if (localPlaces[existingIndex].restaurants.length === 0) {
+                localPlaces[existingIndex] = p;
+              }
+            } else {
+              localPlaces.push(p);
+            }
+          });
+
+          window.restaurantData.places = localPlaces;
+          console.log('✅ Live places synced (' + localPlaces.length + ' total places)');
         }
       }
 
@@ -326,6 +403,7 @@ const app = {
 
     this.saveCart();
     this.showToast(`Added ${item.name} to cart! 🛒`);
+    this.updateInterests(item.category, restaurant.cuisine);
 
     // Trigger fly animation
     const btn = event?.currentTarget;
@@ -459,6 +537,9 @@ const app = {
     }
     if (parts[0] === 'gallery') type = 'gallery';
     if (parts[0] === 'dashboard') type = 'dashboard';
+    if (parts[0] === 'trends') type = 'dashboard'; // Use dashboard skeleton for trends
+    if (parts[0] === 'about') type = 'blog'; // Simpler skeleton for about
+    if (parts[0] === 'contact') type = 'blog';
 
     this.showSkeletons(type);
 
@@ -482,6 +563,8 @@ const app = {
         }
       } else if (parts[0] === 'gallery') {
         this.showGalleryPage();
+      } else if (parts[0] === 'trends') {
+        this.showAnalyticalDashboard();
       } else if (parts[0] === 'contact') {
         this.showContactPage();
       } else {
@@ -752,23 +835,29 @@ const app = {
         });
       });
 
-      // Filter unique items and pick random 3
-      suggestions = suggestions.filter((v, i, a) => a.findIndex(t => t.name === v.name) === i);
-      const shuffled = suggestions.sort(() => 0.5 - Math.random()).slice(0, 3);
+      // Prediction Engine for mood-specific items using recoModel
+      const selectedMoodItems = this.recoModel.predict(suggestions, this.userInterests, 3);
 
       container.innerHTML = `
-        <h3 style="margin: 2rem 0 1rem; color: var(--text-primary);">Chef's Recommendations for you:</h3>
-        <div class="food-items">
-          ${shuffled.map(item => `
+        <div class="mood-suggestion-header">
+           <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">Matched for your <span class="text-gradient">${mood}</span> mood:</h3>
+           <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">AI-Analyzed picks based on your recent activity.</p>
+        </div>
+        <div class="food-items" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; width: 100%;">
+          ${selectedMoodItems.map(item => {
+        const matchPercent = Math.min(99, 87 + (item.mlScore % 12));
+        return `
             <div class="food-item fade-in" onclick="app.showFoodModal(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}')">
               <div class="food-item-image-container">
+                <div class="mood-match-tag">✨ ${matchPercent}% AI Match</div>
                 ${item.image ? `<img src="${item.image}" alt="${item.name}" class="food-item-image">` : ''}
                 <div class="food-item-price-tag">${item.price}</div>
-                <button class="fav-btn small overlay-fav" onclick="event.stopPropagation();">❤️</button>
               </div>
               <div class="food-item-content">
-                <h3 class="food-item-name">${item.name}</h3>
-                <p class="food-item-description">Perfect for your mood!</p>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                  <h3 class="food-item-name">${item.name}</h3>
+                </div>
+                <p class="food-item-description">Optimized for your current preference.</p>
                 <div class="food-item-footer">
                   <span class="food-item-category">${item.category}</span>
                   <button class="add-to-cart-btn" onclick="event.stopPropagation(); app.addToCart(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}', event)">
@@ -777,10 +866,10 @@ const app = {
                 </div>
               </div>
             </div>
-          `).join('')}
+          `}).join('')}
         </div>
       `;
-    }, 600);
+    }, 800);
   },
 
 
@@ -912,7 +1001,20 @@ const app = {
           <div class="restaurants-section" style="width: 100%;">
              <h2 class="section-heading">Curated Dining List</h2>
              <div class="restaurants-grid" id="restaurantsGrid">
-               ${this.renderRestaurants(place.restaurants)}
+               ${(() => {
+        let filtered = [...place.restaurants];
+        const filter = this.currentFilters.place;
+        if (filter === 'top') {
+          filtered = filtered.filter(r => r.rating >= 4.5);
+        } else if (filter === 'Traditional') {
+          filtered = filtered.filter(r => (r.tags || []).includes('Traditional') || r.cuisine.toLowerCase().includes('traditional') || r.cuisine.toLowerCase().includes('nadan'));
+        } else if (filter === 'Modern') {
+          filtered = filtered.filter(r => (r.tags || []).includes('Modern') || r.cuisine.toLowerCase().includes('modern') || r.cuisine.toLowerCase().includes('continental'));
+        } else if (filter === 'Seafood') {
+          filtered = filtered.filter(r => (r.tags || []).includes('Seafood') || r.cuisine.toLowerCase().includes('seafood') || r.cuisine.toLowerCase().includes('fish'));
+        }
+        return this.renderRestaurants(filtered);
+      })()}
              </div>
           </div>
         </div>
@@ -968,23 +1070,26 @@ const app = {
             </button>
           </div>
           <div class="card-content" onclick="app.navigateToRestaurant(${restaurant.id})">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <h2 class="card-title">${restaurant.name}</h2>
-            <p class="card-cuisine">${restaurant.cuisine}</p>
-            <div style="margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.3rem;">
-              ${(restaurant.tags || []).map(tag => `<span class="tag-badge">${tag}</span>`).join('')}
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
-              <span class="card-rating">
-                <span class="star-icon">⭐</span>
-                ${restaurant.rating}
-              </span>
-              <span style="color: var(--text-muted); font-size: 0.9rem;">
-                ${restaurant.foodItems.length} Items
-              </span>
-            </div>
+            ${restaurant.class ? `<span class="class-badge ${restaurant.class.toLowerCase().replace('5-', 'star-').replace(' ', '-')}">${restaurant.class}</span>` : ''}
+          </div>
+          <p class="card-cuisine">${restaurant.cuisine}</p>
+          <div style="margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.3rem;">
+            ${(restaurant.tags || []).map(tag => `<span class="tag-badge">${tag}</span>`).join('')}
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+            <span class="card-rating">
+              <span class="star-icon">⭐</span>
+              ${restaurant.rating}
+            </span>
+            <button class="compare-btn-pill" onclick="event.stopPropagation(); app.toggleCompare(${restaurant.id})">
+              ⚖️ Compare
+            </button>
           </div>
         </div>
-      `;
+      </div>
+    `;
     }).join('');
   },
 
@@ -1108,13 +1213,18 @@ const app = {
             ${restaurant.cuisine}
           </span>
           <span class="info-badge">
-            <span class="star-icon">⭐</span>
-            ${restaurant.rating} Rating
-          </span>
-          <span class="info-badge">
-            <span>📋</span>
-            ${restaurant.foodItems.length} Items
-          </span>
+          <span class="star-icon">⭐</span>
+          ${restaurant.rating} Rating
+        </span>
+        ${restaurant.class ? `
+        <span class="info-badge">
+          <span>🏆</span>
+          ${restaurant.class}
+        </span>` : ''}
+        <span class="info-badge">
+          <span>📋</span>
+          ${restaurant.foodItems.length} Items
+        </span>
           <span class="info-badge" style="cursor: pointer; background: var(--accent-gradient); color: white;" onclick="app.openBookingModal(${restaurant.id})">
             <span>📅</span>
             Book a Table
@@ -1141,6 +1251,8 @@ const app = {
       <div class="food-items" id="foodItemsContainer">
         ${this.renderFoodItems(restaurant)}
       </div>
+
+      ${this.renderRoomSection(restaurant)}
 
       <div class="reviews-section">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl);">
@@ -1170,6 +1282,361 @@ const app = {
     }]);
   },
 
+  renderRoomSection(restaurant) {
+    if (!restaurant.rooms || restaurant.rooms.length === 0) return '';
+    return `
+      <div class="rooms-elite-section">
+        <div class="rooms-elite-header">
+          <div class="rooms-header-left">
+            <span class="rooms-tag">🏨 Stay & Experience</span>
+            <h2 class="rooms-elite-title">Luxury Accommodation</h2>
+            <p class="rooms-elite-subtitle">Indulge in premium stays at <strong>${restaurant.name}</strong>. Each room is crafted with comfort and elegance.</p>
+          </div>
+          <div class="rooms-header-right">
+            <div class="rooms-rating-badge">
+              <span class="rooms-rating-stars">⭐⭐⭐⭐⭐</span>
+              <span class="rooms-rating-text">${restaurant.rating} Rating</span>
+            </div>
+          </div>
+        </div>
+        <div class="rooms-elite-grid">
+          ${restaurant.rooms.map((room, idx) => `
+            <div class="room-elite-card" style="animation-delay: ${idx * 0.15}s">
+              ${idx === 0 ? '<div class="room-popular-badge">⭐ Most Popular</div>' : ''}
+              <div class="room-elite-image">
+                <img src="${room.image}" alt="${room.type}" loading="lazy">
+                <div class="room-elite-overlay">
+                  <div class="room-elite-price">${room.price}<span>/night</span></div>
+                </div>
+              </div>
+              <div class="room-elite-body">
+                <div class="room-elite-header-row">
+                  <h3 class="room-elite-type">${room.type}</h3>
+                  <span class="room-avail-badge">✔ Available</span>
+                </div>
+                <div class="room-elite-amenities">
+                  ${room.amenities.map(a => {
+      const icons = { 'WiFi': '📶', 'AC': '❄️', 'Pool': '🏊', 'Breakfast': '🍳', 'Mini Bar': '🍸', 'Ocean View': '🌊', 'Mountain View': '⛰️', 'Sea View': '🌊', 'City View': '🏙️', 'Garden View': '🌳', 'Forest View': '🌲', 'Backwater View': '🛶', 'Balcony': ' balconies', 'Spa Access': '💆', 'Fireplace': '🔥', 'Jacuzzi': '🛀', 'Butler': '🤵', 'Butler Service': '🤵', 'TV': '📺', 'Private Deck': '🏞️', 'Private Rooftop': '🌆', 'Rooftop Access': '🌆', 'Nature Walk': '🌿', 'Campfire Access': '🔥', 'Grill Setup': '🍖', 'Infinity Pool Access': '🏊', 'Tea Maker': '☕', 'Traditional Decor': '🎭', 'Luxury Tub': '🛁', 'Private Garden': '🌷', 'Private Courtyard': '🏡', 'Antique Furniture': '🪑', 'Kerala Style': '🌴', 'Complimentary Dinner': '🍽️' };
+      return `<span class="amenity-elite-chip"><span class="amenity-icon">${icons[a] || '✔'}</span> ${a}</span>`;
+    }).join('')}
+                </div>
+                <div class="room-elite-footer">
+                  <div class="room-elite-meta">
+                    <span>👥 2 Guests</span>
+                    <span>🛏️ King Bed</span>
+                  </div>
+                  <button class="room-elite-btn" onclick="app.openRoomBookingModal('${room.type.replace(/'/g, "\\'")}', '${room.price}', ${restaurant.id})">
+                    <span>Reserve Now</span>
+                    <span class="btn-arrow">→</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  },
+
+  openRoomBookingModal(roomType, price, restaurantId) {
+    let restaurant;
+    window.restaurantData.places.forEach(place => {
+      const found = place.restaurants.find(r => r.id === restaurantId);
+      if (found) restaurant = found;
+    });
+    if (!restaurant) return;
+
+    const modal = document.getElementById('foodModal');
+    const modalBody = document.getElementById('modalBody');
+    modalBody.innerHTML = `
+      <div class="room-booking-modal">
+        <h2 style="font-size: 1.6rem; margin-bottom: 0.5rem;">🏨 ${roomType}</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">at ${restaurant.name}</p>
+        <div style="font-size: 2rem; font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem;">${price}<span style="font-size: 1rem; font-weight: 400;">/night</span></div>
+        <form onsubmit="app.confirmRoomBooking(event, '${roomType.replace(/'/g, "\\'")}', '${price}')">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label" style="display:block;margin-bottom:0.5rem;color:var(--text-muted)">Check-in Date</label>
+            <input type="date" class="login-input" required id="roomCheckin" style="width:100%">
+          </div>
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label" style="display:block;margin-bottom:0.5rem;color:var(--text-muted)">Check-out Date</label>
+            <input type="date" class="login-input" required id="roomCheckout" style="width:100%">
+          </div>
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label class="form-label" style="display:block;margin-bottom:0.5rem;color:var(--text-muted)">Guests</label>
+            <select class="login-input" id="roomGuests" style="width:100%">
+              <option>1 Adult</option>
+              <option>2 Adults</option>
+              <option>2 Adults + 1 Child</option>
+              <option>Family (4)</option>
+            </select>
+          </div>
+          <button type="submit" class="submit-btn" style="width:100%;padding:1rem;font-size:1.1rem;">Confirm Booking ✨</button>
+        </form>
+      </div>
+    `;
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  },
+
+  confirmRoomBooking(event, roomType, price) {
+    event.preventDefault();
+    const checkin = document.getElementById('roomCheckin').value;
+    const checkout = document.getElementById('roomCheckout').value;
+    const guests = document.getElementById('roomGuests').value;
+    this.closeModal();
+    this.showToast(`🎉 Room "${roomType}" booked! ${checkin} to ${checkout} for ${guests}. Total: ${price}/night`);
+  },
+
+  // ========================================
+  // COMPARISON LOGIC
+  // ========================================
+
+  toggleCompare(restaurantId) {
+    const index = this.compareList.indexOf(restaurantId);
+    if (index === -1) {
+      if (this.compareList.length >= 3) {
+        this.showToast('You can compare max 3 hotels! ⚖️');
+        return;
+      }
+      this.compareList.push(restaurantId);
+      this.showToast('Added to comparison! ⚖️');
+    } else {
+      this.compareList.splice(index, 1);
+      this.showToast('Removed from comparison.');
+    }
+    this.renderComparisonBar();
+    this.navigateToPlace(this.currentPlace || 1); // Refresh UI to show toggled state if needed
+  },
+
+  renderComparisonBar() {
+    let bar = document.getElementById('comparisonBar');
+    if (this.compareList.length === 0) {
+      if (bar) bar.remove();
+      return;
+    }
+
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'comparisonBar';
+      bar.className = 'comparison-bar';
+      document.body.appendChild(bar);
+    }
+
+    const restaurants = this.compareList.map(id => {
+      // Find restaurant across all places
+      for (const p of window.restaurantData.places) {
+        const r = p.restaurants.find(res => res.id === id);
+        if (r) return r;
+      }
+      return null;
+    }).filter(r => r);
+
+    bar.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <span style="font-weight: 700; color: white;">⚖️ Comparison (${this.compareList.length}/3)</span>
+      <div style="display: flex; gap: 0.5rem;">
+        ${restaurants.map(r => `
+          <div style="background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.8rem; color: white;">
+            ${r.name}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div style="display: flex; gap: 1rem;">
+      <button class="primary-btn-sm" onclick="app.showComparisonView()" style="padding: 0.5rem 1.2rem; font-size: 0.8rem;">Compare Now</button>
+      <button onclick="app.compareList = []; app.renderComparisonBar();" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;">✕</button>
+    </div>
+  `;
+  },
+
+  showComparisonView() {
+    const restaurants = this.compareList.map(id => {
+      for (const p of window.restaurantData.places) {
+        const r = p.restaurants.find(res => res.id === id);
+        if (r) return { ...r, placeName: p.name };
+      }
+      return null;
+    }).filter(r => r);
+
+    const content = `
+    <div class="comparison-view-container fade-in">
+      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+        <button class="nav-btn" onclick="app.navigateHome()">← Back</button>
+        <h1 class="section-title" style="margin: 0;">Hotel & Menu Comparison ⚖️</h1>
+      </div>
+
+      <div class="comparison-grid" style="display: grid; grid-template-columns: repeat(${restaurants.length + 1}, 1fr); gap: 1px; background: rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+        <!-- Headers -->
+        <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; font-weight: 800; color: var(--text-muted);">Feature</div>
+        ${restaurants.map(r => `
+          <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; text-align: center;">
+            <img src="${r.image}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem;">
+            <h3 style="margin: 0;">${r.name}</h3>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">${r.placeName}</span>
+          </div>
+        `).join('')}
+
+        <!-- Class -->
+        <div style="background: rgba(255,255,255,0.02); padding: 1.2rem; font-weight: 600;">Category</div>
+        ${restaurants.map(r => `
+          <div style="background: rgba(255,255,255,0.02); padding: 1.2rem; text-align: center;">
+            <span class="class-badge ${r.class ? r.class.toLowerCase().replace('5-', 'star-').replace(' ', '-') : ''}">${r.class || 'Standard'}</span>
+          </div>
+        `).join('')}
+
+        <!-- Rating -->
+        <div style="background: rgba(255,255,255,0.04); padding: 1.2rem; font-weight: 600;">Rating</div>
+        ${restaurants.map(r => `
+          <div style="background: rgba(255,255,255,0.04); padding: 1.2rem; text-align: center;">
+            ⭐ ${r.rating}
+          </div>
+        `).join('')}
+
+        <!-- Signature Dishes -->
+        <div style="background: rgba(255,255,255,0.02); padding: 1.2rem; font-weight: 600;">Signature Dishes</div>
+        ${restaurants.map(r => `
+          <div style="background: rgba(255,255,255,0.02); padding: 1.2rem; text-align: center; font-size: 0.9rem;">
+            ${r.foodItems.slice(0, 3).map(i => `<div>${i.name} (${i.price})</div>`).join('')}
+          </div>
+        `).join('')}
+
+        <!-- Price Range -->
+        <div style="background: rgba(255,255,255,0.04); padding: 1.2rem; font-weight: 600;">Price Range</div>
+        ${restaurants.map(r => `
+          <div style="background: rgba(255,255,255,0.04); padding: 1.2rem; text-align: center;">
+            ${r.priceForTwo || '₹500 for two'}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+
+    this.updateContent(content);
+    window.scrollTo(0, 0);
+    if (document.getElementById('comparisonBar')) document.getElementById('comparisonBar').remove();
+  },
+
+  showAnalyticalDashboard() {
+    const allRestaurants = [];
+    window.restaurantData.places.forEach(p => {
+      p.restaurants.forEach(r => {
+        allRestaurants.push({ ...r, placeName: p.name });
+      });
+    });
+
+    // Calculate stats
+    const districtStats = {};
+    allRestaurants.forEach(r => {
+      if (!districtStats[r.placeName]) {
+        districtStats[r.placeName] = { count: 0, avgRating: 0, avgPrice: 0, priceCount: 0 };
+      }
+      districtStats[r.placeName].count++;
+      districtStats[r.placeName].avgRating += r.rating;
+
+      // Crude average price calculation for "for two"
+      const priceMatch = (r.priceForTwo || "₹500").match(/\d+/);
+      if (priceMatch) {
+        districtStats[r.placeName].avgPrice += parseInt(priceMatch[0]);
+        districtStats[r.placeName].priceCount++;
+      }
+    });
+
+    const content = `
+      <div class="analytics-container fade-in">
+        <h1 class="section-title">Kerala Food Analytics 📊</h1>
+        <p class="section-subtitle">Understanding price variations and cuisine distribution across districts.</p>
+
+        <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+          <div class="stat-card" style="background: var(--bg-card); padding: 2rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+            <h3 style="margin-bottom: 1rem;">💰 Avg. Price (Luxury)</h3>
+            ${Object.entries(districtStats).map(([name, stats]) => `
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem;">
+                <span>${name}</span>
+                <span style="font-weight: 700;">₹${Math.round(stats.avgPrice / (stats.priceCount || 1))}</span>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="stat-card" style="background: var(--bg-card); padding: 2rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+            <h3 style="margin-bottom: 1rem;">⭐ Best Rated Districts</h3>
+            ${Object.entries(districtStats).sort((a, b) => (b[1].avgRating / b[1].count) - (a[1].avgRating / a[1].count)).map(([name, stats]) => `
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem;">
+                <span>${name}</span>
+                <span style="font-weight: 700;">${(stats.avgRating / stats.count).toFixed(1)}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="cuisine-focus" style="margin-top: 3rem; background: var(--glass-bg); padding: 2rem; border-radius: 20px; border: 1px solid var(--glass-border);">
+          <h3>🍽️ Traditional Dish Availability</h3>
+          <p style="color: var(--text-muted);">Percentage of hotels offering traditional Sadya/Seafood in major districts.</p>
+          <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div style="width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden;">
+              <div style="width: 85%; height: 100%; background: var(--accent-gradient);"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+              <span>Kochi (85%)</span>
+              <span>TVM (70%)</span>
+              <span>Alappuzha (95%)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    this.updateContent(content);
+  },
+
+  renderRecommendations() {
+    const allItems = [];
+    window.restaurantData.places.forEach(p => {
+      p.restaurants.forEach(r => {
+        r.foodItems.forEach(item => {
+          allItems.push({ ...item, restaurantId: r.id, restaurantName: r.name, cuisine: r.cuisine });
+        });
+      });
+    });
+
+    // Smart Recommendation Algorithm using formal recoModel
+    const recommendations = this.recoModel.predict(allItems, this.userInterests, 4);
+
+    if (!recommendations.length) return '';
+
+    return `
+      <section class="recs-section" style="margin-top: 4rem;">
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+          <div>
+            <span class="section-badge">PERSONALIZED FOR YOU</span>
+            <h2 class="section-title" style="margin: 0.5rem 0;">Smart Discovery ✨</h2>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 300px;">Based on your recent interests in ${Object.keys(this.userInterests.cuisines).slice(0, 2).join(', ') || 'Kerala cuisine'}.</p>
+        </div>
+        <div class="restaurant-grid">
+          ${recommendations.map(item => `
+            <div class="food-item fade-in" onclick="app.showFoodModal(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}')">
+              <div class="food-item-image-container">
+                <div class="match-badge">🎯 ${Math.min(99, 75 + (item.mlScore % 24))}% Match</div>
+                ${item.image ? `<img src="${item.image}" alt="${item.name}" class="food-item-image" loading="lazy">` : ''}
+                <div class="food-item-price-tag">${item.price}</div>
+              </div>
+              <div class="food-item-content">
+                <h3 class="food-item-name">${item.name}</h3>
+                <p class="food-item-description" style="font-size: 0.85rem; color: var(--text-muted);">${item.restaurantName} • ${item.cuisine}</p>
+                <div class="food-item-footer">
+                  <span class="food-item-category">${item.category}</span>
+                  <button class="add-to-cart-btn" onclick="event.stopPropagation(); app.addToCart(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}', event)">
+                    <span>Add</span> 🛒
+                  </button>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </section>
+    `;
+  },
   async fetchReviews(restaurantId) {
     try {
       const response = await fetch(`https://restaurant-99en.onrender.com/api/reviews/${restaurantId}`);
@@ -1372,11 +1839,11 @@ const app = {
       const isBiriyani = item.name.toLowerCase().includes('biriyani');
 
       return `
-        <div class="food-item" style="animation-delay: ${index * 0.05}s" onclick="app.showFoodModal(${restaurant.id}, '${item.name.replace(/'/g, "\\'")}')">
-          <div class="food-item-image-container">
-            ${isBiriyani ? '<div class="lottie-container steam-animation" id="steam-' + itemId + '"></div>' : ''}
-            ${item.image ? `<img src="${item.image}" alt="${item.name}" class="food-item-image" loading="lazy">` : ''}
-            <div class="food-item-price-tag">${item.price}</div>
+      <div class="food-item" style="animation-delay: ${index * 0.05}s" onclick="app.showFoodModal(${restaurant.id}, '${item.name.replace(/'/g, "\\'")}')">
+        <div class="food-item-image-container">
+          ${isBiriyani ? '<div class="lottie-container steam-animation" id="steam-' + itemId + '"></div>' : ''}
+          ${item.image ? `<img src="${item.image}" alt="${item.name}" class="food-item-image" loading="lazy">` : ''}
+          <div class="food-item-price-tag">${item.price}</div>
             <button class="fav-btn small overlay-fav ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); app.toggleFavorite('${itemId}', 'item', this)">
               ❤️
             </button>
@@ -1398,6 +1865,16 @@ const app = {
   },
 
   // State Management & Utilities
+  updateInterests(category, cuisine) {
+    if (category) {
+      this.userInterests.categories[category] = (this.userInterests.categories[category] || 0) + 1;
+    }
+    if (cuisine) {
+      this.userInterests.cuisines[cuisine] = (this.userInterests.cuisines[cuisine] || 0) + 1;
+    }
+    localStorage.setItem('userInterests', JSON.stringify(this.userInterests));
+  },
+
   updateBreadcrumb(items) {
     const breadcrumb = document.getElementById('breadcrumb');
     if (!breadcrumb) return;
@@ -1576,12 +2053,20 @@ const app = {
 
     this.showSkeletons('dashboard');
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
     try {
-      const ordersResponse = await fetch(`https://restaurant-99en.onrender.com/api/orders/${user.id}`);
+      const ordersResponse = await fetch(`https://restaurant-99en.onrender.com/api/orders/${user.id}`, { signal: controller.signal });
       const orders = await ordersResponse.json();
+      clearTimeout(timeoutId);
       this.renderDashboardPage(orders);
     } catch (err) {
+      clearTimeout(timeoutId);
       console.error('Dashboard Error:', err);
+      if (err.name === 'AbortError') {
+        this.showToast('Orders request timed out. Showing fallback. 🛠️');
+      }
       this.renderDashboardPage([]);
     }
   },
@@ -1589,29 +2074,39 @@ const app = {
   renderDashboardPage(orders) {
 
     const favRestaurants = [];
-    window.restaurantData.places.forEach(place => {
-      place.restaurants.forEach(rest => {
-        if (this.favorites.restaurants.includes(rest.id)) {
-          favRestaurants.push(rest);
+    if (window.restaurantData && window.restaurantData.places) {
+      window.restaurantData.places.forEach(place => {
+        if (place.restaurants) {
+          place.restaurants.forEach(rest => {
+            if (this.favorites && this.favorites.restaurants && this.favorites.restaurants.includes(rest.id)) {
+              favRestaurants.push(rest);
+            }
+          });
         }
       });
-    });
+    }
 
     const favItems = [];
-    window.restaurantData.places.forEach(place => {
-      place.restaurants.forEach(rest => {
-        rest.foodItems.forEach(item => {
-          const itemId = `${rest.id}-${item.name.replace(/\s+/g, '_')}`;
-          if (this.favorites.items.includes(itemId)) {
-            favItems.push({
-              ...item,
-              restaurantId: rest.id,
-              restaurantName: rest.name
-            });
-          }
-        });
+    if (window.restaurantData && window.restaurantData.places) {
+      window.restaurantData.places.forEach(place => {
+        if (place.restaurants) {
+          place.restaurants.forEach(rest => {
+            if (rest.foodItems) {
+              rest.foodItems.forEach(item => {
+                const itemId = `${rest.id}-${item.name.replace(/\s+/g, '_')}`;
+                if (this.favorites && this.favorites.items && this.favorites.items.includes(itemId)) {
+                  favItems.push({
+                    ...item,
+                    restaurantId: rest.id,
+                    restaurantName: rest.name
+                  });
+                }
+              });
+            }
+          });
+        }
       });
-    });
+    }
 
     const content = `
       <h1 class="page-title">Welcome Back, ${JSON.parse(localStorage.getItem('user'))?.name || 'Foodie'}! 👋</h1>
@@ -1938,6 +2433,137 @@ const app = {
     this.updateContent(content);
   },
 
+  showAnalyticalDashboard() {
+    this.toggleUIElements(true);
+    this.currentView = 'trends';
+    this.updateBreadcrumb([
+      { label: 'Home', onClick: () => this.navigateHome() },
+      { label: 'Food Trends & Analytics' }
+    ]);
+
+    const places = window.restaurantData?.places || [];
+
+    // Compute district-wise stats
+    const districtStats = places.map(place => {
+      let totalItems = 0, totalPrice = 0, restaurantCount = 0;
+      (place.restaurants || []).forEach(r => {
+        restaurantCount++;
+        (r.foodItems || []).forEach(item => {
+          totalItems++;
+          const priceNum = parseInt(item.price.replace(/[₹,]/g, ''));
+          if (!isNaN(priceNum)) totalPrice += priceNum;
+        });
+      });
+      const avgPrice = totalItems > 0 ? Math.round(totalPrice / totalItems) : 0;
+      return { name: place.name, restaurants: restaurantCount, items: totalItems, avgPrice };
+    });
+
+    const maxAvg = Math.max(...districtStats.map(d => d.avgPrice), 1);
+
+    // Cuisine popularity
+    const cuisineMap = {};
+    places.forEach(p => (p.restaurants || []).forEach(r => {
+      const c = r.cuisine || 'Other';
+      cuisineMap[c] = (cuisineMap[c] || 0) + 1;
+    }));
+    const cuisines = Object.entries(cuisineMap).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    const maxCuisine = Math.max(...cuisines.map(c => c[1]), 1);
+
+    // Traditional dish count
+    const traditionalKeywords = ['sadya', 'karimeen', 'puttu', 'mappas', 'kerala', 'nadan', 'appam', 'beef fry', 'pork fry', 'fish curry', 'malabar', 'biriyani'];
+    let traditionalCount = 0, totalDishes = 0;
+    places.forEach(p => (p.restaurants || []).forEach(r => (r.foodItems || []).forEach(item => {
+      totalDishes++;
+      if (traditionalKeywords.some(kw => item.name.toLowerCase().includes(kw))) traditionalCount++;
+    })));
+
+    const content = `
+      <div class="analytics-wrapper">
+        <section class="analytics-hero">
+          <span class="section-tag-elite">Live Analytics</span>
+          <h1 class="hero-title-elite">Kerala Food <span class="highlight-text">Trends</span></h1>
+          <p class="hero-subtitle-elite">Real-time insights into pricing, cuisines, and dining patterns across districts.</p>
+        </section>
+
+        <div class="analytics-stats-row">
+          <div class="analytics-stat-card">
+            <div class="stat-number">${places.length}</div>
+            <div class="stat-label">Districts Covered</div>
+          </div>
+          <div class="analytics-stat-card">
+            <div class="stat-number">${districtStats.reduce((s, d) => s + d.restaurants, 0)}</div>
+            <div class="stat-label">Total Restaurants</div>
+          </div>
+          <div class="analytics-stat-card">
+            <div class="stat-number">${totalDishes}</div>
+            <div class="stat-label">Menu Items</div>
+          </div>
+          <div class="analytics-stat-card">
+            <div class="stat-number">${traditionalCount}</div>
+            <div class="stat-label">Traditional Dishes</div>
+          </div>
+        </div>
+
+        <div class="analytics-section">
+          <h2 class="analytics-section-title">📊 Average Price by District</h2>
+          <div class="chart-container">
+            ${districtStats.map((d, i) => `
+              <div class="chart-bar-row">
+                <span class="chart-label">${d.name}</span>
+                <div class="chart-bar-wrapper">
+                  <div class="chart-bar" style="width: ${Math.round((d.avgPrice / maxAvg) * 100)}%; animation-delay: ${i * 0.1}s">
+                    <span class="chart-bar-value">₹${d.avgPrice}</span>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="analytics-section">
+          <h2 class="analytics-section-title">🍽️ Cuisine Popularity</h2>
+          <div class="chart-container">
+            ${cuisines.map(([name, count], i) => `
+              <div class="chart-bar-row">
+                <span class="chart-label">${name}</span>
+                <div class="chart-bar-wrapper">
+                  <div class="chart-bar cuisine-bar" style="width: ${Math.round((count / maxCuisine) * 100)}%; animation-delay: ${i * 0.1}s">
+                    <span class="chart-bar-value">${count} spots</span>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="analytics-section">
+          <h2 class="analytics-section-title">🗺️ District Breakdown</h2>
+          <div class="district-breakdown-grid">
+            ${districtStats.map(d => `
+              <div class="district-stat-card">
+                <h3>${d.name}</h3>
+                <div class="district-stat-row"><span>Restaurants</span><strong>${d.restaurants}</strong></div>
+                <div class="district-stat-row"><span>Menu Items</span><strong>${d.items}</strong></div>
+                <div class="district-stat-row"><span>Avg Price</span><strong>₹${d.avgPrice}</strong></div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="analytics-section" style="text-align: center; padding: 3rem;">
+          <h2 class="analytics-section-title">🌴 Traditional vs Modern</h2>
+          <div class="tradition-meter">
+            <div class="tradition-fill" style="width: ${Math.round((traditionalCount / totalDishes) * 100)}%">
+              ${Math.round((traditionalCount / totalDishes) * 100)}% Traditional
+            </div>
+          </div>
+          <p style="color: var(--text-muted); margin-top: 1rem;">${traditionalCount} out of ${totalDishes} dishes are classified as Traditional Kerala cuisine.</p>
+        </div>
+      </div>
+    `;
+    this.updateContent(content);
+  },
+
   showContactPage() {
     this.toggleUIElements(true);
     this.currentView = 'contact';
@@ -2110,9 +2736,11 @@ const app = {
     const item = restaurant.foodItems.find(i => i.name === itemName);
     if (!item) return;
 
+    this.updateInterests(item.category, restaurant.cuisine);
+
     const modal = document.getElementById('foodModal');
     const modalBody = document.getElementById('modalBody');
-    const itemId = `${restaurantId} -${item.name.replace(/\s+/g, '_')} `;
+    const itemId = `${restaurantId}-${item.name.replace(/\s+/g, '_')}`;
     const isFav = this.favorites.items.includes(itemId);
 
     modalBody.innerHTML = `

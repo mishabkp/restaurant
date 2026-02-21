@@ -19,6 +19,7 @@ const RestaurantSchema = new mongoose.Schema({
     image: { type: String },
     featured: { type: Boolean, default: false },
     coords: { type: [Number] }, // [lat, lng]
+    class: { type: String, default: 'Standard' }, // e.g., 'Luxury', '5-Star', 'Budget'
     hours: {
         open: { type: String },
         close: { type: String }

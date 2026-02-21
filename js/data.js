@@ -21,7 +21,11 @@ window.restaurantData = {
                         "Seafood",
                         "Modern"
                     ],
-                    "image": "https://media.allaboutpeloponnisos.com/uploads/images/500/0/businneses/corinth/loutraki_1/oceanos_restaurant/r.jpg",
+                    "class": "Luxury",
+                    "rooms": [
+                        { "type": "Luxury Suite", "price": "₹8500", "amenities": ["Ocean View", "Mini Bar", "WiFi"], "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "type": "Sea Side Deluxe", "price": "₹5500", "amenities": ["WiFi", "Balcony", "AC"], "image": "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
                     "reviews": [
                         {
                             "user": "Arjun K.",
@@ -136,6 +140,10 @@ window.restaurantData = {
                         "Top Rated"
                     ],
                     "image": "https://media-cdn.tripadvisor.com/media/photo-p/11/ce/26/45/spice-garden-restaurant.jpg",
+                    "rooms": [
+                        { "type": "Heritage Garden Villa", "price": "₹6500", "amenities": ["Private Garden", "Luxury Tub", "Traditional Decor"], "image": "https://images.pexels.com/photos/2034330/pexels-photo-2034330.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "type": "Nadan Deluxe", "price": "₹4000", "amenities": ["AC", "WiFi", "Kerala Style"], "image": "https://images.pexels.com/photos/210532/pexels-photo-210532.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
                     "reviews": [
                         {
                             "user": "Manoj P.",
@@ -247,6 +255,7 @@ window.restaurantData = {
                         "Fast Food",
                         "Modern"
                     ],
+                    "class": "Budget",
                     "image": "https://images.pexels.com/photos/1015568/pexels-photo-1015568.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
                     "foodItems": [
                         {
@@ -512,6 +521,11 @@ window.restaurantData = {
                     "cuisine": "Fine Dining Kerala",
                     "rating": 4.8,
                     "image": "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=800&h=600&fit=crop",
+                    "rooms": [
+                        { "type": "Royal Heritage Suite", "price": "₹14000", "amenities": ["Antique Furniture", "Private Courtyard", "Butler Service", "WiFi"], "image": "https://images.pexels.com/photos/2034330/pexels-photo-2034330.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "type": "Classic Deluxe", "price": "₹8000", "amenities": ["Garden View", "AC", "Breakfast", "WiFi"], "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "type": "Standard Comfort", "price": "₹4500", "amenities": ["AC", "WiFi", "TV"], "image": "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
                     "foodItems": [
                         {
                             "name": "Crab Cakes",
@@ -848,6 +862,10 @@ window.restaurantData = {
                     "cuisine": "Multi-Cuisine",
                     "rating": 4.4,
                     "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop",
+                    "rooms": [
+                        { "type": "Skyline Penthouse", "price": "₹11000", "amenities": ["Rooftop Access", "Jacuzzi", "City View", "Mini Bar"], "image": "https://images.pexels.com/photos/2034330/pexels-photo-2034330.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "type": "Premium Room", "price": "₹6500", "amenities": ["AC", "WiFi", "Balcony"], "image": "https://images.pexels.com/photos/210532/pexels-photo-210532.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
                     "foodItems": [
                         {
                             "name": "Spring Rolls",
@@ -950,6 +968,10 @@ window.restaurantData = {
                         "Must Visit"
                     ],
                     "image": "https://upload.wikimedia.org/wikipedia/commons/5/53/Restaurant_interior.jpg",
+                    "rooms": [
+                        { "type": "Malabar Royal Suite", "price": "₹10000", "amenities": ["Sea View", "Traditional Decor", "Complimentary Dinner", "WiFi"], "image": "https://images.pexels.com/photos/2034330/pexels-photo-2034330.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "type": "Spice Trail Room", "price": "₹5500", "amenities": ["AC", "Breakfast", "WiFi"], "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
                     "reviews": [
                         {
                             "user": "Siddharth R.",
@@ -1396,6 +1418,10 @@ window.restaurantData = {
                     "cuisine": "Multi-Cuisine",
                     "rating": 4.5,
                     "image": "https://upload.wikimedia.org/wikipedia/commons/5/53/Restaurant_interior.jpg",
+                    "rooms": [
+                        { "type": "Panoramic Suite", "price": "₹7500", "amenities": ["Temple View", "Spa Access", "WiFi", "Butler"], "image": "https://images.pexels.com/photos/2034330/pexels-photo-2034330.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "type": "Executive Room", "price": "₹4000", "amenities": ["AC", "WiFi", "Breakfast"], "image": "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
                     "foodItems": [
                         {
                             "name": "Chicken 65",
@@ -1648,6 +1674,10 @@ window.restaurantData = {
                     "cuisine": "Barbeque & Grills",
                     "rating": 4.6,
                     "image": "https://upload.wikimedia.org/wikipedia/commons/5/53/Restaurant_interior.jpg",
+                    "rooms": [
+                        { "type": "BBQ Loft Suite", "price": "₹8500", "amenities": ["Private Rooftop", "Grill Setup", "AC", "WiFi"], "image": "https://images.pexels.com/photos/2034330/pexels-photo-2034330.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "type": "Comfort Stay", "price": "₹3500", "amenities": ["AC", "WiFi", "TV"], "image": "https://images.pexels.com/photos/210532/pexels-photo-210532.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
                     "foodItems": [
                         {
                             "name": "BBQ Wings",
@@ -2263,6 +2293,10 @@ window.restaurantData = {
                     "hours": { "open": "06:00", "close": "23:00" },
                     "tags": ["Top Rated", "Traditional", "Malabar"],
                     "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop",
+                    "rooms": [
+                        { "type": "Malabar Heritage Room", "price": "₹6000", "amenities": ["Traditional Decor", "Breakfast", "AC", "WiFi"], "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "type": "Budget Twin", "price": "₹2500", "amenities": ["AC", "WiFi"], "image": "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
                     "reviews": [
                         {
                             "user": "Rasheed K.",
@@ -2405,6 +2439,274 @@ window.restaurantData = {
                 }
             ],
             "coords": [11.0510, 76.0711]
+        },
+        {
+            "id": 7,
+            "name": "Alappuzha",
+            "description": "Venice of the East",
+            "image": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800&h=600&fit=crop",
+            "restaurants": [
+                {
+                    "id": 701,
+                    "placeId": 7,
+                    "name": "Backwater Heritage",
+                    "cuisine": "Kuttanadan",
+                    "class": "Luxury",
+                    "rating": 4.8,
+                    "image": "https://images.pexels.com/photos/962464/pexels-photo-962464.jpeg?auto=compress&cs=tinysrgb&w=800",
+                    "rooms": [
+                        { "type": "Luxury Houseboat Room", "price": "₹12000", "amenities": ["Backwater View", "Private Deck", "AC"], "image": "https://images.pexels.com/photos/962464/pexels-photo-962464.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "type": "Lake Front Suite", "price": "₹7500", "amenities": ["Infinity Pool Access", "WiFi", "Minibar"], "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "foodItems": [
+                        { "name": "Duck Mappas", "price": "₹550", "category": "Main Course", "isVeg": false, "description": "Authentic Kuttanadan duck curry with thick coconut milk", "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "name": "Toddy Shop Fish Curry", "price": "₹320", "category": "Main Course", "isVeg": false, "description": "Famous spicy fish curry served in toddy shops", "image": "https://images.pexels.com/photos/1015568/pexels-photo-1015568.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "coords": [9.4981, 76.3329]
+                }
+            ],
+            "coords": [9.4981, 76.3329]
+        },
+        {
+            "id": 8,
+            "name": "Idukki",
+            "description": "Highland Paradise & Munnar Hills",
+            "image": "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?w=800&h=600&fit=crop",
+            "restaurants": [
+                {
+                    "id": 801,
+                    "placeId": 8,
+                    "name": "Munnar Tea Garden",
+                    "cuisine": "Continental & Nadan",
+                    "class": "Luxury",
+                    "rating": 4.6,
+                    "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800",
+                    "rooms": [
+                        { "type": "Mist Haven Suite", "price": "₹9500", "amenities": ["Mountain View", "Fireplace", "Breakfast"], "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "type": "Valley View Deluxe", "price": "₹6000", "amenities": ["WiFi", "Balcony", "Tea Maker"], "image": "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "foodItems": [
+                        { "name": "Appam with Vegetable Stew", "price": "₹180", "category": "Breakfast", "isVeg": true, "description": "Soft rice pancakes with creamy vegetable curry", "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "name": "Munnar Special Tea", "price": "₹60", "category": "Beverages", "isVeg": true, "description": "Freshly brewed tea from the gardens of Munnar", "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "coords": [10.0889, 77.0595]
+                }
+            ],
+            "coords": [10.0889, 77.0595]
+        },
+        {
+            "id": 9,
+            "name": "Wayanad",
+            "description": "Green Paradise",
+            "image": "https://images.unsplash.com/photo-1599933310631-f920dfbc98ee?w=800&h=600&fit=crop",
+            "restaurants": [
+                {
+                    "id": 901,
+                    "placeId": 9,
+                    "name": "Wayanad Forest Edge",
+                    "cuisine": "Nadan Special",
+                    "class": "Standard",
+                    "rating": 4.5,
+                    "image": "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&w=800",
+                    "rooms": [
+                        { "type": "Treehouse Cabin", "price": "₹7000", "amenities": ["Forest View", "Campfire Access", "Nature Walk", "WiFi"], "image": "https://images.pexels.com/photos/2034330/pexels-photo-2034330.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "type": "Jungle Cottage", "price": "₹4500", "amenities": ["Private Garden", "AC", "Breakfast"], "image": "https://images.pexels.com/photos/210532/pexels-photo-210532.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "foodItems": [
+                        { "name": "Bamboo Rice Payasam", "price": "₹120", "category": "Desserts", "isVeg": true, "description": "Unique payasam made with nutritious bamboo rice", "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "coords": [11.605, 76.083]
+                }
+            ],
+            "coords": [11.605, 76.083]
+        },
+        {
+            "id": 10,
+            "name": "Kasaragod",
+            "description": "Northern Gateway of Kerala",
+            "image": "https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800",
+            "restaurants": [
+                {
+                    "id": 1001,
+                    "placeId": 10,
+                    "name": "Kasaragod Castle",
+                    "cuisine": "Tuluva & Malabar",
+                    "class": "Luxury",
+                    "rating": 4.7,
+                    "image": "https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?auto=compress&cs=tinysrgb&w=800",
+                    "rooms": [
+                        { "type": "Fort View Suite", "price": "₹8500", "amenities": ["Historical View", "AC", "Spa Access", "WiFi"], "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "type": "Heritage Deluxe", "price": "₹5000", "amenities": ["Traditional Decor", "WiFi", "Breakfast"], "image": "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "foodItems": [
+                        { "name": "Kasaragod Chicken Curry", "price": "₹280", "category": "Main Course", "isVeg": false, "description": "Spicy chicken curry with roasted coconut and regional spices", "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "name": "Mangalore Buns", "price": "₹80", "category": "Breakfast", "isVeg": true, "description": "Sweet fried banana bread, a regional favorite", "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "coords": [12.4996, 74.9869]
+                },
+                {
+                    "id": 1002,
+                    "placeId": 10,
+                    "name": "Coastal Spice",
+                    "cuisine": "Konkan Seafood",
+                    "rating": 4.4,
+                    "image": "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&w=800",
+                    "foodItems": [
+                        { "name": "Kane Rava Fry", "price": "₹420", "category": "Starters", "isVeg": false, "description": "Lady fish marinated in spices and semolina fried", "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "coords": [12.5101, 74.9850]
+                }
+            ],
+            "coords": [12.4996, 74.9869]
+        },
+        {
+            "id": 11,
+            "name": "Palakkad",
+            "description": "The Rice Bowl of Kerala",
+            "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800",
+            "restaurants": [
+                {
+                    "id": 1101,
+                    "placeId": 11,
+                    "name": "Palakkad Heritage Inn",
+                    "cuisine": "Palakkadan Brahmin",
+                    "class": "Luxury",
+                    "rating": 4.6,
+                    "image": "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800",
+                    "rooms": [
+                        { "type": "Agraharam Suite", "price": "₹6500", "amenities": ["Traditional Ambience", "Pure Veg Dining", "WiFi", "AC"], "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "foodItems": [
+                        { "name": "Palakkadan Matta Rice & Sambhar", "price": "₹120", "category": "Main Course", "isVeg": true, "description": "Authentic Palakkadan sambhar with premium matta rice", "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "coords": [10.7867, 76.6547]
+                },
+                {
+                    "id": 1102,
+                    "placeId": 11,
+                    "name": "The Paddy Field",
+                    "cuisine": "Nadan & Continental",
+                    "rating": 4.3,
+                    "image": "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&w=800",
+                    "foodItems": [
+                        { "name": "Kozhi Pidi", "price": "₹240", "category": "Main Course", "isVeg": false, "description": "Steamed rice dumplings in spicy chicken gravy", "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "coords": [10.7900, 76.6600]
+                }
+            ],
+            "coords": [10.7867, 76.6547]
+        },
+        {
+            "id": 12,
+            "name": "Kottayam",
+            "description": "Land of Letters, Latex and Lakes",
+            "image": "https://images.pexels.com/photos/962464/pexels-photo-962464.jpeg?auto=compress&cs=tinysrgb&w=800",
+            "restaurants": [
+                {
+                    "id": 1201,
+                    "placeId": 12,
+                    "name": "Syrian Heritage Resort",
+                    "cuisine": "Syrian Christian",
+                    "class": "Luxury",
+                    "rating": 4.9,
+                    "image": "https://images.pexels.com/photos/2034330/pexels-photo-2034330.jpeg?auto=compress&cs=tinysrgb&w=800",
+                    "rooms": [
+                        { "type": "Lake View Villa", "price": "₹15000", "amenities": ["Private Pool", "Lake View", "Butler Service"], "image": "https://images.pexels.com/photos/210532/pexels-photo-210532.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "foodItems": [
+                        { "name": "Beef Ularthiyathu", "price": "₹350", "category": "Main Course", "isVeg": false, "description": "Kottayam style slow-roasted beef with coconut chunks", "image": "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=800" },
+                        { "name": "Meen Vevichathu", "price": "₹420", "category": "Main Course", "isVeg": false, "description": "Fiery red fish curry cooked in clay pot", "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "coords": [9.5916, 76.5222]
+                },
+                {
+                    "id": 1202,
+                    "placeId": 12,
+                    "name": "Rubber Valley Grill",
+                    "cuisine": "Continental",
+                    "rating": 4.5,
+                    "image": "https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800",
+                    "foodItems": [
+                        { "name": "Grilled Pork Ribs", "price": "₹550", "category": "Main Course", "isVeg": false, "description": "Honey glazed pork ribs with mashed potatoes", "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "coords": [9.5950, 76.5300]
+                }
+            ],
+            "coords": [9.5916, 76.5222]
+        },
+        {
+            "id": 13,
+            "name": "Pathanamthitta",
+            "description": "Pilgrim Capital of Kerala",
+            "image": "https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800",
+            "restaurants": [
+                {
+                    "id": 1301,
+                    "placeId": 13,
+                    "name": "Aranmula Heritage",
+                    "cuisine": "Traditional Sadya",
+                    "class": "Luxury",
+                    "rating": 4.5,
+                    "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800",
+                    "rooms": [
+                        { "type": "Heritage Palace Suite", "price": "₹7000", "amenities": ["Traditional Vibe", "Pampa River View", "WiFi"], "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "foodItems": [
+                        { "name": "Aranmula Valla Sadya", "price": "₹450", "category": "Main Course", "isVeg": true, "description": "Authentic ceremonial feast with 60+ items on request", "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "coords": [9.3300, 76.6800]
+                },
+                {
+                    "id": 1302,
+                    "placeId": 13,
+                    "name": "Pampa Breeze",
+                    "cuisine": "Nadan",
+                    "rating": 4.2,
+                    "image": "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&w=800",
+                    "foodItems": [
+                        { "name": "Karimeen Mappas", "price": "₹380", "category": "Main Course", "isVeg": false, "description": "Pearl spot fish in creamy coconut milk gravy", "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "coords": [9.2644, 76.7870]
+                }
+            ],
+            "coords": [9.2644, 76.7870]
+        },
+        {
+            "id": 14,
+            "name": "Kollam",
+            "description": "Prince of Arabian Sea",
+            "image": "https://images.pexels.com/photos/962464/pexels-photo-962464.jpeg?auto=compress&cs=tinysrgb&w=800",
+            "restaurants": [
+                {
+                    "id": 1401,
+                    "placeId": 14,
+                    "name": "Quilon Port Grill",
+                    "cuisine": "Seafood & Grill",
+                    "class": "Luxury",
+                    "rating": 4.7,
+                    "image": "https://images.pexels.com/photos/2034330/pexels-photo-2034330.jpeg?auto=compress&cs=tinysrgb&w=800",
+                    "rooms": [
+                        { "type": "Sea Facing Executive", "price": "₹9000", "amenities": ["Direct Beach Access", "Private Balcony", "AC"], "image": "https://images.pexels.com/photos/210532/pexels-photo-210532.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "foodItems": [
+                        { "name": "Kollam Fish Curry", "price": "₹290", "category": "Main Course", "isVeg": false, "description": "Famous spicy fish curry with gambooge", "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "coords": [8.8932, 76.6141]
+                },
+                {
+                    "id": 1402,
+                    "placeId": 14,
+                    "name": "Ashtamudi Flavours",
+                    "cuisine": "Backwater Traditional",
+                    "rating": 4.5,
+                    "image": "https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800",
+                    "foodItems": [
+                        { "name": "Chemmeen Ularthiyathu", "price": "₹340", "category": "Main Course", "isVeg": false, "description": "Pan-roasted prawns with coconut slices and curry leaves", "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800" }
+                    ],
+                    "coords": [8.8900, 76.6100]
+                }
+            ],
+            "coords": [8.8932, 76.6141]
         }
     ],
     "foodStories": [
