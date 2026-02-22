@@ -773,7 +773,10 @@ const app = {
 
     modalBody.innerHTML = `
       <div class="smart-modal-container">
-        <h2 class="modal-title-premium">Smart Recommender ✨</h2>
+        <h2 class="modal-title-premium">
+          Smart Recommender
+          <span style="font-weight: 300; font-size: 1.5rem; color: #a5b4fc; cursor: pointer;" onclick="document.getElementById('foodModal').classList.add('hidden'); document.body.style.overflow='auto';">×✨</span>
+        </h2>
         <p class="modal-subtitle-premium">Tell us your preferences for a personalized match.</p>
         
         <div class="smart-step" id="recoStep1">
