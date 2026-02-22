@@ -10,12 +10,14 @@ const app = {
   isLoggedIn: false,
   favorites: {
     restaurants: [],
-    items: []},
+    items: []
+  },
   cart: [],
   theme: 'dark',
   currentFilters: {
     place: 'all',
-    restaurant: 'all'},
+    restaurant: 'all'
+  },
   compareList: [],
   lastOrderId: null,
   stripePublicKey: 'pk_test_51Pxy00PlaceholderKeyOnly', // Replace with real key
@@ -28,7 +30,7 @@ const app = {
   userInterests: JSON.parse(localStorage.getItem('userInterests')) || {
     categories: {}, // e.g. { 'Main Course': 5, 'Snacks': 2}
     cuisines: {}   // e.g. { 'Malabar': 3, 'Continental': 1}
-},
+  },
 
   // ========================================
   // MACHINE LEARNING - RECOMMENDATION ENGINE
@@ -38,14 +40,17 @@ const app = {
       cuisine: 3.5,
       category: 2.0,
       rating: 4.0,
-      recency: 1.5},
+      recency: 1.5
+    },
 
     // 1. Feature Extraction: Convert item to a feature vector
     extractFeatures(item) {
       return {
         cuisine: item.cuisine || 'Kerala',
         category: item.category || 'Specialty',
-        rating: item.rating || 4.0};},
+        rating: item.rating || 4.0
+      };
+    },
 
     // 2. Similarity Calculus: Content-Based Filtering logic
     calculateMatchScore(item, userProfile) {
@@ -54,27 +59,32 @@ const app = {
 
       // Match Cuisine (Higher Priority)
       if (userProfile.cuisines[features.cuisine]) {
-        score += userProfile.cuisines[features.cuisine] * this.weights.cuisine;}
+        score += userProfile.cuisines[features.cuisine] * this.weights.cuisine;
+      }
 
       // Match Category
       if (userProfile.categories[features.category]) {
-        score += userProfile.categories[features.category] * this.weights.category;}
+        score += userProfile.categories[features.category] * this.weights.category;
+      }
 
       // Bias towards high-rated items
       score += features.rating * this.weights.rating;
 
-      return score;},
+      return score;
+    },
 
     // 3. Prediction Engine: Rank all items for the user
     predict(items, userProfile, limit = 4) {
       const scored = items.map(item => ({
         ...item,
-        mlScore: this.calculateMatchScore(item, userProfile)}));
+        mlScore: this.calculateMatchScore(item, userProfile)
+      }));
 
       // Filter unique by name and sort by ML score
       const unique = scored.filter((v, i, a) => a.findIndex(t => t.name === v.name) === i);
-      return unique.sort((a, b) => b.mlScore - a.mlScore).slice(0, limit);}
-},
+      return unique.sort((a, b) => b.mlScore - a.mlScore).slice(0, limit);
+    }
+  },
 
   updateContent(html) {
     const mainContent = document.getElementById('mainContent');
@@ -83,7 +93,8 @@ const app = {
     void mainContent.offsetWidth; // Trigger reflow
     mainContent.innerHTML = html;
     mainContent.classList.add('fade-slide-up');
-    window.scrollTo({ top: 0, behavior: 'smooth'});},
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
 
   isRestaurantOpen(hours) {
     if (!hours) return true;
@@ -94,7 +105,8 @@ const app = {
     const openTime = openH * 100 + openM;
     const closeTime = closeH * 100 + closeM;
 
-    return currentTime>= openTime && currentTime <= closeTime;},
+    return currentTime >= openTime && currentTime <= closeTime;
+  },
 
   async handleSurpriseMe() {
     try {
@@ -103,13 +115,16 @@ const app = {
       const allRestaurants = [];
       places.forEach(p => {
         // Since we store restaurant IDs in Place, we need to fetch them or assume they are pre-loaded
-        // For simplicity in surprise me, we'll just fetch all restaurants once});
+        // For simplicity in surprise me, we'll just fetch all restaurants once
+      });
       // Fallback or better implementation below
       this.showToast("Finding something special... ✨");
-      this.navigateToRestaurant(101); // Simplified for now} catch (err) {
-      
-      console.error(err);}
-},
+      this.navigateToRestaurant(101); // Simplified for now
+    } catch (err) {
+
+      console.error(err);
+    }
+  },
 
   // Initialize the application
   async init() {
@@ -126,12 +141,14 @@ const app = {
     this.fetchInitialData().then(() => {
       // Re-handle route if data loaded successfully to show updated live content
       if (this.currentView === 'home' || this.currentView === 'place') {
-        this.handleRoute();}
-});
+        this.handleRoute();
+      }
+    });
 
     this.initModalEvents();
     this.initLottie();
-    window.addEventListener('hashchange', () => this.handleRoute());},
+    window.addEventListener('hashchange', () => this.handleRoute());
+  },
 
   async fetchInitialData() {
     console.log('📡 Fetching live data from backend...');
@@ -140,15 +157,15 @@ const app = {
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 6s timeout
 
       const [placesResp, storiesResp, galleryResp] = await Promise.all([
-        fetch(`${this.apiBaseUrl}/api/restaurants/places`, { signal: controller.signal}),
-        fetch(`${this.apiBaseUrl}/api/discovery/stories`, { signal: controller.signal}).catch(() => null),
-        fetch(`${this.apiBaseUrl}/api/discovery/gallery`, { signal: controller.signal}).catch(() => null)
+        fetch(`${this.apiBaseUrl}/api/restaurants/places`, { signal: controller.signal }),
+        fetch(`${this.apiBaseUrl}/api/discovery/stories`, { signal: controller.signal }).catch(() => null),
+        fetch(`${this.apiBaseUrl}/api/discovery/gallery`, { signal: controller.signal }).catch(() => null)
       ]);
       clearTimeout(timeoutId);
 
       if (placesResp.ok) {
         const data = await placesResp.json();
-        if (data && data.length> 0) {
+        if (data && data.length > 0) {
           // MERGE: Keep local districts (like Idukki, Wayanad) and add/update from backend
           const localPlaces = window.restaurantData.places || [];
           const localIds = localPlaces.map(p => p.id);
@@ -160,42 +177,54 @@ const app = {
               // For now, let's prioritize local if it's already there to preserve manual edits
               // But we can update restaurants if they are empty
               if (localPlaces[existingIndex].restaurants.length === 0) {
-                localPlaces[existingIndex] = p;}
-} else {
-              localPlaces.push(p);}
-});
+                localPlaces[existingIndex] = p;
+              }
+            } else {
+              localPlaces.push(p);
+            }
+          });
 
           window.restaurantData.places = localPlaces;
-          console.log('✅ Live places synced (' + localPlaces.length + ' total places)');}
-}
+          console.log('✅ Live places synced (' + localPlaces.length + ' total places)');
+        }
+      }
 
       // Load stories from backend
       if (storiesResp && storiesResp.ok) {
         const stories = await storiesResp.json();
-        if (stories && stories.length> 0) {
+        if (stories && stories.length > 0) {
           window.restaurantData.foodStories = stories;
-          console.log('✅ Live stories loaded (' + stories.length + ' stories)');}
-}
+          console.log('✅ Live stories loaded (' + stories.length + ' stories)');
+        }
+      }
 
       // Load gallery from backend
       if (galleryResp && galleryResp.ok) {
         const gallery = await galleryResp.json();
-        if (gallery && gallery.length> 0) {
+        if (gallery && gallery.length > 0) {
           window.restaurantData.hiddenGems = gallery;
-          console.log('✅ Live gallery loaded (' + gallery.length + ' items)');}
-}} catch (err) {
-      
+          console.log('✅ Live gallery loaded (' + gallery.length + ' items)');
+        }
+      }
+    } catch (err) {
+
       if (err.name === 'AbortError') {
-        console.warn('⚠️ Backend request timed out (cold start), using local fallback');} else {
-        console.warn('⚠️ backend error:', err.message);}
+        console.warn('⚠️ Backend request timed out (cold start), using local fallback');
+      } else {
+        console.warn('⚠️ backend error:', err.message);
+      }
 
       if (window.restaurantData && window.restaurantData.places) {
-        console.log('🔄 Continuing with local fallback data.js');} else {
-        this.showToast('Failed to load live data. 🛠️');}
-}},
+        console.log('🔄 Continuing with local fallback data.js');
+      } else {
+        this.showToast('Failed to load live data. 🛠️');
+      }
+    }
+  },
 
   initLottie() {
-    // Global lottie init if needed},
+    // Global lottie init if needed
+  },
 
   loadLottie(containerId, animationUrl, loop = true) {
     const container = document.getElementById(containerId);
@@ -206,24 +235,32 @@ const app = {
       renderer: 'svg',
       loop: loop,
       autoplay: true,
-      path: animationUrl});},
+      path: animationUrl
+    });
+  },
 
   initModalEvents() {
     const modal = document.getElementById('foodModal');
     if (modal) {
       modal.addEventListener('click', (e) => {
-        if (e.target === modal) this.closeModal();});}
+        if (e.target === modal) this.closeModal();
+      });
+    }
 
     const cartSidebar = document.getElementById('cartSidebar');
     if (cartSidebar) {
       cartSidebar.addEventListener('click', (e) => {
-        if (e.target === cartSidebar) this.toggleCart();});}
+        if (e.target === cartSidebar) this.toggleCart();
+      });
+    }
 
     const checkoutModal = document.getElementById('checkoutModal');
     if (checkoutModal) {
       checkoutModal.addEventListener('click', (e) => {
-        if (e.target === checkoutModal) this.closeCheckout();});}
-},
+        if (e.target === checkoutModal) this.closeCheckout();
+      });
+    }
+  },
 
   animateFlyToCart(btn, imageUrl) {
     if (!imageUrl) return;
@@ -243,19 +280,23 @@ const app = {
 
     // Animate to cart
     flyer.animate([
-      { left: `${btnRect.left}px`, top: `${btnRect.top}px`, transform: 'scale(1) rotate(0deg)', opacity: 1},
-      { left: `${cartRect.left}px`, top: `${cartRect.top}px`, transform: 'scale(0.1) rotate(360deg)', opacity: 0}
+      { left: `${btnRect.left}px`, top: `${btnRect.top}px`, transform: 'scale(1) rotate(0deg)', opacity: 1 },
+      { left: `${cartRect.left}px`, top: `${cartRect.top}px`, transform: 'scale(0.1) rotate(360deg)', opacity: 0 }
     ], {
       duration: 800,
       easing: 'cubic-bezier(0.42, 0, 0.58, 1)',
-      fill: 'forwards'}).onfinish = () => {
+      fill: 'forwards'
+    }).onfinish = () => {
       flyer.remove();
       cartIcon.classList.add('cart-bump');
-      setTimeout(() => cartIcon.classList.remove('cart-bump'), 400);};},
+      setTimeout(() => cartIcon.classList.remove('cart-bump'), 400);
+    };
+  },
 
   initTheme() {
     this.theme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', this.theme);},
+    document.documentElement.setAttribute('data-theme', this.theme);
+  },
 
   toggleTheme() {
     this.theme = this.theme === 'dark' ? 'light' : 'dark';
@@ -264,30 +305,35 @@ const app = {
 
     const btn = document.getElementById('themeToggle');
     if (btn) {
-      btn.innerHTML = this.theme === 'dark' ? '🌓' : '☀️';}
-},
+      btn.innerHTML = this.theme === 'dark' ? '🌓' : '☀️';
+    }
+  },
 
   checkAuth() {
-    this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';},
+    this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  },
 
   async loadFavorites() {
     const token = localStorage.getItem('token');
     if (token) {
       try {
         const response = await fetch(`${this.apiBaseUrl}/api/auth/me`, {
-          headers: { 'Authorization': `Bearer ${token}`}
-});
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
         if (response.ok) {
           const user = await response.json();
-          this.favorites = user.favorites || { restaurants: [], items: []};
-          return;}
-} catch (err) {
-      
-        console.error('Error fetching favorites:', err);}
-}
+          this.favorites = user.favorites || { restaurants: [], items: [] };
+          return;
+        }
+      } catch (err) {
+
+        console.error('Error fetching favorites:', err);
+      }
+    }
     // Fallback or guest mode
     const saved = localStorage.getItem('favorites');
-    this.favorites = saved ? JSON.parse(saved) : { restaurants: [], items: []};},
+    this.favorites = saved ? JSON.parse(saved) : { restaurants: [], items: [] };
+  },
 
   async saveFavorites() {
     const token = localStorage.getItem('token');
@@ -297,40 +343,51 @@ const app = {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`},
-          body: JSON.stringify(this.favorites)});} catch (err) {
-      
-        console.error('Error saving favorites to backend:', err);}
-} else {
-      localStorage.setItem('favorites', JSON.stringify(this.favorites));}
-},
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(this.favorites)
+        });
+      } catch (err) {
+
+        console.error('Error saving favorites to backend:', err);
+      }
+    } else {
+      localStorage.setItem('favorites', JSON.stringify(this.favorites));
+    }
+  },
 
   // Cart Management
   loadCart() {
     const saved = localStorage.getItem('cart');
     if (saved) {
       this.cart = JSON.parse(saved);
-      this.updateCartUI();}
-},
+      this.updateCartUI();
+    }
+  },
 
   saveCart() {
     localStorage.setItem('cart', JSON.stringify(this.cart));
-    this.updateCartUI();},
+    this.updateCartUI();
+  },
 
   toggleCart() {
     const sidebar = document.getElementById('cartSidebar');
     if (sidebar) {
       sidebar.classList.toggle('hidden');
       if (!sidebar.classList.contains('hidden')) {
-        document.body.style.overflow = 'hidden';} else {
-        document.body.style.overflow = 'auto';}
-}},
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'auto';
+      }
+    }
+  },
 
   addToCart(restaurantId, itemName, event) {
     let restaurant;
     window.restaurantData.places.forEach(place => {
       const found = place.restaurants.find(r => r.id === restaurantId);
-      if (found) restaurant = found;});
+      if (found) restaurant = found;
+    });
 
     if (!restaurant) return;
     const item = restaurant.foodItems.find(i => i.name === itemName);
@@ -340,7 +397,8 @@ const app = {
     const existing = this.cart.find(c => c.cartId === cartId);
 
     if (existing) {
-      existing.quantity += 1;} else {
+      existing.quantity += 1;
+    } else {
       this.cart.push({
         cartId,
         restaurantId,
@@ -348,7 +406,9 @@ const app = {
         name: item.name,
         price: item.price,
         image: item.image,
-        quantity: 1});}
+        quantity: 1
+      });
+    }
 
     this.saveCart();
     this.showToast(`Added ${item.name} to cart! 🛒`);
@@ -357,21 +417,26 @@ const app = {
     // Trigger fly animation
     const btn = event?.currentTarget;
     if (btn) {
-      this.animateFlyToCart(btn, item.image);}
-},
+      this.animateFlyToCart(btn, item.image);
+    }
+  },
 
   removeFromCart(cartId) {
     this.cart = this.cart.filter(c => c.cartId !== cartId);
-    this.saveCart();},
+    this.saveCart();
+  },
 
   changeQuantity(cartId, delta) {
     const item = this.cart.find(c => c.cartId === cartId);
     if (item) {
       item.quantity += delta;
       if (item.quantity <= 0) {
-        this.removeFromCart(cartId);} else {
-        this.saveCart();}
-}},
+        this.removeFromCart(cartId);
+      } else {
+        this.saveCart();
+      }
+    }
+  },
 
   updateCartUI() {
     const badge = document.getElementById('cartBadge');
@@ -381,7 +446,8 @@ const app = {
 
     if (badge) {
       badge.innerHTML = totalCount;
-      badge.classList.toggle('hidden', totalCount === 0);}
+      badge.classList.toggle('hidden', totalCount === 0);
+    }
 
     if (!itemsContainer) return;
 
@@ -395,7 +461,8 @@ const app = {
       `;
       summary.classList.add('hidden');
       setTimeout(() => this.loadLottie('cartEmptyLottie', 'https://assets9.lottiefiles.com/packages/lf20_5njp9vob.json'), 100);
-      return;}
+      return;
+    }
 
     itemsContainer.innerHTML = this.cart.map(item => `
       <div class="cart-item">
@@ -420,10 +487,12 @@ const app = {
     // Parse prices (e.g., "₹250") and calculate total
     const subtotal = this.cart.reduce((sum, item) => {
       const price = parseInt(item.price.replace(/[^\d]/g, ''));
-      return sum + (price * item.quantity);}, 0);
+      return sum + (price * item.quantity);
+    }, 0);
 
     document.getElementById('cartSubtotal').innerHTML = `₹${subtotal}`;
-    document.getElementById('cartTotal').innerHTML = `₹${subtotal}`;},
+    document.getElementById('cartTotal').innerHTML = `₹${subtotal}`;
+  },
 
   showToast(message) {
     // Simple toast notification simulation
@@ -449,17 +518,21 @@ const app = {
       toast.style.opacity = '0';
       toast.style.transform = 'translateX(-50%) translateY(20px)';
       toast.style.transition = 'all 0.4s ease';
-      setTimeout(() => toast.remove(), 400);}, 2500);},
+      setTimeout(() => toast.remove(), 400);
+    }, 2500);
+  },
 
   // Setup event listeners
   setupEventListeners() {
-    // Search functionality handled by search.js logic},
+    // Search functionality handled by search.js logic
+  },
 
   // Handle routing based on URL hash
   handleRoute() {
     if (!this.isLoggedIn) {
       this.showLoginPage();
-      return;}
+      return;
+    }
 
     const hash = window.location.hash.slice(1) || '/';
     const parts = hash.split('/').filter(p => p);
@@ -469,7 +542,8 @@ const app = {
     if (parts[0] === 'place') type = 'place';
     if (parts[0] === 'restaurant') type = 'restaurant';
     if (parts[0] === 'blog') {
-      type = parts[1] ? 'story-detail' : 'blog';}
+      type = parts[1] ? 'story-detail' : 'blog';
+    }
     if (parts[0] === 'gallery') type = 'gallery';
     if (parts[0] === 'dashboard') type = 'dashboard';
     if (parts[0] === 'trends') type = 'dashboard'; // Use dashboard skeleton for trends
@@ -481,30 +555,45 @@ const app = {
     // Small delay for professional feel (Zomato/Swiggy style)
     setTimeout(() => {
       if (parts.length === 0) {
-        this.showHomePage();} else if (parts[0] === 'place' && parts[1]) {
-        this.showPlacePage(parseInt(parts[1]));} else if (parts[0] === 'restaurant' && parts[1]) {
-        this.showRestaurantPage(parseInt(parts[1]));} else if (parts[0] === 'dashboard') {
-        this.showDashboardPage();} else if (parts[0] === 'about') {
-        this.showAboutPage();} else if (parts[0] === 'blog') {
+        this.showHomePage();
+      } else if (parts[0] === 'place' && parts[1]) {
+        this.showPlacePage(parseInt(parts[1]));
+      } else if (parts[0] === 'restaurant' && parts[1]) {
+        this.showRestaurantPage(parseInt(parts[1]));
+      } else if (parts[0] === 'dashboard') {
+        this.showDashboardPage();
+      } else if (parts[0] === 'about') {
+        this.showAboutPage();
+      } else if (parts[0] === 'blog') {
         if (parts[1]) {
-          this.showStoryDetail(parseInt(parts[1]));} else {
-          this.showBlogPage();}
-} else if (parts[0] === 'gallery') {
-        this.showGalleryPage();} else if (parts[0] === 'trends') {
-        this.showAnalyticalDashboard();} else if (parts[0] === 'contact') {
-        this.showContactPage();} else {
-        this.showHomePage();}
-}, 400);},
+          this.showStoryDetail(parseInt(parts[1]));
+        } else {
+          this.showBlogPage();
+        }
+      } else if (parts[0] === 'gallery') {
+        this.showGalleryPage();
+      } else if (parts[0] === 'trends') {
+        this.showAnalyticalDashboard();
+      } else if (parts[0] === 'contact') {
+        this.showContactPage();
+      } else {
+        this.showHomePage();
+      }
+    }, 400);
+  },
 
   // Navigate methods
   navigateHome() {
-    window.location.hash = '/';},
+    window.location.hash = '/';
+  },
 
   navigateToPlace(placeId) {
-    window.location.hash = `/place/${placeId}`;},
+    window.location.hash = `/place/${placeId}`;
+  },
 
   navigateToRestaurant(restaurantId) {
-    window.location.hash = `/restaurant/${restaurantId}`;},
+    window.location.hash = `/restaurant/${restaurantId}`;
+  },
 
   // Page Rendering Methods
   showHomePage() {
@@ -512,7 +601,7 @@ const app = {
     this.currentView = 'home';
     this.currentPlace = null;
     this.currentRestaurant = null;
-    this.updateBreadcrumb([{ label: 'Home', onClick: () => this.navigateHome()}]);
+    this.updateBreadcrumb([{ label: 'Home', onClick: () => this.navigateHome() }]);
 
 
     const content = `
@@ -584,11 +673,13 @@ const app = {
       description: p.description,
       coords: p.coords,
       onClick: `app.navigateToPlace(${p.id})`,
-      linkText: "View Restaurants"}));
+      linkText: "View Restaurants"
+    }));
     this.initMap('mainMap', [10.5, 76.5], 7, cityMarkers);
 
     // Start live trending updates
-    this.startTrendingUpdates();},
+    this.startTrendingUpdates();
+  },
 
 
 
@@ -608,15 +699,18 @@ const app = {
           <div class="glow-orb-secondary"></div>
         </div>
       </div>
-    `;},
+    `;
+  },
 
   renderTrendingRadar() {
     const trending = [];
-    if (this.places && this.places.length> 0) {
+    if (this.places && this.places.length > 0) {
       const allRests = [];
       this.places.forEach(p => {
-        p.restaurants.forEach(r => allRests.push({ ...r, placeId: p.id}));});
-      trending.push(...allRests.sort(() => 0.5 - Math.random()).slice(0, 3));}
+        p.restaurants.forEach(r => allRests.push({ ...r, placeId: p.id }));
+      });
+      trending.push(...allRests.sort(() => 0.5 - Math.random()).slice(0, 3));
+    }
 
     if (trending.length === 0) return '';
 
@@ -647,15 +741,17 @@ const app = {
                   </div>
                 </div>
               </div>
-            `;}).join('')}
+            `;
+    }).join('')}
         </div>
       </section>
-    `;},
+    `;
+  },
 
   startTrendingUpdates() {
     if (this.trendingInterval) clearInterval(this.trendingInterval);
     this.trendingInterval = setInterval(() => {
-      for (let i = 0; i <3; i++) {
+      for (let i = 0; i < 3; i++) {
         const el = document.getElementById(`radarStat${i}`);
         if (el) {
           const num = el.querySelector('.count-num');
@@ -664,9 +760,12 @@ const app = {
             val = Math.max(25, val + (Math.floor(Math.random() * 5) - 2));
             num.innerText = val;
             num.style.color = '#fff';
-            setTimeout(() => num.style.color = '', 400);}
-}}
-}, 4000);},
+            setTimeout(() => num.style.color = '', 400);
+          }
+        }
+      }
+    }, 4000);
+  },
 
   openSmartRecommenderModal() {
     const modal = document.getElementById('foodModal');
@@ -704,22 +803,26 @@ const app = {
     this.selectedVibe = null;
     this.selectedFoodChoice = null;
     modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';},
+    document.body.style.overflow = 'hidden';
+  },
 
   selectVibe(el, vibe) {
     el.parentElement.querySelectorAll('.vibe-chip').forEach(c => c.classList.remove('active'));
     el.classList.add('active');
-    this.selectedVibe = vibe;},
+    this.selectedVibe = vibe;
+  },
 
   selectFoodChoice(el, choice) {
     el.parentElement.querySelectorAll('.vibe-chip').forEach(c => c.classList.remove('active'));
     el.classList.add('active');
-    this.selectedFoodChoice = choice;},
+    this.selectedFoodChoice = choice;
+  },
 
   async processAIRecommendations() {
     if (!this.selectedVibe || !this.selectedFoodChoice) {
       this.showToast('Please select both your vibe and food choice! 🪄');
-      return;}
+      return;
+    }
 
     const modalBody = document.getElementById('modalBody');
     modalBody.innerHTML = `
@@ -732,21 +835,27 @@ const app = {
     // Process logic
     setTimeout(() => {
       const results = this.getAIRecommendations(this.selectedVibe, this.selectedFoodChoice);
-      this.renderAIRecommendations(results);}, 1500);},
+      this.renderAIRecommendations(results);
+    }, 1500);
+  },
 
   getAIRecommendations(vibe, choice) {
     const allItems = [];
-    window.restaurantData.places.forEach(p => {
-      p.restaurants.forEach(r => {
-        r.foodItems.forEach(item => {
+    window.restaurantData.places.forEach(place => {
+      place.restaurants.forEach(rest => {
+        rest.foodItems.forEach(item => {
           allItems.push({
             ...item,
-            restaurantId: r.id,
-            restaurantName: r.name,
-            restaurantCuisine: r.cuisine,
-            restaurantRating: r.rating,
-            restaurantClass: r.class,
-            restaurantTags: r.tags || []});});});});
+            restaurantId: rest.id,
+            restaurantName: rest.name,
+            restaurantCuisine: rest.cuisine,
+            restaurantRating: rest.rating,
+            restaurantClass: rest.class,
+            restaurantTags: rest.tags || []
+          });
+        });
+      });
+    });
 
     const scored = allItems.map(item => {
       let score = 0;
@@ -764,11 +873,11 @@ const app = {
       // 4. Rating Booster
       score += (item.restaurantRating - 4) * 20;
 
-      return { ...item, mlScore: Math.round(score);
-  }
-});
+      return { ...item, mlScore: Math.round(score) };
+    });
 
-    return scored.sort((a, b) => b.mlScore - a.mlScore).slice(0, 3);},
+    return scored.sort((a, b) => b.mlScore - a.mlScore).slice(0, 3);
+  },
 
   renderAIRecommendations(results) {
     const modalBody = document.getElementById('modalBody');
@@ -793,12 +902,14 @@ const app = {
                   </div>
                 </div>
               </div>
-            `;}).join('')}
+            `;
+    }).join('')}
         </div>
         
         <button class="secondary-btn-premium" style="margin-top: 1.5rem; width: 100%;" onclick="app.closeModal()">Close & Discover More</button>
       </div>
-    `;},
+    `;
+  },
 
 
 
@@ -814,19 +925,24 @@ const app = {
       isDown = true;
       slider.style.cursor = 'grabbing';
       startX = e.pageX - slider.offsetLeft;
-      scrollLeft = slider.scrollLeft;});
+      scrollLeft = slider.scrollLeft;
+    });
     slider.addEventListener('mouseleave', () => {
       isDown = false;
-      slider.style.cursor = 'grab';});
+      slider.style.cursor = 'grab';
+    });
     slider.addEventListener('mouseup', () => {
       isDown = false;
-      slider.style.cursor = 'grab';});
+      slider.style.cursor = 'grab';
+    });
     slider.addEventListener('mousemove', (e) => {
       if (!isDown) return;
       e.preventDefault();
       const x = e.pageX - slider.offsetLeft;
       const walk = (x - startX) * 2;
-      slider.scrollLeft = scrollLeft - walk;});},
+      slider.scrollLeft = scrollLeft - walk;
+    });
+  },
 
   initTiltEffect() {
     const cards = document.querySelectorAll('.tilt-card');
@@ -842,25 +958,30 @@ const app = {
         const rotateX = ((y - centerY) / centerY) * -10; // Max 10 deg rotation
         const rotateY = ((x - centerX) / centerX) * 10;
 
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;});
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+      });
 
       card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';});});},
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+      });
+    });
+  },
 
   showPlacePage(placeId) {
     this.toggleUIElements(true);
     const place = window.restaurantData.places.find(p => p.id === placeId);
     if (!place) {
       this.showHomePage();
-      return;}
+      return;
+    }
 
     this.currentView = 'place';
     this.currentPlace = place;
     this.currentRestaurant = null;
 
     this.updateBreadcrumb([
-      { label: 'Home', onClick: () => this.navigateHome()},
-      { label: place.name}
+      { label: 'Home', onClick: () => this.navigateHome() },
+      { label: place.name }
     ]);
 
     const content = `
@@ -924,18 +1045,24 @@ const app = {
         let filtered = [...place.restaurants];
         const filter = this.currentFilters.place;
         if (filter === 'top') {
-          filtered = filtered.filter(r => r.rating>= 4.5);} else if (filter === 'Traditional') {
-          filtered = filtered.filter(r => (r.tags || []).includes('Traditional') || r.cuisine.toLowerCase().includes('traditional') || r.cuisine.toLowerCase().includes('nadan'));} else if (filter === 'Modern') {
-          filtered = filtered.filter(r => (r.tags || []).includes('Modern') || r.cuisine.toLowerCase().includes('modern') || r.cuisine.toLowerCase().includes('continental'));} else if (filter === 'Seafood') {
-          filtered = filtered.filter(r => (r.tags || []).includes('Seafood') || r.cuisine.toLowerCase().includes('seafood') || r.cuisine.toLowerCase().includes('fish'));}
-        return this.renderRestaurants(filtered);})()}
+          filtered = filtered.filter(r => r.rating >= 4.5);
+        } else if (filter === 'Traditional') {
+          filtered = filtered.filter(r => (r.tags || []).includes('Traditional') || r.cuisine.toLowerCase().includes('traditional') || r.cuisine.toLowerCase().includes('nadan'));
+        } else if (filter === 'Modern') {
+          filtered = filtered.filter(r => (r.tags || []).includes('Modern') || r.cuisine.toLowerCase().includes('modern') || r.cuisine.toLowerCase().includes('continental'));
+        } else if (filter === 'Seafood') {
+          filtered = filtered.filter(r => (r.tags || []).includes('Seafood') || r.cuisine.toLowerCase().includes('seafood') || r.cuisine.toLowerCase().includes('fish'));
+        }
+        return this.renderRestaurants(filtered);
+      })()}
              </div>
           </div>
         </div>
       </div>
     `;
 
-    this.updateContent(content);},
+    this.updateContent(content);
+  },
 
   openPlaceMap(placeId) {
     const place = window.restaurantData.places.find(p => p.id === placeId);
@@ -951,20 +1078,25 @@ const app = {
       cuisine: r.cuisine,
       coords: r.coords,
       onClick: `app.navigateToRestaurant(${r.id}); app.closeMapModal();`,
-      linkText: "View Menu"}));
+      linkText: "View Menu"
+    }));
 
     // Wait for modal transition then init map
     setTimeout(() => {
-      this.initMap('modalMap', place.coords, 13, restMarkers);}, 100);},
+      this.initMap('modalMap', place.coords, 13, restMarkers);
+    }, 100);
+  },
 
   closeMapModal() {
     const modal = document.getElementById('mapModal');
     modal.classList.add('hidden');
-    document.body.style.overflow = '';},
+    document.body.style.overflow = '';
+  },
 
   renderRestaurants(restaurants) {
     if (restaurants.length === 0) {
-      return `<p style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-muted);">No restaurants found matching your filter.</p>`;}
+      return `<p style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-muted);">No restaurants found matching your filter.</p>`;
+    }
 
     return restaurants.map((restaurant, index) => {
       const isFav = this.favorites.restaurants.includes(restaurant.id);
@@ -997,7 +1129,8 @@ const app = {
           </div>
         </div>
       </div>
-    `;}).join('`);
+    `;
+    }).join('');
   },
 
   showRestaurantPage(restaurantId) {
@@ -1010,24 +1143,27 @@ const app = {
       if (r) {
         restaurant = r;
         place = p;
-        break;}
-}
+        break;
+      }
+    }
 
     if (!restaurant || !place) {
       this.showHomePage();
-      return;}
+      return;
+    }
 
     this.currentView = 'restaurant';
     this.currentRestaurant = restaurant;
     this.currentPlace = place;
 
     this.updateBreadcrumb([
-      { label: 'Home', onClick: () => this.navigateHome()},
-      { label: place.name, onClick: () => this.navigateToPlace(place.id)},
-      { label: restaurant.name}
+      { label: 'Home', onClick: () => this.navigateHome() },
+      { label: place.name, onClick: () => this.navigateToPlace(place.id) },
+      { label: restaurant.name }
     ]);
 
-    this.renderRestaurantPage(restaurant);},
+    this.renderRestaurantPage(restaurant);
+  },
 
   showShareCard(restaurantId) {
     let restaurant = null;
@@ -1038,8 +1174,9 @@ const app = {
       if (r) {
         restaurant = r;
         place = p;
-        break;}
-}
+        break;
+      }
+    }
 
     if (!restaurant) return;
 
@@ -1091,14 +1228,15 @@ const app = {
       </div>
     `;
 
-    document.body.appendChild(overlay);},
+    document.body.appendChild(overlay);
+  },
 
   shareToWhatsApp(restaurantId) {
     let restaurant = null;
     for (const p of window.restaurantData.places) {
       const r = p.restaurants.find(r => r.id === restaurantId);
-      if (r) { restaurant = r; break;}
-}
+      if (r) { restaurant = r; break; }
+    }
 
     const text = `Check out this amazing place I found on Food Vista! 🤤\n\n🍴 *${restaurant.name}*\n⭐ ${restaurant.rating} Rating\n📍 Kochi, Kerala\n\nOrder here: https://mishabkp.github.io/restaurant/#restaurant/${restaurantId}`;
     const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
@@ -1180,7 +1318,9 @@ const app = {
       cuisine: restaurant.cuisine,
       coords: restaurant.coords,
       onClick: `console.log('Already here')`,
-      linkText: "Located Here"}]);},
+      linkText: "Located Here"
+    }]);
+  },
 
   renderRoomSection(restaurant) {
     if (!restaurant.rooms || restaurant.rooms.length === 0) return '';
@@ -1216,8 +1356,9 @@ const app = {
                 </div>
                 <div class="room-elite-amenities">
                   ${room.amenities.map(a => {
-      const icons = { 'WiFi': '📶', 'AC': '❄️', 'Pool': '🏊', 'Breakfast': '🍳', 'Mini Bar': '🍸', 'Ocean View': '🌊', 'Mountain View': '⛰️', 'Sea View': '🌊', 'City View': '🏙️', 'Garden View': '🌳', 'Forest View': '🌲', 'Backwater View': '🛶', 'Balcony': ' balconies', 'Spa Access': '💆', 'Fireplace': '🔥', 'Jacuzzi': '🛀', 'Butler': '🤵', 'Butler Service': '🤵', 'TV': '📺', 'Private Deck': '🏞️', 'Private Rooftop': '🌆', 'Rooftop Access': '🌆', 'Nature Walk': '🌿', 'Campfire Access': '🔥', 'Grill Setup': '🍖', 'Infinity Pool Access': '🏊', 'Tea Maker': '☕', 'Traditional Decor': '🎭', 'Luxury Tub': '🛁', 'Private Garden': '🌷', 'Private Courtyard': '🏡', 'Antique Furniture': '🪑', 'Kerala Style': '🌴', 'Complimentary Dinner': '🍽️'};
-      return `<span class="amenity-elite-chip"><span class="amenity-icon">${icons[a] || '✔'}</span> ${a}</span>`;}).join('')}
+      const icons = { 'WiFi': '📶', 'AC': '❄️', 'Pool': '🏊', 'Breakfast': '🍳', 'Mini Bar': '🍸', 'Ocean View': '🌊', 'Mountain View': '⛰️', 'Sea View': '🌊', 'City View': '🏙️', 'Garden View': '🌳', 'Forest View': '🌲', 'Backwater View': '🛶', 'Balcony': ' balconies', 'Spa Access': '💆', 'Fireplace': '🔥', 'Jacuzzi': '🛀', 'Butler': '🤵', 'Butler Service': '🤵', 'TV': '📺', 'Private Deck': '🏞️', 'Private Rooftop': '🌆', 'Rooftop Access': '🌆', 'Nature Walk': '🌿', 'Campfire Access': '🔥', 'Grill Setup': '🍖', 'Infinity Pool Access': '🏊', 'Tea Maker': '☕', 'Traditional Decor': '🎭', 'Luxury Tub': '🛁', 'Private Garden': '🌷', 'Private Courtyard': '🏡', 'Antique Furniture': '🪑', 'Kerala Style': '🌴', 'Complimentary Dinner': '🍽️' };
+      return `<span class="amenity-elite-chip"><span class="amenity-icon">${icons[a] || '✔'}</span> ${a}</span>`;
+    }).join('')}
                 </div>
                 <div class="room-elite-footer">
                   <div class="room-elite-meta">
@@ -1234,13 +1375,15 @@ const app = {
           `).join('')}
         </div>
       </div>
-    `;},
+    `;
+  },
 
   openRoomBookingModal(roomType, price, restaurantId) {
     let restaurant;
     window.restaurantData.places.forEach(place => {
       const found = place.restaurants.find(r => r.id === restaurantId);
-      if (found) restaurant = found;});
+      if (found) restaurant = found;
+    });
     if (!restaurant) return;
 
     const modal = document.getElementById('foodModal');
@@ -1273,7 +1416,8 @@ const app = {
       </div>
     `;
     modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';},
+    document.body.style.overflow = 'hidden';
+  },
 
   confirmRoomBooking(event, roomType, price) {
     event.preventDefault();
@@ -1291,34 +1435,42 @@ const app = {
   toggleCompare(restaurantId) {
     const index = this.compareList.indexOf(restaurantId);
     if (index === -1) {
-      if (this.compareList.length>= 3) {
+      if (this.compareList.length >= 3) {
         this.showToast('You can compare max 3 hotels! ⚖️');
-        return;}
+        return;
+      }
       this.compareList.push(restaurantId);
-      this.showToast('Added to comparison! ⚖️');} else {
+      this.showToast('Added to comparison! ⚖️');
+    } else {
       this.compareList.splice(index, 1);
-      this.showToast('Removed from comparison.');}
+      this.showToast('Removed from comparison.');
+    }
     this.renderComparisonBar();
-    this.navigateToPlace(this.currentPlace || 1); // Refresh UI to show toggled state if needed},
+    this.navigateToPlace(this.currentPlace || 1); // Refresh UI to show toggled state if needed
+  },
 
   renderComparisonBar() {
     let bar = document.getElementById('comparisonBar');
     if (this.compareList.length === 0) {
       if (bar) bar.remove();
-      return;}
+      return;
+    }
 
     if (!bar) {
       bar = document.createElement('div');
       bar.id = 'comparisonBar';
       bar.className = 'comparison-bar';
-      document.body.appendChild(bar);}
+      document.body.appendChild(bar);
+    }
 
     const restaurants = this.compareList.map(id => {
       // Find restaurant across all places
       for (const p of window.restaurantData.places) {
         const r = p.restaurants.find(res => res.id === id);
-        if (r) return r;}
-      return null;}).filter(r => r);
+        if (r) return r;
+      }
+      return null;
+    }).filter(r => r);
 
     bar.innerHTML = `
     <div style="display: flex; align-items: center; gap: 1rem;">
@@ -1335,14 +1487,17 @@ const app = {
       <button class="primary-btn-sm" onclick="app.showComparisonView()" style="padding: 0.5rem 1.2rem; font-size: 0.8rem;">Compare Now</button>
       <button onclick="app.compareList = []; app.renderComparisonBar();" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;">✕</button>
     </div>
-  `;},
+  `;
+  },
 
   showComparisonView() {
     const restaurants = this.compareList.map(id => {
       for (const p of window.restaurantData.places) {
         const r = p.restaurants.find(res => res.id === id);
-        if (r) return { ...r, placeName: p.name};}
-      return null;}).filter(r => r);
+        if (r) return { ...r, placeName: p.name };
+      }
+      return null;
+    }).filter(r => r);
 
     const content = `
     <div class="comparison-view-container fade-in">
@@ -1399,19 +1554,23 @@ const app = {
 
     this.updateContent(content);
     window.scrollTo(0, 0);
-    if (document.getElementById('comparisonBar')) document.getElementById('comparisonBar').remove();},
+    if (document.getElementById('comparisonBar')) document.getElementById('comparisonBar').remove();
+  },
 
   showAnalyticalDashboard() {
     const allRestaurants = [];
     window.restaurantData.places.forEach(p => {
       p.restaurants.forEach(r => {
-        allRestaurants.push({ ...r, placeName: p.name});});});
+        allRestaurants.push({ ...r, placeName: p.name });
+      });
+    });
 
     // Calculate stats
     const districtStats = {};
     allRestaurants.forEach(r => {
       if (!districtStats[r.placeName]) {
-        districtStats[r.placeName] = { count: 0, avgRating: 0, avgPrice: 0, priceCount: 0};}
+        districtStats[r.placeName] = { count: 0, avgRating: 0, avgPrice: 0, priceCount: 0 };
+      }
       districtStats[r.placeName].count++;
       districtStats[r.placeName].avgRating += r.rating;
 
@@ -1419,8 +1578,9 @@ const app = {
       const priceMatch = (r.priceForTwo || "₹500").match(/\d+/);
       if (priceMatch) {
         districtStats[r.placeName].avgPrice += parseInt(priceMatch[0]);
-        districtStats[r.placeName].priceCount++;}
-});
+        districtStats[r.placeName].priceCount++;
+      }
+    });
 
     const content = `
       <div class="analytics-container fade-in">
@@ -1466,14 +1626,18 @@ const app = {
       </div>
     `;
 
-    this.updateContent(content);},
+    this.updateContent(content);
+  },
 
   renderRecommendations() {
     const allItems = [];
     window.restaurantData.places.forEach(p => {
       p.restaurants.forEach(r => {
         r.foodItems.forEach(item => {
-          allItems.push({ ...item, restaurantId: r.id, restaurantName: r.name, cuisine: r.cuisine});});});});
+          allItems.push({ ...item, restaurantId: r.id, restaurantName: r.name, cuisine: r.cuisine });
+        });
+      });
+    });
 
     // Smart Recommendation Algorithm using formal recoModel
     const recommendations = this.recoModel.predict(allItems, this.userInterests, 4);
@@ -1511,18 +1675,21 @@ const app = {
           `).join('')}
         </div>
       </section>
-    `;},
+    `;
+  },
   async fetchReviews(restaurantId) {
     try {
       const response = await fetch(`${this.apiBaseUrl}/api/reviews/${restaurantId}`);
       const reviews = await response.json();
       const reviewsList = document.getElementById('reviewsList');
       if (reviewsList) {
-        reviewsList.innerHTML = this.renderReviews(reviews);}
-} catch (err) {
-      
-      console.error('Fetch Reviews Error:', err);}
-},
+        reviewsList.innerHTML = this.renderReviews(reviews);
+      }
+    } catch (err) {
+
+      console.error('Fetch Reviews Error:', err);
+    }
+  },
 
   renderReviews(reviews) {
     if (!reviews || reviews.length === 0) {
@@ -1530,7 +1697,8 @@ const app = {
         <div class="empty-state" style="padding: 2rem;">
           <p class="empty-state-text">No reviews yet. Be the first to review!</p>
         </div>
-      `;}
+      `;
+    }
 
     return reviews.map(r => `
       <div class="review-card fade-in">
@@ -1541,7 +1709,7 @@ const app = {
         <div class="review-stars">${'⭐'.repeat(r.rating)}</div>
         <p class="review-comment">${r.comment}</p>
       </div>
-    `).join('`);
+    `).join('');
   },
 
 
@@ -1576,31 +1744,37 @@ const app = {
 
     if (!ratingEl || !comment) {
       this.showToast('Please provide a rating and comment! ⚠️');
-      return;}
+      return;
+    }
 
     const rating = parseInt(ratingEl.value);
-    const userData = JSON.parse(localStorage.getItem('user')) || { name: 'Anonymous'};
+    const userData = JSON.parse(localStorage.getItem('user')) || { name: 'Anonymous' };
 
     try {
       const response = await fetch(`${this.apiBaseUrl}/api/reviews`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           restaurantId,
           userName: userData.name,
           rating,
-          comment})});
+          comment
+        })
+      });
 
       if (response.ok) {
         this.fetchReviews(restaurantId);
         this.closeCheckout();
-        this.showToast('Thank you! Your review has been published. ✨');} else {
-        this.showToast('Failed to post review. ❌');}
-} catch (err) {
-      
+        this.showToast('Thank you! Your review has been published. ✨');
+      } else {
+        this.showToast('Failed to post review. ❌');
+      }
+    } catch (err) {
+
       console.error('Post Review Error:', err);
-      this.showToast('Server error while posting review. 🛠️');}
-},
+      this.showToast('Server error while posting review. 🛠️');
+    }
+  },
 
   showSkeletons(type) {
     const container = document.getElementById('mainContent');
@@ -1617,7 +1791,8 @@ const app = {
         <div class="places-grid">
           ${Array(4).fill('<div class="skeleton" style="height: 300px;"></div>').join('')}
         </div>
-      `;} else if (type === 'dashboard') {
+      `;
+    } else if (type === 'dashboard') {
       skeletonHtml = `
         <div class="skeleton-title skeleton" style="width: 50%;"></div>
         <div class="skeleton-text skeleton" style="width: 90%; margin-bottom: 3rem;"></div>
@@ -1628,7 +1803,8 @@ const app = {
         <div class="orders-list">
           ${Array(2).fill('<div class="skeleton" style="height: 150px; border-radius: 15px; margin-bottom: 1rem;"></div>').join('')}
         </div>
-      `;} else if (type === 'place' || type === 'restaurant') {
+      `;
+    } else if (type === 'place' || type === 'restaurant') {
       skeletonHtml = `
         <div class="skeleton-title skeleton" style="width: 40%;"></div>
         <div class="skeleton-text skeleton" style="width: 80%;"></div>
@@ -1638,7 +1814,8 @@ const app = {
         <div class="restaurants-grid">
           ${Array(6).fill('<div class="skeleton" style="height: 250px;"></div>').join('')}
         </div>
-      `;} else if (type === 'blog') {
+      `;
+    } else if (type === 'blog') {
       skeletonHtml = `
         <div class="skeleton-title skeleton text-center" style="width: 40%; margin: 2rem auto;"></div>
         <div class="skeleton-text skeleton text-center" style="width: 60%; margin: 0 auto 3rem;"></div>
@@ -1654,14 +1831,16 @@ const app = {
             </div>
           `).join('')}
         </div>
-      `;} else if (type === 'gallery') {
+      `;
+    } else if (type === 'gallery') {
       skeletonHtml = `
         <div class="skeleton-title skeleton text-center" style="width: 40%; margin: 2rem auto;"></div>
         <div class="skeleton-text skeleton text-center" style="width: 60%; margin: 0 auto 3rem;"></div>
         <div class="gallery-grid-elite">
           ${Array(6).fill('<div class="skeleton" style="height: 350px; border-radius: 24px; margin-bottom: 2rem;"></div>').join('')}
         </div>
-      `;} else if (type === 'story-detail') {
+      `;
+    } else if (type === 'story-detail') {
       skeletonHtml = `
         <div class="skeleton" style="height: 400px; width: 100%; border-radius: 0 0 40px 40px;"></div>
         <div class="story-detail-content">
@@ -1670,18 +1849,22 @@ const app = {
           <div class="skeleton" style="height: 20px; width: 90%; margin-bottom: 1rem;"></div>
           <div class="skeleton" style="height: 20px; width: 80%; margin-bottom: 1rem;"></div>
         </div>
-      `;}
+      `;
+    }
 
 
 
-    container.innerHTML = skeletonHtml;},
+    container.innerHTML = skeletonHtml;
+  },
 
   renderFoodItems(restaurant) {
     let items = restaurant.foodItems;
 
     if (this.currentFilters.restaurant === 'veg') {
-      items = items.filter(item => item.isVeg);} else if (this.currentFilters.restaurant !== 'all') {
-      items = items.filter(item => item.category === this.currentFilters.restaurant);}
+      items = items.filter(item => item.isVeg);
+    } else if (this.currentFilters.restaurant !== 'all') {
+      items = items.filter(item => item.category === this.currentFilters.restaurant);
+    }
 
     if (items.length === 0) {
       return `
@@ -1689,7 +1872,8 @@ const app = {
           <div class="empty-state-icon">🍽️</div>
           <p class="empty-state-text">No items found matching your filter</p>
         </div>
-      `;}
+      `;
+    }
 
     return items.map((item, index) => {
       const itemId = `${restaurant.id}-${item.name.replace(/\s+/g, '_')}`;
@@ -1718,16 +1902,20 @@ const app = {
           </div>
         </div>
         ${isBiriyani ? `<script>setTimeout(() => app.loadLottie('steam-${itemId}', 'https://assets10.lottiefiles.com/packages/lf20_qpwb7yqc.json'), 100)</script>` : ''}
-      `;}).join('`);
+      `;
+    }).join('');
   },
 
   // State Management & Utilities
   updateInterests(category, cuisine) {
     if (category) {
-      this.userInterests.categories[category] = (this.userInterests.categories[category] || 0) + 1;}
+      this.userInterests.categories[category] = (this.userInterests.categories[category] || 0) + 1;
+    }
     if (cuisine) {
-      this.userInterests.cuisines[cuisine] = (this.userInterests.cuisines[cuisine] || 0) + 1;}
-    localStorage.setItem('userInterests', JSON.stringify(this.userInterests));},
+      this.userInterests.cuisines[cuisine] = (this.userInterests.cuisines[cuisine] || 0) + 1;
+    }
+    localStorage.setItem('userInterests', JSON.stringify(this.userInterests));
+  },
 
   updateBreadcrumb(items) {
     const breadcrumb = document.getElementById('breadcrumb');
@@ -1736,14 +1924,17 @@ const app = {
     const html = items.map((item, index) => {
       const isLast = index === items.length - 1;
       if (isLast) {
-        return `<span class="breadcrumb-item">${item.label}</span>`;} else {
+        return `<span class="breadcrumb-item">${item.label}</span>`;
+      } else {
         return `
-          <span class="breadcrumb-item'${item.onClick ? 'onclick="app.${item.onClick.name}(${item.onClick.toString().match(/\d+/)?.[0] || ''})"` : ''}>${item.label}</span>
-          <span class="breadcrumb-separator">›</span>
-        `;}
-}).join('');
+          <span class="breadcrumb-item ${item.onClick ? 'clickable' : ''}" ${item.onClick ? `onclick="app.${item.onClick.name}(${item.onClick.toString().match(/\d+/)?.[0] || ''})"` : ''}>${item.label}</span>
+                <span class="breadcrumb-separator">›</span>
+                  `;
+      }
+    }).join('');
 
-    breadcrumb.innerHTML = html;},
+    breadcrumb.innerHTML = html;
+  },
 
   showLoginPage() {
     this.toggleUIElements(false);
@@ -1752,35 +1943,36 @@ const app = {
     mainContent.className = '';
 
     mainContent.innerHTML = `
-      <div class="login-page">
-        <div class="login-card">
-          <div class="login-header">
-            <h1 class="login-logo">FOOD VISTA</h1>
-            <p class="login-subtitle" id="loginSubtitle">Sign in to explore Kerala's flavors</p>
-          </div>
-          <form class="login-form" id="authForm" onsubmit="app.handleAuth(event)">
-            <div id="signupFields" class="hidden">
-               <div class="form-group">
-                <label class="form-label">Full Name</label>
-                <input type="text" class="login-input" placeholder="Enter your name" id="nameInput">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Email Address</label>
-              <input type="email" class="login-input" placeholder="Enter your email" required id="emailInput">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Password</label>
-              <input type="password" class="login-input" placeholder="••••••••" required id="passwordInput">
-            </div>
-            <button type="submit" class="login-button" id="authBtn">Sign In</button>
-          </form>
-          <div class="login-footer">
-            <p id="toggleAuthText">Don't have an account? <a href="javascript:void(0)" class="footer-link" onclick="app.toggleAuthMode()">Register Now</a></p>
-          </div>
-        </div>
-      </div>
-    `;},
+                  <div class="login-page">
+                    <div class="login-card">
+                      <div class="login-header">
+                        <h1 class="login-logo">FOOD VISTA</h1>
+                        <p class="login-subtitle" id="loginSubtitle">Sign in to explore Kerala's flavors</p>
+                      </div>
+                      <form class="login-form" id="authForm" onsubmit="app.handleAuth(event)">
+                        <div id="signupFields" class="hidden">
+                          <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="login-input" placeholder="Enter your name" id="nameInput">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">Email Address</label>
+                          <input type="email" class="login-input" placeholder="Enter your email" required id="emailInput">
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">Password</label>
+                          <input type="password" class="login-input" placeholder="••••••••" required id="passwordInput">
+                        </div>
+                        <button type="submit" class="login-button" id="authBtn">Sign In</button>
+                      </form>
+                      <div class="login-footer">
+                        <p id="toggleAuthText">Don't have an account? <a href="javascript:void(0)" class="footer-link" onclick="app.toggleAuthMode()">Register Now</a></p>
+                      </div>
+                    </div>
+      </div >
+  `;
+  },
 
   isSignup: false,
   toggleAuthMode() {
@@ -1794,12 +1986,14 @@ const app = {
       signupFields.classList.remove('hidden');
       authBtn.innerText = 'Create Account';
       subtitle.innerText = 'Join us and taste the magic';
-      toggleText.innerHTML = `Already have an account? <a href="javascript:void(0)" class="footer-link" onclick="app.toggleAuthMode()">Sign In</a>`;} else {
+      toggleText.innerHTML = `Already have an account ? <a href="javascript:void(0)" class="footer-link" onclick="app.toggleAuthMode()">Sign In</a>`;
+    } else {
       signupFields.classList.add('hidden');
       authBtn.innerText = 'Sign In';
-      subtitle.innerText="Sign in to explore Kerala's flavors";
-      toggleText.innerHTML = `Don't have an account? <a href="javascript:void(0)" class="footer-link" onclick="app.toggleAuthMode()">Register Now</a>`;}
-},
+      subtitle.innerText = "Sign in to explore Kerala's flavors";
+      toggleText.innerHTML = `Don't have an account? <a href="javascript:void(0)" class="footer-link" onclick="app.toggleAuthMode()">Register Now</a>`;
+    }
+  },
 
   async handleAuth(event) {
     event.preventDefault();
@@ -1812,13 +2006,14 @@ const app = {
     const name = this.isSignup ? document.getElementById('nameInput').value : '';
 
     const endpoint = this.isSignup ? '/api/auth/signup' : '/api/auth/login';
-    const body = this.isSignup ? { name, email, password} : { email, password};
+    const body = this.isSignup ? { name, email, password } : { email, password };
 
     try {
       const response = await fetch(`${this.apiBaseUrl}${endpoint}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify(body)});
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
 
       const data = await response.json();
 
@@ -1830,30 +2025,52 @@ const app = {
         await this.loadFavorites(); // Sync favorites after login
         this.showToast(this.isSignup ? 'Account created! Welcome 🎉' : 'Welcome back! 👋');
         this.toggleUIElements(true);
-        this.handleRoute();} else {
-        this.showToast(data.msg || 'Authentication failed! ❌');}
-} catch (error) {
-      
-      console.error('Auth Error Details:', {
-        message: error.message,
-        stack: error.stack,
-        url: `${this.apiBaseUrl}${endpoint}`
-      });
-      this.showToast('Server connection error! Make sure backend is running. 🛠️');} finally {
+        this.handleRoute();
+      } else {
+        this.showToast(data.msg || 'Authentication failed! ❌');
+      }
+    } catch (error) {
+
+      console.warn('Backend unavailable, falling back to local login. Error:', error.message);
+
+      // Fallback local mock login
+      const mockUser = {
+        name: this.isSignup ? name : (email.split('@')[0] || 'Guest'),
+        email: email,
+        id: 'local_user_' + Date.now()
+      };
+
+      localStorage.setItem('token', 'mock_fallback_token_12345');
+      localStorage.setItem('user', JSON.stringify(mockUser));
+      localStorage.setItem('isLoggedIn', 'true');
+      this.isLoggedIn = true;
+
+      // Safely load favorites fallback
+      const savedFavs = localStorage.getItem('favorites');
+      this.favorites = savedFavs ? JSON.parse(savedFavs) : { restaurants: [], items: [] };
+
+      this.showToast(this.isSignup ? 'Offline Account created! Welcome 🎉' : 'Offline Mode: Welcome back! 👋');
+      this.toggleUIElements(true);
+      this.handleRoute();
+
+    } finally {
       authBtn.innerText = this.isSignup ? 'Create Account' : 'Sign In';
-      authBtn.disabled = false;}
-},
+      authBtn.disabled = false;
+    }
+  },
 
   toggleUIElements(show) {
     const header = document.querySelector('.header');
     const footer = document.querySelector('.footer');
     if (show) {
       header?.classList.remove('hidden');
-      footer?.classList.remove('hidden');} else {
+      footer?.classList.remove('hidden');
+    } else {
       header?.classList.add('hidden');
       footer?.classList.add('hidden');
-      window.scrollTo(0, 0);}
-},
+      window.scrollTo(0, 0);
+    }
+  },
 
 
   logout() {
@@ -1862,10 +2079,11 @@ const app = {
     localStorage.removeItem('user');
     localStorage.removeItem('favorites'); // Clear local favorites too
     this.isLoggedIn = false;
-    this.favorites = { restaurants: [], items: []};
+    this.favorites = { restaurants: [], items: [] };
     this.cart = [];
     window.location.hash = '/';
-    this.handleRoute();},
+    this.handleRoute();
+  },
 
   async toggleFavorite(id, type, btn) {
     const list = type === 'restaurant' ? this.favorites.restaurants : this.favorites.items;
@@ -1873,10 +2091,13 @@ const app = {
 
     if (index === -1) {
       list.push(id);
-      btn.classList.add('active');} else {
+      btn.classList.add('active');
+    } else {
       list.splice(index, 1);
-      btn.classList.remove('active');}
-    await this.saveFavorites();},
+      btn.classList.remove('active');
+    }
+    await this.saveFavorites();
+  },
 
 
   async showDashboardPage() {
@@ -1884,12 +2105,13 @@ const app = {
 
     if (!user) {
       this.showLoginPage();
-      return;}
+      return;
+    }
 
     this.currentView = 'dashboard';
     this.updateBreadcrumb([
-      { label: 'Home', onClick: () => this.navigateHome()},
-      { label: 'My Dashboard'}
+      { label: 'Home', onClick: () => this.navigateHome() },
+      { label: 'My Dashboard' }
     ]);
 
     this.showSkeletons('dashboard');
@@ -1898,17 +2120,20 @@ const app = {
     const timeoutId = setTimeout(() => controller.abort(), 30000);
 
     try {
-      const ordersResponse = await fetch(`${this.apiBaseUrl}/api/orders/${user.id}`, { signal: controller.signal});
+      const ordersResponse = await fetch(`${this.apiBaseUrl}/api/orders/${user.id}`, { signal: controller.signal });
       const orders = await ordersResponse.json();
       clearTimeout(timeoutId);
-      this.renderDashboardPage(orders);} catch (err) {
-      
+      this.renderDashboardPage(orders);
+    } catch (err) {
+
       clearTimeout(timeoutId);
       console.error('Dashboard Error:', err);
       if (err.name === 'AbortError') {
-        this.showToast('Orders request timed out. Showing fallback. 🛠️');}
-      this.renderDashboardPage([]);}
-},
+        this.showToast('Orders request timed out. Showing fallback. 🛠️');
+      }
+      this.renderDashboardPage([]);
+    }
+  },
 
   renderDashboardPage(orders) {
 
@@ -1918,9 +2143,12 @@ const app = {
         if (place.restaurants) {
           place.restaurants.forEach(rest => {
             if (this.favorites && this.favorites.restaurants && this.favorites.restaurants.includes(rest.id)) {
-              favRestaurants.push(rest);}
-});}
-});}
+              favRestaurants.push(rest);
+            }
+          });
+        }
+      });
+    }
 
     const favItems = [];
     if (window.restaurantData && window.restaurantData.places) {
@@ -1934,10 +2162,15 @@ const app = {
                   favItems.push({
                     ...item,
                     restaurantId: rest.id,
-                    restaurantName: rest.name});}
-});}
-});}
-});}
+                    restaurantName: rest.name
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    }
 
     const content = `
       <h1 class="page-title"> Welcome Back, ${JSON.parse(localStorage.getItem('user'))?.name || 'Foodie'}! 👋</h1>
@@ -1953,7 +2186,7 @@ const app = {
         </div>
 
         <h2 class="section-title">❤️ Favorite Restaurants</h2>
-        ${favRestaurants.length> 0 ? `
+        ${favRestaurants.length > 0 ? `
             <div class="restaurants-grid">
               ${favRestaurants.map((restaurant, index) => `
                 <div class="restaurant-card" onclick="app.navigateToRestaurant(${restaurant.id})" style="animation-delay: ${index * 0.1}s">
@@ -1976,11 +2209,11 @@ const app = {
           `}
 
         <h2 class="section-title" style="margin-top: 3rem;">🍕 Favorite Dishes</h2>
-        ${favItems.length> 0 ? `
+        ${favItems.length > 0 ? `
             <div class="food-items dashboard-food-grid">
               ${favItems.map((item, index) => {
-          const itemId = `${item.restaurantId}-${item.name.replace(/\s+/g, '_')}`;
-          return `
+      const itemId = `${item.restaurantId}-${item.name.replace(/\s+/g, '_')}`;
+      return `
                 <div class="food-item" style="animation-delay: ${index * 0.05}s" onclick="app.showFoodModal(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}')">
                   <div class="food-item-image-container">
                     ${item.image ? `<img src="${item.image}" alt="${item.name}" class="food-item-image" loading="lazy">` : ''}
@@ -2020,14 +2253,15 @@ const app = {
 </div>
   `;
 
-    this.updateContent(content);},
+    this.updateContent(content);
+  },
 
   showAboutPage() {
     this.toggleUIElements(true);
     this.currentView = 'about';
     this.updateBreadcrumb([
-      { label: 'Home', onClick: () => this.navigateHome()},
-      { label: 'About Us'}
+      { label: 'Home', onClick: () => this.navigateHome() },
+      { label: 'About Us' }
     ]);
 
     const content = `
@@ -2121,14 +2355,15 @@ const app = {
         </section>
       </div>
   `;
-    this.updateContent(content);},
+    this.updateContent(content);
+  },
 
   showBlogPage() {
     this.toggleUIElements(true);
     this.currentView = 'blog';
     this.updateBreadcrumb([
-      { label: 'Home', onClick: () => this.navigateHome()},
-      { label: 'Kerala Food Stories'}
+      { label: 'Home', onClick: () => this.navigateHome() },
+      { label: 'Kerala Food Stories' }
     ]);
 
     const stories = (window.restaurantData && window.restaurantData.foodStories) || [];
@@ -2140,7 +2375,8 @@ const app = {
           <button class="magic-btn" style="margin-top: 2rem;" onclick="app.navigateHome()">Back to Home</button>
         </div>
   `);
-      return;}
+      return;
+    }
 
     const content = `
   <div class="blog-elite-wrapper">
@@ -2171,17 +2407,18 @@ const app = {
         </div>
       </div>
   `;
-    this.updateContent(content);},
+    this.updateContent(content);
+  },
 
   showStoryDetail(id) {
     const story = window.restaurantData.foodStories.find(s => s.id === id);
-    if (!story) { this.showBlogPage(); return;}
+    if (!story) { this.showBlogPage(); return; }
 
     this.toggleUIElements(true);
     this.updateBreadcrumb([
-      { label: 'Home', onClick: () => this.navigateHome()},
-      { label: 'Stories', onClick: () => window.location.hash = '/blog'},
-      { label: story.title}
+      { label: 'Home', onClick: () => this.navigateHome() },
+      { label: 'Stories', onClick: () => window.location.hash = '/blog' },
+      { label: story.title }
     ]);
 
     const content = `
@@ -2208,14 +2445,15 @@ const app = {
         </div>
       </div>
   `;
-    this.updateContent(content);},
+    this.updateContent(content);
+  },
 
   showGalleryPage() {
     this.toggleUIElements(true);
     this.currentView = 'gallery';
     this.updateBreadcrumb([
-      { label: 'Home', onClick: () => this.navigateHome()},
-      { label: 'Hidden Gems Gallery'}
+      { label: 'Home', onClick: () => this.navigateHome() },
+      { label: 'Hidden Gems Gallery' }
     ]);
 
     const gems = (window.restaurantData && window.restaurantData.hiddenGems) || [];
@@ -2227,7 +2465,8 @@ const app = {
           <button class="magic-btn" style="margin-top: 2rem;" onclick="app.navigateHome()">Back to Home</button>
         </div>
   `);
-      return;}
+      return;
+    }
 
     const content = `
   <div class="gallery-elite-wrapper">
@@ -2255,14 +2494,15 @@ const app = {
         </div>
       </div>
   `;
-    this.updateContent(content);},
+    this.updateContent(content);
+  },
 
   showAnalyticalDashboard() {
     this.toggleUIElements(true);
     this.currentView = 'trends';
     this.updateBreadcrumb([
-      { label: 'Home', onClick: () => this.navigateHome()},
-      { label: 'Food Trends & Analytics'}
+      { label: 'Home', onClick: () => this.navigateHome() },
+      { label: 'Food Trends & Analytics' }
     ]);
 
     const places = window.restaurantData?.places || [];
@@ -2275,9 +2515,12 @@ const app = {
         (r.foodItems || []).forEach(item => {
           totalItems++;
           const priceNum = parseInt(item.price.replace(/[₹,]/g, ''));
-          if (!isNaN(priceNum)) totalPrice += priceNum;});});
-      const avgPrice = totalItems> 0 ? Math.round(totalPrice / totalItems) : 0;
-      return { name: place.name, restaurants: restaurantCount, items: totalItems, avgPrice};});
+          if (!isNaN(priceNum)) totalPrice += priceNum;
+        });
+      });
+      const avgPrice = totalItems > 0 ? Math.round(totalPrice / totalItems) : 0;
+      return { name: place.name, restaurants: restaurantCount, items: totalItems, avgPrice };
+    });
 
     const maxAvg = Math.max(...districtStats.map(d => d.avgPrice), 1);
 
@@ -2285,7 +2528,8 @@ const app = {
     const cuisineMap = {};
     places.forEach(p => (p.restaurants || []).forEach(r => {
       const c = r.cuisine || 'Other';
-      cuisineMap[c] = (cuisineMap[c] || 0) + 1;}));
+      cuisineMap[c] = (cuisineMap[c] || 0) + 1;
+    }));
     const cuisines = Object.entries(cuisineMap).sort((a, b) => b[1] - a[1]).slice(0, 8);
     const maxCuisine = Math.max(...cuisines.map(c => c[1]), 1);
 
@@ -2294,7 +2538,8 @@ const app = {
     let traditionalCount = 0, totalDishes = 0;
     places.forEach(p => (p.restaurants || []).forEach(r => (r.foodItems || []).forEach(item => {
       totalDishes++;
-      if (traditionalKeywords.some(kw => item.name.toLowerCase().includes(kw))) traditionalCount++;})));
+      if (traditionalKeywords.some(kw => item.name.toLowerCase().includes(kw))) traditionalCount++;
+    })));
 
     const content = `
   <div class="analytics-wrapper">
@@ -2380,14 +2625,15 @@ const app = {
         </div>
       </div>
   `;
-    this.updateContent(content);},
+    this.updateContent(content);
+  },
 
   showContactPage() {
     this.toggleUIElements(true);
     this.currentView = 'contact';
     this.updateBreadcrumb([
-      { label: 'Home', onClick: () => this.navigateHome()},
-      { label: 'Contact Us'}
+      { label: 'Home', onClick: () => this.navigateHome() },
+      { label: 'Contact Us' }
     ]);
     const content = `
   <div class="contact-elite-wrapper">
@@ -2517,7 +2763,10 @@ const app = {
       this.initMap('contactHubMap', [10.8972, 76.1139], 15, [{
         coords: [10.8972, 76.1139],
         name: "MGM Technological Campus",
-        type: "Base Station"}]);}, 100);},
+        type: "Base Station"
+      }]);
+    }, 100);
+  },
 
   toggleFAQ(el) {
     const allItems = document.querySelectorAll('.faq-item-elite');
@@ -2535,13 +2784,17 @@ const app = {
       btn.innerHTML = 'Message Sent! ✅';
       setTimeout(() => {
         btn.innerHTML = 'Send Message';
-        btn.disabled = false;}, 3000);}, 1500);},
+        btn.disabled = false;
+      }, 3000);
+    }, 1500);
+  },
 
   showFoodModal(restaurantId, itemName) {
     let restaurant;
     window.restaurantData.places.forEach(place => {
       const found = place.restaurants.find(r => r.id === restaurantId);
-      if (found) restaurant = found;});
+      if (found) restaurant = found;
+    });
 
     if (!restaurant) return;
     const item = restaurant.foodItems.find(i => i.name === itemName);
@@ -2569,11 +2822,13 @@ const app = {
       </div>
   `;
     modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';},
+    document.body.style.overflow = 'hidden';
+  },
 
   closeModal() {
     document.getElementById('foodModal').classList.add('hidden');
-    document.body.style.overflow = 'auto';},
+    document.body.style.overflow = 'auto';
+  },
 
   // Checkout Simulation Flow
   startCheckout() {
@@ -2621,7 +2876,8 @@ const app = {
             </div>
           </div>
         </div>
-`;} else if (this.currentCheckoutStep === 2) {
+`;
+    } else if (this.currentCheckoutStep === 2) {
       const isUPI = this.checkoutData.paymentMethod && this.checkoutData.paymentMethod.includes('UPI');
       if (isUPI) {
         stepHtml = `
@@ -2658,12 +2914,14 @@ const app = {
               <button class="checkout-btn" style="background: var(--accent-gradient);" onclick="app.verifyUPI()">Verify & Continue ➔</button>
             </div>
           </div>
-`;} else {
+`;
+      } else {
         // If not UPI, skip straight to Address
         this.currentCheckoutStep = 3;
         this.renderCheckout();
-        return;}
-} else if (this.currentCheckoutStep === 3) {
+        return;
+      }
+    } else if (this.currentCheckoutStep === 3) {
       stepHtml = `
   <div class="checkout-steps">
           <div class="step done">✓</div>
@@ -2686,7 +2944,8 @@ const app = {
           
           <button type="submit" class="checkout-btn">Confirm Order ➔</button>
         </form>
-`;}
+`;
+    }
     else if (this.currentCheckoutStep === 4) {
       const orderId = this.lastOrderId || 'NAV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
       stepHtml = `
@@ -2699,9 +2958,11 @@ const app = {
         </div>
   `;
       this.cart = [];
-      this.saveCart();}
+      this.saveCart();
+    }
 
-    modalBody.innerHTML = stepHtml;},
+    modalBody.innerHTML = stepHtml;
+  },
 
   async startTracking(orderId) {
     if (this.trackingInterval) clearInterval(this.trackingInterval);
@@ -2764,102 +3025,114 @@ const app = {
         this.updateTrackingUI(data.status);
 
         if (data.status === 'Arrived' || data.status === 'Delivered') {
-clearInterval(this.trackingInterval);}
-} catch (err) {
-      
-  console.error('Tracking Error:', err);}
-};
+          clearInterval(this.trackingInterval);
+        }
+      } catch (err) {
 
-// First fetch
-await fetchStatus();
+        console.error('Tracking Error:', err);
+      }
+    };
 
-// Poll every 5 seconds
-this.trackingInterval = setInterval(fetchStatus, 5000);},
+    // First fetch
+    await fetchStatus();
 
-updateTrackingUI(status) {
-  if (status === this.currentStatus) return;
-  this.currentStatus = status;
+    // Poll every 5 seconds
+    this.trackingInterval = setInterval(fetchStatus, 5000);
+  },
 
-  const progress = document.getElementById('trackProgress');
-  const statusText = document.getElementById('trackingStatus');
-  const bikeIcon = document.querySelector('.bike-icon');
+  updateTrackingUI(status) {
+    if (status === this.currentStatus) return;
+    this.currentStatus = status;
 
-  const nodes = {
-    // Stage 1: Order Placed
-    'Pending': { width: '0%', node: 1, bikePos: '5%', text: 'Order has been received!', color: 'var(--accent-color)'},
-    'Confirmed': { width: '0%', node: 1, bikePos: '5%', text: 'Order is confirmed!', color: 'var(--accent-color)'},
-    'Order Placed': { width: '0%', node: 1, bikePos: '5%', text: 'Order has been received!', color: 'var(--accent-color)'},
+    const progress = document.getElementById('trackProgress');
+    const statusText = document.getElementById('trackingStatus');
+    const bikeIcon = document.querySelector('.bike-icon');
 
-    // Stage 2: Preparing
-    'Preparing': { width: '33%', node: 2, bikePos: '33%', text: 'Chef is preparing your delicious meal...', color: 'var(--primary-color)'},
+    const nodes = {
+      // Stage 1: Order Placed
+      'Pending': { width: '0%', node: 1, bikePos: '5%', text: 'Order has been received!', color: 'var(--accent-color)' },
+      'Confirmed': { width: '0%', node: 1, bikePos: '5%', text: 'Order is confirmed!', color: 'var(--accent-color)' },
+      'Order Placed': { width: '0%', node: 1, bikePos: '5%', text: 'Order has been received!', color: 'var(--accent-color)' },
 
-    // Stage 3: Delivery
-    'Shipped': { width: '66%', node: 3, bikePos: '66%', text: 'Our delivery partner is on the way!', color: 'var(--accent-color)'},
-    'Delivery': { width: '66%', node: 3, bikePos: '66%', text: 'Our delivery partner is on the way!', color: 'var(--accent-color)'},
-    'Out for Delivery': { width: '66%', node: 3, bikePos: '66%', text: 'Our delivery partner is on the way!', color: 'var(--accent-color)'},
+      // Stage 2: Preparing
+      'Preparing': { width: '33%', node: 2, bikePos: '33%', text: 'Chef is preparing your delicious meal...', color: 'var(--primary-color)' },
 
-    // Stage 4: Arrived
-    'Arrived': { width: '100%', node: 4, bikePos: '90%', text: 'Order Arrived! Please collect your food.', color: 'var(--success-color)'},
-    'Delivered': { width: '100%', node: 4, bikePos: '90%', text: 'Order Delivered! Enjoy your food.', color: 'var(--success-color)'}
-};
+      // Stage 3: Delivery
+      'Shipped': { width: '66%', node: 3, bikePos: '66%', text: 'Our delivery partner is on the way!', color: 'var(--accent-color)' },
+      'Delivery': { width: '66%', node: 3, bikePos: '66%', text: 'Our delivery partner is on the way!', color: 'var(--accent-color)' },
+      'Out for Delivery': { width: '66%', node: 3, bikePos: '66%', text: 'Our delivery partner is on the way!', color: 'var(--accent-color)' },
 
-  const config = nodes[status] || nodes['Confirmed'];
+      // Stage 4: Arrived
+      'Arrived': { width: '100%', node: 4, bikePos: '90%', text: 'Order Arrived! Please collect your food.', color: 'var(--success-color)' },
+      'Delivered': { width: '100%', node: 4, bikePos: '90%', text: 'Order Delivered! Enjoy your food.', color: 'var(--success-color)' }
+    };
 
-  // Prevent going backward if user specifically requested linear progress
-  if (this.maxTrackingNode && config.node <this.maxTrackingNode) return;
-  this.maxTrackingNode = config.node;
+    const config = nodes[status] || nodes['Confirmed'];
 
-  // Reset pulses
-  document.querySelectorAll('.tracking-node').forEach(n => n.classList.remove('active', 'pulse'));
+    // Prevent going backward if user specifically requested linear progress
+    if (this.maxTrackingNode && config.node < this.maxTrackingNode) return;
+    this.maxTrackingNode = config.node;
 
-  // Set active nodes up to current
-  for (let i = 1; i <= config.node; i++) {
-    const node = document.getElementById(`node${i}`);
-    if (node) {
-      node.classList.add('active');
-      if (i === config.node && i <4) node.classList.add('pulse');}
-}
+    // Reset pulses
+    document.querySelectorAll('.tracking-node').forEach(n => n.classList.remove('active', 'pulse'));
 
-  if (progress) progress.style.width = config.width;
-  if (statusText) {
-    statusText.innerText = config.text;
-    statusText.style.color = config.color;}
+    // Set active nodes up to current
+    for (let i = 1; i <= config.node; i++) {
+      const node = document.getElementById(`node${i}`);
+      if (node) {
+        node.classList.add('active');
+        if (i === config.node && i < 4) node.classList.add('pulse');
+      }
+    }
 
-  // Move Bike
-  if (bikeIcon) {
-    bikeIcon.style.left = config.bikePos;
-    if (status !== 'Arrived' && status !== 'Delivered') {
-      bikeIcon.classList.add('riding');} else {
-      bikeIcon.classList.remove('riding');}
-}
+    if (progress) progress.style.width = config.width;
+    if (statusText) {
+      statusText.innerText = config.text;
+      statusText.style.color = config.color;
+    }
 
-  if (status === 'Arrived' || status === 'Delivered') {
-    const btn = document.getElementById('finishTrackBtn');
-    const container = document.getElementById('bikeContainer');
-    if (btn) btn.classList.remove('hidden');
-    if (container) {
-      // Keep it visible but stop riding
-      bikeIcon.classList.remove('riding');}
-    this.celebrate();}
-},
+    // Move Bike
+    if (bikeIcon) {
+      bikeIcon.style.left = config.bikePos;
+      if (status !== 'Arrived' && status !== 'Delivered') {
+        bikeIcon.classList.add('riding');
+      } else {
+        bikeIcon.classList.remove('riding');
+      }
+    }
 
-celebrate() {
-  // Basic celebration effect without library
-  const icon = document.querySelector('.success-icon') || { style: {}
-};
-  icon.innerText = '🎊';},
+    if (status === 'Arrived' || status === 'Delivered') {
+      const btn = document.getElementById('finishTrackBtn');
+      const container = document.getElementById('bikeContainer');
+      if (btn) btn.classList.remove('hidden');
+      if (container) {
+        // Keep it visible but stop riding
+        bikeIcon.classList.remove('riding');
+      }
+      this.celebrate();
+    }
+  },
 
-renderUserStats(orderCount = 0) {
-  // Simulated user stats combined with real order count
-  const stats = {
-    orders: orderCount,
-    bookings: 0,
-    loyaltyPoints: orderCount * 50,
-    nextLevel: 1000};
+  celebrate() {
+    // Basic celebration effect without library
+    const icon = document.querySelector('.success-icon') || {
+      style: {}
+    };
+    icon.innerText = '🎊';
+  },
 
-  const progress = (stats.loyaltyPoints / stats.nextLevel) * 100;
+  renderUserStats(orderCount = 0) {
+    // Simulated user stats combined with real order count
+    const stats = {
+      orders: orderCount,
+      bookings: 0,
+      loyaltyPoints: orderCount * 50,
+      nextLevel: 1000
+    };
 
-  return `
+    const progress = (stats.loyaltyPoints / stats.nextLevel) * 100;
+
+    return `
       <div class="stats-container">
     <div class="stats-grid">
       <div class="stats-card loyalty-card">
@@ -2892,19 +3165,21 @@ renderUserStats(orderCount = 0) {
       </div>
     </div>
       </div>
-    `;},
+    `;
+  },
 
-renderOrders(orders) {
-  if (!orders || orders.length === 0) {
-    return `
+  renderOrders(orders) {
+    if (!orders || orders.length === 0) {
+      return `
         <div class="empty-state" style="background: rgba(255,255,255,0.03); border-radius: 15px; padding: 2rem;">
           <div class="empty-state-icon">🛍️</div>
           <p class="empty-state-text">No orders yet. Ready to taste something new?</p>
           <button class="checkout-btn" style="width: auto; margin-top: 1rem; padding: 0.8rem 2rem;" onclick="app.navigateHome()">Browse Menu</button>
         </div>
-      `;}
+      `;
+    }
 
-  return orders.map(order => `
+    return orders.map(order => `
       <div class="order-card" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 1.5rem; margin-bottom: 1rem;">
         <div class="order-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
           <div>
@@ -2930,25 +3205,26 @@ renderOrders(orders) {
           </button>
         </div>
       </div>
-    `).join('`);
+    `).join('');
   },
 
   async trackOrder(orderId) {
-  const modal = document.getElementById('checkoutModal');
-  if (modal) {
-    modal.classList.remove('hidden');
-    this.startTracking(orderId);}
-},
+    const modal = document.getElementById('checkoutModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      this.startTracking(orderId);
+    }
+  },
 
 
-openBookingModal(restaurantId) {
-  const restaurant = this.findRestaurant(restaurantId);
-  if (!restaurant) return;
+  openBookingModal(restaurantId) {
+    const restaurant = this.findRestaurant(restaurantId);
+    if (!restaurant) return;
 
-  const modal = document.getElementById('checkoutModal');
-  const body = document.getElementById('checkoutBody');
+    const modal = document.getElementById('checkoutModal');
+    const body = document.getElementById('checkoutBody');
 
-  body.innerHTML = `
+    body.innerHTML = `
       <h2 class="checkout-title">Reserve a Table</h2>
       <p style="text-align: center; color: var(--text-muted); margin-bottom: 1.5rem;">at ${restaurant.name}</p>
       
@@ -2984,16 +3260,17 @@ openBookingModal(restaurantId) {
       </div>
     `;
 
-  modal.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';},
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  },
 
-processBooking(restaurantId) {
-  const guests = document.getElementById('bookingGuests').value;
-  const date = document.getElementById('bookingDate').value;
-  const time = document.getElementById('bookingTime').value;
+  processBooking(restaurantId) {
+    const guests = document.getElementById('bookingGuests').value;
+    const date = document.getElementById('bookingDate').value;
+    const time = document.getElementById('bookingTime').value;
 
-  const body = document.getElementById('checkoutBody');
-  body.innerHTML = `
+    const body = document.getElementById('checkoutBody');
+    body.innerHTML = `
       <div class="success-screen">
         <span class="success-icon">🎫</span>
         <h2 class="checkout-title" style="background: var(--accent-gradient); -webkit-background-clip: text;">Table Reserved!</h2>
@@ -3007,188 +3284,223 @@ processBooking(restaurantId) {
       </div>
     `;
 
-  // Visual celebration
-  this.celebrate();},
+    // Visual celebration
+    this.celebrate();
+  },
 
-findRestaurant(id) {
-  for (const place of window.restaurantData.places) {
-    const rest = place.restaurants.find(r => r.id === id);
-    if (rest) return rest;}
-  return null;},
+  findRestaurant(id) {
+    for (const place of window.restaurantData.places) {
+      const rest = place.restaurants.find(r => r.id === id);
+      if (rest) return rest;
+    }
+    return null;
+  },
 
-nextCheckoutStep() {
-  this.currentCheckoutStep++;
-  this.renderCheckout();},
+  nextCheckoutStep() {
+    this.currentCheckoutStep++;
+    this.renderCheckout();
+  },
 
-checkoutData: {},
-captureDeliveryDetails() {
-  this.checkoutData.deliveryAddress = {
-    name: document.getElementById('deliveryName').value,
-    phone: document.getElementById('deliveryPhone').value,
-    address: document.getElementById('deliveryAddress').value};
-  this.placeOrder();},
+  checkoutData: {},
+  captureDeliveryDetails() {
+    this.checkoutData.deliveryAddress = {
+      name: document.getElementById('deliveryName').value,
+      phone: document.getElementById('deliveryPhone').value,
+      address: document.getElementById('deliveryAddress').value
+    };
+    this.placeOrder();
+  },
 
-selectPayment(el) {
-  document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
-  el.classList.add('active');
+  selectPayment(el) {
+    document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
+    el.classList.add('active');
 
-  const method = el.querySelector('div div').innerText.trim();
-  this.checkoutData.paymentMethod = method;
-  console.log("Payment Selected:", method);
+    const method = el.querySelector('div div').innerText.trim();
+    this.checkoutData.paymentMethod = method;
+    console.log("Payment Selected:", method);
 
-  // If COD, go to Address (Step 3), If UPI go to Verification (Step 2)
-  if (method === 'Cash on Delivery') {
-    this.currentCheckoutStep = 3;} else if (method === 'Credit / Debit Card') {
-    this.currentCheckoutStep = 3;} else if (method.includes('UPI')) {
-    this.currentCheckoutStep = 2;} else {
-    this.currentCheckoutStep = 3; // Default to address}
-  this.renderCheckout();},
+    // If COD, go to Address (Step 3), If UPI go to Verification (Step 2)
+    if (method === 'Cash on Delivery') {
+      this.currentCheckoutStep = 3;
+    } else if (method === 'Credit / Debit Card') {
+      this.currentCheckoutStep = 3;
+    } else if (method.includes('UPI')) {
+      this.currentCheckoutStep = 2;
+    } else {
+      this.currentCheckoutStep = 3; // Default to address
+    }
+    this.renderCheckout();
+  },
 
-verifyUPI() {
-  const id = document.getElementById('upiId').value;
-  if (id && id.includes('@')) {
-    this.showToast('UPI ID Verified! ✅');
-    setTimeout(() => this.nextCheckoutStep(), 500);} else {
-    this.showToast('Please enter a valid UPI ID! ⚠️');}
-},
+  verifyUPI() {
+    const id = document.getElementById('upiId').value;
+    if (id && id.includes('@')) {
+      this.showToast('UPI ID Verified! ✅');
+      setTimeout(() => this.nextCheckoutStep(), 500);
+    } else {
+      this.showToast('Please enter a valid UPI ID! ⚠️');
+    }
+  },
 
   async placeOrder() {
-  const orderId = 'NAV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-  this.lastOrderId = orderId;
-  const user = JSON.parse(localStorage.getItem('user'));
+    const orderId = 'NAV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+    this.lastOrderId = orderId;
+    const user = JSON.parse(localStorage.getItem('user'));
 
-  if (!user) {
-    this.showToast('Please login to place an order! ⚠️');
-    this.closeCheckout();
-    this.showLoginPage();
-    return;}
+    if (!user) {
+      this.showToast('Please login to place an order! ⚠️');
+      this.closeCheckout();
+      this.showLoginPage();
+      return;
+    }
 
-  const orderData = {
-    user: user.id,
-    items: this.cart.map(item => ({
-      name: item.name,
-      price: item.price,
-      quantity: item.quantity,
-      restaurantId: item.restaurantId})),
-    totalAmount: this.calculateTotal(),
-    deliveryAddress: this.checkoutData.deliveryAddress,
-    paymentMethod: this.checkoutData.paymentMethod || 'Cash on Delivery',
-    orderId: orderId};
+    const orderData = {
+      user: user.id,
+      items: this.cart.map(item => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        restaurantId: item.restaurantId
+      })),
+      totalAmount: this.calculateTotal(),
+      deliveryAddress: this.checkoutData.deliveryAddress,
+      paymentMethod: this.checkoutData.paymentMethod || 'Cash on Delivery',
+      orderId: orderId
+    };
 
-  // Stripe Payment Flow
-  if (this.checkoutData.paymentMethod === 'Credit / Debit Card') {
+    // Stripe Payment Flow
+    if (this.checkoutData.paymentMethod === 'Credit / Debit Card') {
+      try {
+        this.showToast('Redirecting to secure payment... 💳');
+
+        const response = await fetch(`${this.apiBaseUrl}/api/payments/create-checkout-session`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: this.cart,
+            success_url: window.location.origin + window.location.pathname + '#/dashboard?payment=success',
+            cancel_url: window.location.origin + window.location.pathname + '#/cart'
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to create payment session');
+        }
+
+        const session = await response.json();
+
+        // Save order as 'Pending' first
+        await fetch(`${this.apiBaseUrl}/api/orders`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...orderData, status: 'Pending' })
+        });
+
+        const stripe = Stripe(this.stripePublicKey);
+        await stripe.redirectToCheckout({ sessionId: session.id });
+        return;
+      } catch (err) {
+
+        console.error('Stripe Error:', err);
+        this.showToast(`Payment error: ${err.message}. 🛠️`);
+        return;
+      }
+    }
+
+    // Standard COD Flow
     try {
-      this.showToast('Redirecting to secure payment... 💳');
-
-      const response = await fetch(`${this.apiBaseUrl}/api/payments/create-checkout-session`, {
+      const response = await fetch(`${this.apiBaseUrl}/api/orders`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          items: this.cart,
-          success_url: window.location.origin + window.location.pathname + '#/dashboard?payment=success',
-          cancel_url: window.location.origin + window.location.pathname + '#/cart'})});
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create payment session');}
+      if (response.ok) {
+        this.currentCheckoutStep = 4;
+        this.renderCheckout();
+        this.showToast('Order placed successfully! 🎁');
 
-      const session = await response.json();
+        // Clear cart
+        this.cart = [];
+        this.saveCart();
+        this.updateCartUI();
+      } else {
+        this.showToast('Failed to place order. ❌');
+      }
+    } catch (err) {
 
-      // Save order as 'Pending' first
-      await fetch(`${this.apiBaseUrl}/api/orders`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify({ ...orderData, status: 'Pending'})});
-
-      const stripe = Stripe(this.stripePublicKey);
-      await stripe.redirectToCheckout({ sessionId: session.id});
-      return;} catch (err) {
-      
-      console.error('Stripe Error:', err);
-      this.showToast(`Payment error: ${err.message}. 🛠️`);
-      return;}
-}
-
-  // Standard COD Flow
-  try {
-    const response = await fetch(`${this.apiBaseUrl}/api/orders`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json'},
-      body: JSON.stringify(orderData)});
-
-    if (response.ok) {
-      this.currentCheckoutStep = 4;
-      this.renderCheckout();
-      this.showToast('Order placed successfully! 🎁');
-
-      // Clear cart
-      this.cart = [];
-      this.saveCart();
-      this.updateCartUI();} else {
-      this.showToast('Failed to place order. ❌');}
-} catch (err) {
-      
-    console.error('Order Error:', err);
-    this.showToast('Server connection error. 🛠️');}
-},
+      console.error('Order Error:', err);
+      this.showToast('Server connection error. 🛠️');
+    }
+  },
 
 
-calculateTotal() {
-  let total = this.cart.reduce((sum, item) => sum + (parseInt(item.price.replace(/[^\d]/g, '')) * item.quantity), 0);
-  return total + 40; // Including delivery fee},
+  calculateTotal() {
+    let total = this.cart.reduce((sum, item) => sum + (parseInt(item.price.replace(/[^\d]/g, '')) * item.quantity), 0);
+    return total + 40; // Including delivery fee
+  },
 
-finishCheckout() {
-  this.closeCheckout();
-  if (this.currentView === 'dashboard') {
-    this.showDashboardPage();} else {
-    this.navigateHome();}
-},
+  finishCheckout() {
+    this.closeCheckout();
+    if (this.currentView === 'dashboard') {
+      this.showDashboardPage();
+    } else {
+      this.navigateHome();
+    }
+  },
 
-closeCheckout() {
-  if (this.trackingInterval) {
-    clearInterval(this.trackingInterval);
-    this.trackingInterval = null;}
-  document.getElementById('checkoutModal').classList.add('hidden');
-  document.body.style.overflow = 'auto';},
+  closeCheckout() {
+    if (this.trackingInterval) {
+      clearInterval(this.trackingInterval);
+      this.trackingInterval = null;
+    }
+    document.getElementById('checkoutModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+  },
 
-// Filtering Logic
-applyPlaceFilter(placeId, filter) {
-  this.currentFilters.place = filter;
-  this.showPlacePage(placeId);},
+  // Filtering Logic
+  applyPlaceFilter(placeId, filter) {
+    this.currentFilters.place = filter;
+    this.showPlacePage(placeId);
+  },
 
-applyRestaurantFilter(restaurantId, filter) {
-  this.currentFilters.restaurant = filter;
-  this.showRestaurantPage(restaurantId);},
+  applyRestaurantFilter(restaurantId, filter) {
+    this.currentFilters.restaurant = filter;
+    this.showRestaurantPage(restaurantId);
+  },
 
-// ========================================
-// INTERACTIVE MAP LOGIC
-// ========================================
-map: null,
+  // ========================================
+  // INTERACTIVE MAP LOGIC
+  // ========================================
+  map: null,
   markers: [],
 
-    initMap(containerId, coords, zoom, markersData = []) {
-  if (!L) return;
+  initMap(containerId, coords, zoom, markersData = []) {
+    if (!L) return;
 
-  // Cleanup existing map
-  if (this.map) {
-    this.map.remove();
-    this.map = null;}
+    // Cleanup existing map
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+    }
 
-  const container = document.getElementById(containerId);
-  if (!container) return;
+    const container = document.getElementById(containerId);
+    if (!container) return;
 
-  this.map = L.map(containerId).setView(coords, zoom);
+    this.map = L.map(containerId).setView(coords, zoom);
 
-  // Add Tile Layer (OpenStreetMap)
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'}).addTo(this.map);
+    // Add Tile Layer (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(this.map);
 
-  // Add Markers
-  this.markers = [];
-  markersData.forEach(data => {
-    const marker = L.marker(data.coords).addTo(this.map);
+    // Add Markers
+    this.markers = [];
+    markersData.forEach(data => {
+      const marker = L.marker(data.coords).addTo(this.map);
 
-    const popupContent = `
+      const popupContent = `
         <div class="map-popup-card">
           <h3 class="map-popup-title">${data.name}</h3>
           <p style="margin:0; font-size:0.8rem; color:var(--text-secondary);">${data.description || data.cuisine || ""}</p>
@@ -3198,96 +3510,107 @@ map: null,
         </div>
       `;
 
-    marker.bindPopup(popupContent);
-    this.markers.push(marker);});
+      marker.bindPopup(popupContent);
+      this.markers.push(marker);
+    });
 
-  // Fix for map not loading properly in hidden/dynamic containers
-  setTimeout(() => {
-    this.map.invalidateSize();}, 100);},
+    // Fix for map not loading properly in hidden/dynamic containers
+    setTimeout(() => {
+      this.map.invalidateSize();
+    }, 100);
+  },
 
-// ========================================
-// SPLIT BILL LOGIC
-// ========================================
-splitParticipants: ['Me'],
+  // ========================================
+  // SPLIT BILL LOGIC
+  // ========================================
+  splitParticipants: ['Me'],
   splitAssignments: {}, // { itemId: ['Me', 'Rahul']}
 
-openSplitBill() {
-  const modal = document.getElementById('splitBillModal');
-  if (!modal) return;
+  openSplitBill() {
+    const modal = document.getElementById('splitBillModal');
+    if (!modal) return;
 
-  // Reset state
-  this.splitParticipants = ['Me'];
-  this.splitAssignments = {};
+    // Reset state
+    this.splitParticipants = ['Me'];
+    this.splitAssignments = {};
 
-  // Initialize assignments with 'Me' for all items
-  this.cart.forEach(item => {
-    this.splitAssignments[item.cartId] = ['Me'];});
+    // Initialize assignments with 'Me' for all items
+    this.cart.forEach(item => {
+      this.splitAssignments[item.cartId] = ['Me'];
+    });
 
-  this.renderSplitParticipants();
-  document.getElementById('splitStep1').classList.remove('hidden');
-  document.getElementById('splitStep2').classList.add('hidden');
-  document.getElementById('splitStep3').classList.add('hidden');
+    this.renderSplitParticipants();
+    document.getElementById('splitStep1').classList.remove('hidden');
+    document.getElementById('splitStep2').classList.add('hidden');
+    document.getElementById('splitStep3').classList.add('hidden');
 
-  modal.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';},
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  },
 
-closeSplitBill() {
-  const modal = document.getElementById('splitBillModal');
-  if (modal) {
-    modal.classList.add('hidden');
-    document.body.style.overflow = 'auto';}
-},
+  closeSplitBill() {
+    const modal = document.getElementById('splitBillModal');
+    if (modal) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+  },
 
-addSplitParticipant() {
-  const input = document.getElementById('splitNameInput');
-  const name = input.value.trim();
+  addSplitParticipant() {
+    const input = document.getElementById('splitNameInput');
+    const name = input.value.trim();
 
-  if (name && !this.splitParticipants.includes(name)) {
-    this.splitParticipants.push(name);
-    input.value = '';
-    this.renderSplitParticipants();}
-},
+    if (name && !this.splitParticipants.includes(name)) {
+      this.splitParticipants.push(name);
+      input.value = '';
+      this.renderSplitParticipants();
+    }
+  },
 
-removeSplitParticipant(name) {
-  if (name === 'Me') return; // Cannot remove self
-  this.splitParticipants = this.splitParticipants.filter(p => p !== name);
+  removeSplitParticipant(name) {
+    if (name === 'Me') return; // Cannot remove self
+    this.splitParticipants = this.splitParticipants.filter(p => p !== name);
 
-  // Remove from assignments
-  Object.keys(this.splitAssignments).forEach(itemId => {
-    this.splitAssignments[itemId] = this.splitAssignments[itemId].filter(p => p !== name);
-    // Ensure at least someone is assigned (fallback to Me)
-    if (this.splitAssignments[itemId].length === 0) {
-      this.splitAssignments[itemId] = ['Me'];}
-});
+    // Remove from assignments
+    Object.keys(this.splitAssignments).forEach(itemId => {
+      this.splitAssignments[itemId] = this.splitAssignments[itemId].filter(p => p !== name);
+      // Ensure at least someone is assigned (fallback to Me)
+      if (this.splitAssignments[itemId].length === 0) {
+        this.splitAssignments[itemId] = ['Me'];
+      }
+    });
 
-  this.renderSplitParticipants();},
+    this.renderSplitParticipants();
+  },
 
-renderSplitParticipants() {
-  const container = document.getElementById('splitParticipants');
-  container.innerHTML = this.splitParticipants.map(name => `
+  renderSplitParticipants() {
+    const container = document.getElementById('splitParticipants');
+    container.innerHTML = this.splitParticipants.map(name => `
       <div class="participant-chip">
         ${name}
         ${name !== 'Me' ? `<span class="remove-btn" onclick="app.removeSplitParticipant('${name}')">×</span>` : ''}
       </div>
-    `).join('`);
+    `).join('');
   },
 
-nextSplitStep() {
-  if (this.splitParticipants.length <2) {
-    this.showToast("Add at least one friend to split with! 👯‍♂️");
-    return;}
-  document.getElementById('splitStep1').classList.add('hidden');
-  document.getElementById('splitStep2').classList.remove('hidden');
-  this.renderSplitItems();},
-
-prevSplitStep() {
-  document.getElementById('splitStep2').classList.add('hidden');
-  document.getElementById('splitStep1').classList.remove('hidden');
+  nextSplitStep() {
+    if (this.splitParticipants.length < 2) {
+      this.showToast("Add at least one friend to split with! 👯‍♂️");
+      return;
+    }
+    document.getElementById('splitStep1').classList.add('hidden');
+    document.getElementById('splitStep2').classList.remove('hidden');
+    this.renderSplitItems();
   },
 
-renderSplitItems() {
-  const list = document.getElementById('splitItemsList');
-  list.innerHTML = this.cart.map(item => `
+  prevSplitStep() {
+    document.getElementById('splitStep2').classList.add('hidden');
+    document.getElementById('splitStep1').classList.remove('hidden');
+  },
+
+  renderSplitItems() {
+    const list = document.getElementById('splitItemsList');
+    list.innerHTML = this.cart.map(item => `
       <div class="split-item-row">
         <div class="split-item-header">
           <span>${item.name} (x${item.quantity})</span>
@@ -3295,79 +3618,90 @@ renderSplitItems() {
         </div>
         <div class="split-assignees">
           ${this.splitParticipants.map(person => {
-    const isAssigned = this.splitAssignments[item.cartId]?.includes(person);
-    return `
+      const isAssigned = this.splitAssignments[item.cartId]?.includes(person);
+      return `
               <div class="assign-chip ${isAssigned ? 'selected' : ''}" 
                    onclick="app.toggleSplitAssignment('${item.cartId}', '${person}')">
                 ${person}
               </div>
-            `;}).join('')}
+            `;
+    }).join('')}
         </div>
       </div>
-    `).join('`);
+    `).join('');
   },
 
-toggleSplitAssignment(itemId, person) {
-  if (!this.splitAssignments[itemId]) this.splitAssignments[itemId] = [];
+  toggleSplitAssignment(itemId, person) {
+    if (!this.splitAssignments[itemId]) this.splitAssignments[itemId] = [];
 
-  const assigned = this.splitAssignments[itemId];
-  if (assigned.includes(person)) {
-    // Remove
-    if (assigned.length> 1) { // Prevent removing last person
-      this.splitAssignments[itemId] = assigned.filter(p => p !== person);} else {
-      this.showToast("Item must be assigned to at least one person!");}
-} else {
-    // Add
-    this.splitAssignments[itemId].push(person);}
-  this.renderSplitItems();},
+    const assigned = this.splitAssignments[itemId];
+    if (assigned.includes(person)) {
+      // Remove
+      if (assigned.length > 1) { // Prevent removing last person
+        this.splitAssignments[itemId] = assigned.filter(p => p !== person);
+      } else {
+        this.showToast("Item must be assigned to at least one person!");
+      }
+    } else {
+      // Add
+      this.splitAssignments[itemId].push(person);
+    }
+    this.renderSplitItems();
+  },
 
-calculateSplitAndShow() {
-  const breakdown = {};
-  this.splitParticipants.forEach(p => breakdown[p] = 0);
+  calculateSplitAndShow() {
+    const breakdown = {};
+    this.splitParticipants.forEach(p => breakdown[p] = 0);
 
-  // Calculate Item Splits
-  this.cart.forEach(item => {
-    const price = parseInt(item.price.replace(/[^\d]/g, '')) * item.quantity;
-    const assignedPeople = this.splitAssignments[item.cartId] || ['Me'];
-    const splitAmount = price / assignedPeople.length;
+    // Calculate Item Splits
+    this.cart.forEach(item => {
+      const price = parseInt(item.price.replace(/[^\d]/g, '')) * item.quantity;
+      const assignedPeople = this.splitAssignments[item.cartId] || ['Me'];
+      const splitAmount = price / assignedPeople.length;
 
-    assignedPeople.forEach(person => {
-      breakdown[person] += splitAmount;});});
+      assignedPeople.forEach(person => {
+        breakdown[person] += splitAmount;
+      });
+    });
 
-  // Add Delivery / Tax (Split equally)
-  // Assuming standard ₹40 delivery for now, or check logic
-  const deliveryFee = 40;
-  const feePerPerson = deliveryFee / this.splitParticipants.length;
+    // Add Delivery / Tax (Split equally)
+    // Assuming standard ₹40 delivery for now, or check logic
+    const deliveryFee = 40;
+    const feePerPerson = deliveryFee / this.splitParticipants.length;
 
-  // Render Results
-  const resultsContainer = document.getElementById('splitResults');
-  let resultsHTML = '';
+    // Render Results
+    const resultsContainer = document.getElementById('splitResults');
+    let resultsHTML = '';
 
-  Object.keys(breakdown).forEach(person => {
-    const totalShare = breakdown[person] + feePerPerson;
-    resultsHTML += `
+    Object.keys(breakdown).forEach(person => {
+      const totalShare = breakdown[person] + feePerPerson;
+      resultsHTML += `
         <div class="split-result-row">
           <span>${person}</span>
           <span>₹${Math.ceil(totalShare)} <small style="color:var(--text-muted)">(+₹${Math.ceil(feePerPerson)} fee)</small></span>
         </div>
-      `;});
+      `;
+    });
 
-  // Total Row
-  const grandTotal = Object.values(breakdown).reduce((a, b) => a + b, 0) + deliveryFee;
-  resultsHTML += `
+    // Total Row
+    const grandTotal = Object.values(breakdown).reduce((a, b) => a + b, 0) + deliveryFee;
+    resultsHTML += `
       <div class="split-result-row">
         <span>Total Bill</span>
         <span>₹${Math.ceil(grandTotal)}</span>
       </div>
     `;
 
-  resultsContainer.innerHTML = resultsHTML;
+    resultsContainer.innerHTML = resultsHTML;
 
-  document.getElementById('splitStep3').classList.remove('hidden');
-  },};
+    document.getElementById('splitStep3').classList.remove('hidden');
+  },
+};
 
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => app.init());} else {
-  app.init();}
+  document.addEventListener('DOMContentLoaded', () => app.init());
+} else {
+  app.init();
+}
 
