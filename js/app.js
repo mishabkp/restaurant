@@ -104,7 +104,7 @@ const app = {
 
   async handleSurpriseMe() {
     try {
-      const resp = await fetch('https://restaurant-99en.onrender.com/api/restaurants/places');
+      const resp = await fetch('http://localhost:5000/api/restaurants/places');
       const places = await resp.json();
       const allRestaurants = [];
       places.forEach(p => {
@@ -150,9 +150,9 @@ const app = {
       const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
 
       const [placesResp, storiesResp, galleryResp] = await Promise.all([
-        fetch('https://restaurant-99en.onrender.com/api/restaurants/places', { signal: controller.signal }),
-        fetch('https://restaurant-99en.onrender.com/api/discovery/stories', { signal: controller.signal }).catch(() => null),
-        fetch('https://restaurant-99en.onrender.com/api/discovery/gallery', { signal: controller.signal }).catch(() => null)
+        fetch('http://localhost:5000/api/restaurants/places', { signal: controller.signal }),
+        fetch('http://localhost:5000/api/discovery/stories', { signal: controller.signal }).catch(() => null),
+        fetch('http://localhost:5000/api/discovery/gallery', { signal: controller.signal }).catch(() => null)
       ]);
       clearTimeout(timeoutId);
 
@@ -310,7 +310,7 @@ const app = {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const response = await fetch('https://restaurant-99en.onrender.com/api/auth/me', {
+        const response = await fetch('http://localhost:5000/api/auth/me', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.ok) {
@@ -331,7 +331,7 @@ const app = {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        await fetch('https://restaurant-99en.onrender.com/api/auth/favorites', {
+        await fetch('http://localhost:5000/api/auth/favorites', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -623,7 +623,7 @@ const app = {
         </div>
       </div>
 
-      ${this.renderMoodPicker()}
+      ${this.renderSmartRecommenderHero()}
       
       <div class="map-section">
         <div class="section-header">
@@ -739,138 +739,169 @@ const app = {
   },
 
 
-  renderMoodPicker() {
+  renderSmartRecommenderHero() {
     return `
-      <div class="mood-picker-section fade-slide-up">
-        <div class="mood-header">
-          <span class="section-badge">PERSONALIZED REVIEWS</span>
-          <h2 class="mood-title">What's your <span class="text-gradient">food mood</span> today?</h2>
-          <p class="mood-subtitle">Tell us how you feel, and we'll curate the perfect culinary experience for you.</p>
+      <div class="smart-reco-section fade-slide-up">
+        <div class="reco-hero-content">
+          <div class="reco-badge-glow">AI MAGIC</div>
+          <h2 class="reco-title">Can't decide <span class="text-gradient">what to eat?</span></h2>
+          <p class="reco-subtitle">Our Smart Engine analyzes your vibe and preferences to find your perfect match in Kerala.</p>
+          <button class="smart-cta-btn" onclick="app.openSmartRecommenderModal()">
+            <span class="sparkle">🪄</span> AI Smart Recommender
+          </button>
         </div>
-        
-        <div class="mood-grid">
-          <div class="mood-option" onclick="app.handleMoodSelection('spicy')">
-            <div class="mood-icon-wrapper">
-              <span class="mood-emoji">🔥</span>
-              <div class="mood-orb spicy-glow"></div>
-            </div>
-            <div class="mood-info">
-              <span class="mood-label">Spicy & Bold</span>
-              <span class="mood-desc">For the heat seekers</span>
-            </div>
-          </div>
-          
-          <div class="mood-option" onclick="app.handleMoodSelection('light')">
-            <div class="mood-icon-wrapper">
-              <span class="mood-emoji">🥗</span>
-              <div class="mood-orb fresh-glow"></div>
-            </div>
-            <div class="mood-info">
-              <span class="mood-label">Light & Fresh</span>
-              <span class="mood-desc">Healthy & vibrant</span>
-            </div>
-          </div>
-          
-          <div class="mood-option" onclick="app.handleMoodSelection('sweet')">
-            <div class="mood-icon-wrapper">
-              <span class="mood-emoji">🍰</span>
-              <div class="mood-orb sweet-glow"></div>
-            </div>
-            <div class="mood-info">
-              <span class="mood-label">Sweet Tooth</span>
-              <span class="mood-desc">Desserts & treats</span>
-            </div>
-          </div>
-          
-          <div class="mood-option" onclick="app.handleMoodSelection('traditional')">
-            <div class="mood-icon-wrapper">
-              <span class="mood-emoji">🏺</span>
-              <div class="mood-orb trad-glow"></div>
-            </div>
-            <div class="mood-info">
-              <span class="mood-label">Traditional</span>
-              <span class="mood-desc">Kerala's timeless flavors</span>
-            </div>
-          </div>
-          
-          <div class="mood-option" onclick="app.handleMoodSelection('comfort')">
-            <div class="mood-icon-wrapper">
-              <span class="mood-emoji">🍲</span>
-              <div class="mood-orb comfort-glow"></div>
-            </div>
-            <div class="mood-info">
-              <span class="mood-label">Comfort Food</span>
-              <span class="mood-desc">Soulful & satisfying</span>
-            </div>
-          </div>
+        <div class="reco-visual-deco">
+          <div class="glow-orb-primary"></div>
+          <div class="glow-orb-secondary"></div>
         </div>
-        
-        <div id="moodSuggestions" class="suggestion-overlay hidden"></div>
       </div>
     `;
   },
 
-  handleMoodSelection(mood) {
-    const container = document.getElementById('moodSuggestions');
-    container.classList.remove('hidden');
-    container.innerHTML = `<div class="skeleton" style="height: 100px; border-radius: 20px;"></div>`;
+  openSmartRecommenderModal() {
+    const modal = document.getElementById('foodModal');
+    const modalBody = document.getElementById('modalBody');
 
+    modalBody.innerHTML = `
+      <div class="smart-modal-container">
+        <h2 class="modal-title-premium">Smart Recommender ✨</h2>
+        <p class="modal-subtitle-premium">Tell us your preferences for a personalized match.</p>
+        
+        <div class="smart-step" id="recoStep1">
+          <label class="smart-label">What's your vibe right now?</label>
+          <div class="vibe-grid">
+            <div class="vibe-chip" onclick="app.selectVibe(this, 'Romantic')">🕯️ Romantic</div>
+            <div class="vibe-chip" onclick="app.selectVibe(this, 'Family')">👨‍👩‍👧‍👦 Family</div>
+            <div class="vibe-chip" onclick="app.selectVibe(this, 'Solo')">🎧 Solo</div>
+            <div class="vibe-chip" onclick="app.selectVibe(this, 'Friends')">🎉 Friends</div>
+          </div>
+          
+          <label class="smart-label" style="margin-top: 1.5rem;">What do you want to eat?</label>
+          <div class="vibe-grid">
+            <div class="vibe-chip" onclick="app.selectFoodChoice(this, 'Seafood')">🐟 Seafood</div>
+            <div class="vibe-chip" onclick="app.selectFoodChoice(this, 'Authentic Kerala')">🏺 Traditional</div>
+            <div class="vibe-chip" onclick="app.selectFoodChoice(this, 'Continental')">🍔 Modern</div>
+            <div class="vibe-chip" onclick="app.selectFoodChoice(this, 'Chinese')">🥢 Chinese</div>
+          </div>
+          
+          <button class="primary-btn-premium" style="margin-top: 2rem; width: 100%;" onclick="app.processAIRecommendations()">
+            Find My Match ➔
+          </button>
+        </div>
+      </div>
+    `;
+
+    this.selectedVibe = null;
+    this.selectedFoodChoice = null;
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  },
+
+  selectVibe(el, vibe) {
+    el.parentElement.querySelectorAll('.vibe-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    this.selectedVibe = vibe;
+  },
+
+  selectFoodChoice(el, choice) {
+    el.parentElement.querySelectorAll('.vibe-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    this.selectedFoodChoice = choice;
+  },
+
+  async processAIRecommendations() {
+    if (!this.selectedVibe || !this.selectedFoodChoice) {
+      this.showToast('Please select both your vibe and food choice! 🪄');
+      return;
+    }
+
+    const modalBody = document.getElementById('modalBody');
+    modalBody.innerHTML = `
+      <div class="searching-state">
+        <div class="smart-loader"></div>
+        <p>Analyzing districts and restaurant classes...</p>
+      </div>
+    `;
+
+    // Process logic
     setTimeout(() => {
-      let suggestions = [];
-      window.restaurantData.places.forEach(p => {
-        p.restaurants.forEach(r => {
-          r.foodItems.forEach(item => {
-            if (mood === 'spicy' && (item.name.toLowerCase().includes('biryani') || item.name.toLowerCase().includes('chilly'))) {
-              suggestions.push({ ...item, restaurantId: r.id });
-            } else if (mood === 'light' && (item.category === 'Starters' || item.isVeg)) {
-              suggestions.push({ ...item, restaurantId: r.id });
-            } else if (mood === 'sweet' && item.category === 'Desserts') {
-              suggestions.push({ ...item, restaurantId: r.id });
-            } else if (mood === 'traditional' && (p.name === 'Kochi' || item.name.toLowerCase().includes('sadya') || item.name.toLowerCase().includes('fish'))) {
-              suggestions.push({ ...item, restaurantId: r.id });
-            } else if (mood === 'comfort' && (item.category === 'Main Course')) {
-              suggestions.push({ ...item, restaurantId: r.id });
-            }
+      const results = this.getAIRecommendations(this.selectedVibe, this.selectedFoodChoice);
+      this.renderAIRecommendations(results);
+    }, 1500);
+  },
+
+  getAIRecommendations(vibe, choice) {
+    const allItems = [];
+    window.restaurantData.places.forEach(p => {
+      p.restaurants.forEach(r => {
+        r.foodItems.forEach(item => {
+          allItems.push({
+            ...item,
+            restaurantId: r.id,
+            restaurantName: r.name,
+            restaurantCuisine: r.cuisine,
+            restaurantRating: r.rating,
+            restaurantClass: r.class,
+            restaurantTags: r.tags || []
           });
         });
       });
+    });
 
-      // Prediction Engine for mood-specific items using recoModel
-      const selectedMoodItems = this.recoModel.predict(suggestions, this.userInterests, 3);
+    const scored = allItems.map(item => {
+      let score = 0;
+      // 1. Tag Match (Vibe)
+      if (item.restaurantTags.includes(vibe)) score += 40;
 
-      container.innerHTML = `
-        <div class="mood-suggestion-header">
-           <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">Matched for your <span class="text-gradient">${mood}</span> mood:</h3>
-           <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">AI-Analyzed picks based on your recent activity.</p>
-        </div>
-        <div class="food-items" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; width: 100%;">
-          ${selectedMoodItems.map(item => {
-        const matchPercent = Math.min(99, 87 + (item.mlScore % 12));
-        return `
-            <div class="food-item fade-in" onclick="app.showFoodModal(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}')">
-              <div class="food-item-image-container">
-                <div class="mood-match-tag">✨ ${matchPercent}% AI Match</div>
-                ${item.image ? `<img src="${item.image}" alt="${item.name}" class="food-item-image">` : ''}
-                <div class="food-item-price-tag">${item.price}</div>
-              </div>
-              <div class="food-item-content">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                  <h3 class="food-item-name">${item.name}</h3>
-                </div>
-                <p class="food-item-description">Optimized for your current preference.</p>
-                <div class="food-item-footer">
-                  <span class="food-item-category">${item.category}</span>
-                  <button class="add-to-cart-btn" onclick="event.stopPropagation(); app.addToCart(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}', event)">
-                    <span>Add</span> 🛒
-                  </button>
-                </div>
-              </div>
-            </div>
-          `}).join('')}
-        </div>
-      `;
-    }, 800);
+      // 2. Cuisine/Choice Match
+      if (item.restaurantCuisine.includes(choice) || item.name.includes(choice)) score += 30;
+      if (choice === 'Authentic Kerala' && (item.restaurantCuisine.includes('Traditional') || item.restaurantCuisine.includes('Nadan'))) score += 30;
+
+      // 3. User Interests Match
+      if (this.userInterests.categories[item.category]) score += 10;
+      if (this.userInterests.cuisines[item.restaurantCuisine]) score += 10;
+
+      // 4. Rating Booster
+      score += (item.restaurantRating - 4) * 20;
+
+      return { ...item, mlScore: Math.round(score) };
+    });
+
+    return scored.sort((a, b) => b.mlScore - a.mlScore).slice(0, 3);
   },
+
+  renderAIRecommendations(results) {
+    const modalBody = document.getElementById('modalBody');
+    modalBody.innerHTML = `
+      <div class="reco-results-container">
+        <h2 class="modal-title-premium" style="margin-bottom: 0.5rem;">Your Top Matches 🪄</h2>
+        <p class="modal-subtitle-premium" style="margin-bottom: 1.5rem;">Based on your <span class="highlight-alt">${this.selectedVibe}</span> vibe and <span class="highlight-alt">${this.selectedFoodChoice}</span> craving.</p>
+        
+        <div class="results-grid-premium">
+          ${results.map(item => {
+      const matchPercent = Math.min(99, 85 + (item.mlScore % 14));
+      return `
+              <div class="reco-card-premium fade-in" onclick="app.showFoodModal(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}')">
+                <div class="reco-match-badge">${matchPercent}% Match</div>
+                <img src="${item.image}" alt="${item.name}" class="reco-img-premium">
+                <div class="reco-content-premium">
+                  <h3 class="reco-item-name">${item.name}</h3>
+                  <p class="reco-item-rest">at ${item.restaurantName}</p>
+                  <div class="reco-footer-premium">
+                    <span class="reco-price">${item.price}</span>
+                    <span class="reco-reason">✨ Perfect Choice</span>
+                  </div>
+                </div>
+              </div>
+            `;
+    }).join('')}
+        </div>
+        
+        <button class="secondary-btn-premium" style="margin-top: 1.5rem; width: 100%;" onclick="app.closeModal()">Close & Discover More</button>
+      </div>
+    `;
+  },
+
 
 
 
@@ -1639,7 +1670,7 @@ const app = {
   },
   async fetchReviews(restaurantId) {
     try {
-      const response = await fetch(`https://restaurant-99en.onrender.com/api/reviews/${restaurantId}`);
+      const response = await fetch(`http://localhost:5000/api/reviews/${restaurantId}`);
       const reviews = await response.json();
       const reviewsList = document.getElementById('reviewsList');
       if (reviewsList) {
@@ -1710,7 +1741,7 @@ const app = {
     const userData = JSON.parse(localStorage.getItem('user')) || { name: 'Anonymous' };
 
     try {
-      const response = await fetch('https://restaurant-99en.onrender.com/api/reviews', {
+      const response = await fetch('http://localhost:5000/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1967,7 +1998,7 @@ const app = {
     const body = this.isSignup ? { name, email, password } : { email, password };
 
     try {
-      const response = await fetch(`https://restaurant-99en.onrender.com${endpoint}`, {
+      const response = await fetch(`http://localhost:5000${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -2057,7 +2088,7 @@ const app = {
     const timeoutId = setTimeout(() => controller.abort(), 6000);
 
     try {
-      const ordersResponse = await fetch(`https://restaurant-99en.onrender.com/api/orders/${user.id}`, { signal: controller.signal });
+      const ordersResponse = await fetch(`http://localhost:5000/api/orders/${user.id}`, { signal: controller.signal });
       const orders = await ordersResponse.json();
       clearTimeout(timeoutId);
       this.renderDashboardPage(orders);
@@ -2956,7 +2987,7 @@ const app = {
     // Polling function
     const fetchStatus = async () => {
       try {
-        const response = await fetch(`https://restaurant-99en.onrender.com/api/orders/track/${orderId}`);
+        const response = await fetch(`http://localhost:5000/api/orders/track/${orderId}`);
         const data = await response.json();
         this.updateTrackingUI(data.status);
 
@@ -3306,7 +3337,7 @@ const app = {
       try {
         this.showToast('Redirecting to secure payment... 💳');
 
-        const response = await fetch('https://restaurant-99en.onrender.com/api/payments/create-checkout-session', {
+        const response = await fetch('http://localhost:5000/api/payments/create-checkout-session', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -3324,7 +3355,7 @@ const app = {
         const session = await response.json();
 
         // Save order as 'Pending' first
-        await fetch('https://restaurant-99en.onrender.com/api/orders', {
+        await fetch('http://localhost:5000/api/orders', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...orderData, status: 'Pending' })
@@ -3342,7 +3373,7 @@ const app = {
 
     // Standard COD Flow
     try {
-      const response = await fetch('https://restaurant-99en.onrender.com/api/orders', {
+      const response = await fetch('http://localhost:5000/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
