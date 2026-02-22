@@ -95,15 +95,19 @@ const app = {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    if (document.startViewTransition) {
-      document.startViewTransition(() => {
+    return new Promise((resolve) => {
+      if (document.startViewTransition) {
+        const transition = document.startViewTransition(() => {
+          updateDOM();
+        });
+        transition.finished.finally(resolve);
+      } else {
+        mainContent.classList.remove('fade-slide-up');
+        void mainContent.offsetWidth; // Trigger reflow
         updateDOM();
-      });
-    } else {
-      mainContent.classList.remove('fade-slide-up');
-      void mainContent.offsetWidth; // Trigger reflow
-      updateDOM();
-    }
+        resolve();
+      }
+    });
   },
 
   isRestaurantOpen(hours) {
@@ -597,8 +601,11 @@ const app = {
     window.location.hash = '/';
   },
 
-  navigateToPlace(placeId) {
+  async navigateToPlace(placeId) {
     window.location.hash = `/place/${placeId}`;
+
+    // Explicitly load the view here bypasses the hash wait if needed, but hashchange will catch it
+    // Wait for route resolution logic if needed.
   },
 
   navigateToRestaurant(restaurantId) {
@@ -606,7 +613,7 @@ const app = {
   },
 
   // Page Rendering Methods
-  showHomePage() {
+  async showHomePage() {
     this.toggleUIElements(true);
     this.currentView = 'home';
     this.currentPlace = null;
@@ -674,7 +681,7 @@ const app = {
       </div>
     `;
 
-    this.updateContent(content);
+    await this.updateContent(content);
     this.initCarouselDrag();
 
     // Initialize Home Map
@@ -1146,7 +1153,7 @@ const app = {
     }).join('');
   },
 
-  showRestaurantPage(restaurantId) {
+  async showRestaurantPage(restaurantId) {
     this.toggleUIElements(true);
     let restaurant = null;
     let place = null;
@@ -1256,7 +1263,7 @@ const app = {
     window.open(url, '_blank');
   },
 
-  renderRestaurantPage(restaurant) {
+  async renderRestaurantPage(restaurant) {
     const content = `
       <div class="restaurant-header">
         <h1 class="restaurant-name">${restaurant.name}</h1>
@@ -2641,7 +2648,7 @@ const app = {
     this.updateContent(content);
   },
 
-  showContactPage() {
+  async showContactPage() {
     this.toggleUIElements(true);
     this.currentView = 'contact';
     this.updateBreadcrumb([
