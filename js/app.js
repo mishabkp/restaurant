@@ -21,6 +21,12 @@ const app = {
   compareList: [],
   lastOrderId: null,
   stripePublicKey: 'pk_test_51Pxy00PlaceholderKeyOnly', // Replace with real key
+
+  // Dynamic API Configuration
+  apiBaseUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? ''
+    : 'https://restaurant-99en.onrender.com',
+
   userInterests: JSON.parse(localStorage.getItem('userInterests')) || {
     categories: {}, // e.g. { 'Main Course': 5, 'Snacks': 2 }
     cuisines: {}   // e.g. { 'Malabar': 3, 'Continental': 1 }
@@ -104,7 +110,7 @@ const app = {
 
   async handleSurpriseMe() {
     try {
-      const resp = await fetch('http://localhost:5000/api/restaurants/places');
+      const resp = await fetch('/api/restaurants/places');
       const places = await resp.json();
       const allRestaurants = [];
       places.forEach(p => {
@@ -150,9 +156,9 @@ const app = {
       const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
 
       const [placesResp, storiesResp, galleryResp] = await Promise.all([
-        fetch('http://localhost:5000/api/restaurants/places', { signal: controller.signal }),
-        fetch('http://localhost:5000/api/discovery/stories', { signal: controller.signal }).catch(() => null),
-        fetch('http://localhost:5000/api/discovery/gallery', { signal: controller.signal }).catch(() => null)
+        fetch('/api/restaurants/places', { signal: controller.signal }),
+        fetch('/api/discovery/stories', { signal: controller.signal }).catch(() => null),
+        fetch('/api/discovery/gallery', { signal: controller.signal }).catch(() => null)
       ]);
       clearTimeout(timeoutId);
 
@@ -310,7 +316,7 @@ const app = {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const response = await fetch('http://localhost:5000/api/auth/me', {
+        const response = await fetch('/api/auth/me', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.ok) {
@@ -331,7 +337,7 @@ const app = {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        await fetch('http://localhost:5000/api/auth/favorites', {
+        await fetch('/api/auth/favorites', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1670,7 +1676,7 @@ const app = {
   },
   async fetchReviews(restaurantId) {
     try {
-      const response = await fetch(`http://localhost:5000/api/reviews/${restaurantId}`);
+      const response = await fetch(`/api/reviews/${restaurantId}`);
       const reviews = await response.json();
       const reviewsList = document.getElementById('reviewsList');
       if (reviewsList) {
@@ -1741,7 +1747,7 @@ const app = {
     const userData = JSON.parse(localStorage.getItem('user')) || { name: 'Anonymous' };
 
     try {
-      const response = await fetch('http://localhost:5000/api/reviews', {
+      const response = await fetch('/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1998,7 +2004,7 @@ const app = {
     const body = this.isSignup ? { name, email, password } : { email, password };
 
     try {
-      const response = await fetch(`http://localhost:5000${endpoint}`, {
+      const response = await fetch(`${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -2088,7 +2094,7 @@ const app = {
     const timeoutId = setTimeout(() => controller.abort(), 6000);
 
     try {
-      const ordersResponse = await fetch(`http://localhost:5000/api/orders/${user.id}`, { signal: controller.signal });
+      const ordersResponse = await fetch(`/api/orders/${user.id}`, { signal: controller.signal });
       const orders = await ordersResponse.json();
       clearTimeout(timeoutId);
       this.renderDashboardPage(orders);
@@ -2987,7 +2993,7 @@ const app = {
     // Polling function
     const fetchStatus = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/orders/track/${orderId}`);
+        const response = await fetch(`/api/orders/track/${orderId}`);
         const data = await response.json();
         this.updateTrackingUI(data.status);
 
@@ -3337,7 +3343,7 @@ const app = {
       try {
         this.showToast('Redirecting to secure payment... 💳');
 
-        const response = await fetch('http://localhost:5000/api/payments/create-checkout-session', {
+        const response = await fetch('/api/payments/create-checkout-session', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -3355,7 +3361,7 @@ const app = {
         const session = await response.json();
 
         // Save order as 'Pending' first
-        await fetch('http://localhost:5000/api/orders', {
+        await fetch('/api/orders', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...orderData, status: 'Pending' })
@@ -3373,7 +3379,7 @@ const app = {
 
     // Standard COD Flow
     try {
-      const response = await fetch('http://localhost:5000/api/orders', {
+      const response = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
