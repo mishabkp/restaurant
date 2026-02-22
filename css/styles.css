@@ -6082,6 +6082,7 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
 /* ========================================
    SMART RECOMMENDATION ENGINE UI (UPGRADED)
    ======================================== */
@@ -6099,7 +6100,7 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
 }
 
 .reco-hero-content {
@@ -6154,7 +6155,7 @@ body {
 
 .smart-cta-btn:hover {
   transform: translateY(-5px) scale(1.05);
-  box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+  box-shadow: 0 15px 30px rgba(255, 255, 255, 0.2);
 }
 
 .sparkle {
@@ -6324,7 +6325,7 @@ body {
   font-size: 0.65rem;
   font-weight: 900;
   color: white;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .reco-footer-premium {
@@ -6345,7 +6346,7 @@ body {
 }
 
 .secondary-btn-premium {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--glass-border);
   color: white;
   padding: 1rem;
@@ -6372,15 +6373,233 @@ body {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 768px) {
-  .reco-title { font-size: 2.5rem; }
-  .smart-reco-section { padding: 3rem 1.5rem; }
+  .reco-title {
+    font-size: 2.5rem;
+  }
+
+  .smart-reco-section {
+    padding: 3rem 1.5rem;
+  }
+}
+
+/* ========================================
+   TRENDING NOW RADAR STYLES
+   ======================================== */
+
+.trending-radar-container {
+  max-width: 1200px;
+  margin: 4rem auto;
+  padding: 0 2rem;
+}
+
+.radar-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.live-activity-badge {
+  display: inline-block;
+  background: #00f2fe;
+  color: #000;
+  font-weight: 900;
+  padding: 0.4rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+  margin-bottom: 1.5rem;
+}
+
+.radar-title {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.radar-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.pulse-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: rgba(0, 242, 254, 0.05);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  padding: 0.6rem 1.5rem;
+  border-radius: 2rem;
+  color: #00f2fe;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+.pulse-dot {
+  width: 10px;
+  height: 10px;
+  background: #00f2fe;
+  border-radius: 50%;
+  position: relative;
+}
+
+.pulse-dot::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #00f2fe;
+  border-radius: 50%;
+  animation: pulse-cyan 2s infinite;
+}
+
+@keyframes pulse-cyan {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  70% {
+    transform: scale(3);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.radar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.radar-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 2rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.radar-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+.hot-badge-radar {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: #00f2fe;
+  color: #000;
+  padding: 0.3rem 0.8rem;
+  border-radius: 0.5rem;
+  font-weight: 900;
+  font-size: 0.7rem;
+  z-index: 2;
+}
+
+.radar-card-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.radar-thumb {
+  width: 90px;
+  height: 90px;
+  border-radius: 1.5rem;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.radar-info {
+  flex: 1;
+}
+
+.radar-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: #fff;
+}
+
+.viewer-count-radar {
+  font-size: 0.9rem;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.count-num {
+  font-weight: 800;
+  color: #ff4e50;
+}
+
+.flame-icon {
+  animation: flicker 1.5s infinite alternate;
+}
+
+@keyframes flicker {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+
+  100% {
+    transform: scale(1.1);
+    filter: brightness(1.3);
+  }
+}
+
+@media (max-width: 480px) {
+  .radar-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .radar-card-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .radar-thumb {
+    width: 100%;
+    height: 200px;
+  }
+
+  .radar-title {
+    font-size: 2.2rem;
+  }
 }

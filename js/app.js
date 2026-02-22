@@ -672,71 +672,6 @@ const app = {
     this.startTrendingUpdates();
   },
 
-  renderTrendingRadar() {
-    // Pick 3 random restaurants from different places for variety
-    const allRestaurants = [];
-    window.restaurantData.places.forEach(p => {
-      p.restaurants.forEach(r => allRestaurants.push({ ...r, placeName: p.name }));
-    });
-
-    const trending = allRestaurants.sort(() => 0.5 - Math.random()).slice(0, 3);
-
-    return `
-      <section class="trending-radar-section fade-slide-up">
-        <div class="radar-header">
-          <div class="section-header">
-            <span class="section-badge">LIVE ACTIVITY</span>
-            <h2 class="section-title">🔥 Trending Now Radar</h2>
-            <p class="section-subtitle">See what's capturing hearts across Kerala right now</p>
-          </div>
-          <div class="live-indicator">
-            <div class="pulse-dot"></div>
-            <span class="live-text">Real-time Pulse</span>
-          </div>
-        </div>
-
-        <div class="radar-grid" id="trendingRadarGrid">
-          ${trending.map((r, i) => `
-            <div class="trending-card fade-in" style="animation-delay: ${i * 0.2}s" onclick="app.navigateToRestaurant(${r.id})">
-              <span class="flash-tag">Hot</span>
-              <img src="${r.image}" alt="${r.name}" class="trending-img">
-              <div class="trending-info">
-                <h3 class="trending-name">${r.name}</h3>
-                <p class="trending-stat" id="stat-${r.id}">
-                  <span>👁️</span> Calculating...
-                </p>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      </section>
-    `;
-  },
-
-  startTrendingUpdates() {
-    const updateStats = () => {
-      const cards = document.querySelectorAll('.trending-card');
-      cards.forEach(card => {
-        const idPart = card.querySelector('.trending-stat').id;
-        const statEl = document.getElementById(idPart);
-        if (statEl) {
-          const count = Math.floor(Math.random() * (120 - 45 + 1)) + 45;
-          statEl.style.opacity = '0';
-          setTimeout(() => {
-            statEl.innerHTML = `<span>🔥</span> ${count} people are viewing this now`;
-            statEl.style.opacity = '1';
-            statEl.style.transition = 'opacity 0.5s ease';
-          }, 500);
-        }
-      });
-    };
-
-    // Initial update
-    setTimeout(updateStats, 1000);
-    // Recurring updates
-    if (this.trendingInterval) clearInterval(this.trendingInterval);
-    this.trendingInterval = setInterval(updateStats, 5000);
-  },
 
 
   renderSmartRecommenderHero() {
@@ -756,6 +691,71 @@ const app = {
         </div>
       </div>
     `;
+  },
+
+  renderTrendingRadar() {
+    const trending = [];
+    if (this.places && this.places.length > 0) {
+      const allRests = [];
+      this.places.forEach(p => {
+        p.restaurants.forEach(r => allRests.push({ ...r, placeId: p.id }));
+      });
+      trending.push(...allRests.sort(() => 0.5 - Math.random()).slice(0, 3));
+    }
+
+    if (trending.length === 0) return '';
+
+    return `
+      <section class="trending-radar-section fade-slide-up">
+        <div class="radar-header">
+          <div class="live-activity-badge">LIVE ACTIVITY</div>
+          <h2 class="radar-title">Trending Now Radar <span>🔥</span></h2>
+          <p class="radar-subtitle">See what's capturing hearts across Kerala right now</p>
+          <div class="pulse-chip">
+            <span class="pulse-dot"></span> REAL-TIME PULSE
+          </div>
+        </div>
+
+        <div class="radar-grid">
+          ${trending.map((r, idx) => {
+      const count = Math.floor(Math.random() * 80) + 40;
+      return `
+              <div class="radar-card" onclick="app.navigateToPlace(${r.placeId})">
+                <div class="hot-badge-radar">HOT</div>
+                <div class="radar-card-inner">
+                  <div class="radar-thumb" style="background-image: url('${r.image}')"></div>
+                  <div class="radar-info">
+                    <h3 class="radar-name">${r.name}</h3>
+                    <div class="viewer-count-radar" id="radarStat${idx}">
+                      <span>🔥</span> <span class="count-num">${count}</span> people are viewing this now
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+    }).join('')}
+        </div>
+      </section>
+    `;
+  },
+
+  startTrendingUpdates() {
+    if (this.trendingInterval) clearInterval(this.trendingInterval);
+    this.trendingInterval = setInterval(() => {
+      for (let i = 0; i < 3; i++) {
+        const el = document.getElementById(`radarStat${i}`);
+        if (el) {
+          const num = el.querySelector('.count-num');
+          if (num) {
+            let val = parseInt(num.innerText);
+            val = Math.max(25, val + (Math.floor(Math.random() * 5) - 2));
+            num.innerText = val;
+            num.style.color = '#fff';
+            setTimeout(() => num.style.color = '', 400);
+          }
+        }
+      }
+    }, 4000);
   },
 
   openSmartRecommenderModal() {
