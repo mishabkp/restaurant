@@ -88,12 +88,22 @@ const app = {
 
   updateContent(html) {
     const mainContent = document.getElementById('mainContent');
-    mainContent.className = 'container'; // Reset to base class
-    mainContent.classList.remove('fade-slide-up');
-    void mainContent.offsetWidth; // Trigger reflow
-    mainContent.innerHTML = html;
-    mainContent.classList.add('fade-slide-up');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const updateDOM = () => {
+      mainContent.className = 'container'; // Reset to base class
+      mainContent.innerHTML = html;
+      mainContent.classList.add('fade-slide-up');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        updateDOM();
+      });
+    } else {
+      mainContent.classList.remove('fade-slide-up');
+      void mainContent.offsetWidth; // Trigger reflow
+      updateDOM();
+    }
   },
 
   isRestaurantOpen(hours) {

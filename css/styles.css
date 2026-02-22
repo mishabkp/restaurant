@@ -6710,3 +6710,41 @@ body {
     font-size: 2.2rem;
   }
 }
+
+/* =========================================
+   CINEMATIC PAGE TRANSITIONS (VIEW TRANSITIONS API)
+   ========================================= */
+
+::view-transition-old(root) {
+  animation: fadeOutView 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+::view-transition-new(root) {
+  animation: slideInUpView 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+}
+
+@keyframes fadeOutView {
+  from {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+    filter: blur(5px);
+  }
+}
+
+@keyframes slideInUpView {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
