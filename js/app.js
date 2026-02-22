@@ -27,7 +27,8 @@ const app = {
 
   userInterests: JSON.parse(localStorage.getItem('userInterests')) || {
     categories: {}, // e.g. { 'Main Course': 5, 'Snacks': 2}
-    cuisines: {}   // e.g. { 'Malabar': 3, 'Continental': 1}},
+    cuisines: {}   // e.g. { 'Malabar': 3, 'Continental': 1}
+},
 
   // ========================================
   // MACHINE LEARNING - RECOMMENDATION ENGINE
@@ -72,7 +73,8 @@ const app = {
 
       // Filter unique by name and sort by ML score
       const unique = scored.filter((v, i, a) => a.findIndex(t => t.name === v.name) === i);
-      return unique.sort((a, b) => b.mlScore - a.mlScore).slice(0, limit);}},
+      return unique.sort((a, b) => b.mlScore - a.mlScore).slice(0, limit);}
+},
 
   updateContent(html) {
     const mainContent = document.getElementById('mainContent');
@@ -105,7 +107,9 @@ const app = {
       // Fallback or better implementation below
       this.showToast("Finding something special... ✨");
       this.navigateToRestaurant(101); // Simplified for now} catch (err) {
-      console.error(err);}},
+      
+      console.error(err);}
+},
 
   // Initialize the application
   async init() {
@@ -122,7 +126,8 @@ const app = {
     this.fetchInitialData().then(() => {
       // Re-handle route if data loaded successfully to show updated live content
       if (this.currentView === 'home' || this.currentView === 'place') {
-        this.handleRoute();}});
+        this.handleRoute();}
+});
 
     this.initModalEvents();
     this.initLottie();
@@ -132,7 +137,7 @@ const app = {
     console.log('📡 Fetching live data from backend...');
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 6s timeout
 
       const [placesResp, storiesResp, galleryResp] = await Promise.all([
         fetch(`${this.apiBaseUrl}/api/restaurants/places`, { signal: controller.signal}),
@@ -155,32 +160,39 @@ const app = {
               // For now, let's prioritize local if it's already there to preserve manual edits
               // But we can update restaurants if they are empty
               if (localPlaces[existingIndex].restaurants.length === 0) {
-                localPlaces[existingIndex] = p;}} else {
-              localPlaces.push(p);}});
+                localPlaces[existingIndex] = p;}
+} else {
+              localPlaces.push(p);}
+});
 
           window.restaurantData.places = localPlaces;
-          console.log('✅ Live places synced (' + localPlaces.length + ' total places)');}}
+          console.log('✅ Live places synced (' + localPlaces.length + ' total places)');}
+}
 
       // Load stories from backend
       if (storiesResp && storiesResp.ok) {
         const stories = await storiesResp.json();
         if (stories && stories.length> 0) {
           window.restaurantData.foodStories = stories;
-          console.log('✅ Live stories loaded (' + stories.length + ' stories)');}}
+          console.log('✅ Live stories loaded (' + stories.length + ' stories)');}
+}
 
       // Load gallery from backend
       if (galleryResp && galleryResp.ok) {
         const gallery = await galleryResp.json();
         if (gallery && gallery.length> 0) {
           window.restaurantData.hiddenGems = gallery;
-          console.log('✅ Live gallery loaded (' + gallery.length + ' items)');}}} catch (err) {
+          console.log('✅ Live gallery loaded (' + gallery.length + ' items)');}
+}} catch (err) {
+      
       if (err.name === 'AbortError') {
         console.warn('⚠️ Backend request timed out (cold start), using local fallback');} else {
         console.warn('⚠️ backend error:', err.message);}
 
       if (window.restaurantData && window.restaurantData.places) {
         console.log('🔄 Continuing with local fallback data.js');} else {
-        this.showToast('Failed to load live data. 🛠️');}}},
+        this.showToast('Failed to load live data. 🛠️');}
+}},
 
   initLottie() {
     // Global lottie init if needed},
@@ -210,7 +222,8 @@ const app = {
     const checkoutModal = document.getElementById('checkoutModal');
     if (checkoutModal) {
       checkoutModal.addEventListener('click', (e) => {
-        if (e.target === checkoutModal) this.closeCheckout();});}},
+        if (e.target === checkoutModal) this.closeCheckout();});}
+},
 
   animateFlyToCart(btn, imageUrl) {
     if (!imageUrl) return;
@@ -251,7 +264,8 @@ const app = {
 
     const btn = document.getElementById('themeToggle');
     if (btn) {
-      btn.innerHTML = this.theme === 'dark' ? '🌓' : '☀️';}},
+      btn.innerHTML = this.theme === 'dark' ? '🌓' : '☀️';}
+},
 
   checkAuth() {
     this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';},
@@ -261,12 +275,16 @@ const app = {
     if (token) {
       try {
         const response = await fetch(`${this.apiBaseUrl}/api/auth/me`, {
-          headers: { 'Authorization': `Bearer ${token}`}});
+          headers: { 'Authorization': `Bearer ${token}`}
+});
         if (response.ok) {
           const user = await response.json();
           this.favorites = user.favorites || { restaurants: [], items: []};
-          return;}} catch (err) {
-        console.error('Error fetching favorites:', err);}}
+          return;}
+} catch (err) {
+      
+        console.error('Error fetching favorites:', err);}
+}
     // Fallback or guest mode
     const saved = localStorage.getItem('favorites');
     this.favorites = saved ? JSON.parse(saved) : { restaurants: [], items: []};},
@@ -281,15 +299,19 @@ const app = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`},
           body: JSON.stringify(this.favorites)});} catch (err) {
-        console.error('Error saving favorites to backend:', err);}} else {
-      localStorage.setItem('favorites', JSON.stringify(this.favorites));}},
+      
+        console.error('Error saving favorites to backend:', err);}
+} else {
+      localStorage.setItem('favorites', JSON.stringify(this.favorites));}
+},
 
   // Cart Management
   loadCart() {
     const saved = localStorage.getItem('cart');
     if (saved) {
       this.cart = JSON.parse(saved);
-      this.updateCartUI();}},
+      this.updateCartUI();}
+},
 
   saveCart() {
     localStorage.setItem('cart', JSON.stringify(this.cart));
@@ -301,7 +323,8 @@ const app = {
       sidebar.classList.toggle('hidden');
       if (!sidebar.classList.contains('hidden')) {
         document.body.style.overflow = 'hidden';} else {
-        document.body.style.overflow = 'auto';}}},
+        document.body.style.overflow = 'auto';}
+}},
 
   addToCart(restaurantId, itemName, event) {
     let restaurant;
@@ -334,7 +357,8 @@ const app = {
     // Trigger fly animation
     const btn = event?.currentTarget;
     if (btn) {
-      this.animateFlyToCart(btn, item.image);}},
+      this.animateFlyToCart(btn, item.image);}
+},
 
   removeFromCart(cartId) {
     this.cart = this.cart.filter(c => c.cartId !== cartId);
@@ -346,7 +370,8 @@ const app = {
       item.quantity += delta;
       if (item.quantity <= 0) {
         this.removeFromCart(cartId);} else {
-        this.saveCart();}}},
+        this.saveCart();}
+}},
 
   updateCartUI() {
     const badge = document.getElementById('cartBadge');
@@ -463,11 +488,13 @@ const app = {
         this.showAboutPage();} else if (parts[0] === 'blog') {
         if (parts[1]) {
           this.showStoryDetail(parseInt(parts[1]));} else {
-          this.showBlogPage();}} else if (parts[0] === 'gallery') {
+          this.showBlogPage();}
+} else if (parts[0] === 'gallery') {
         this.showGalleryPage();} else if (parts[0] === 'trends') {
         this.showAnalyticalDashboard();} else if (parts[0] === 'contact') {
         this.showContactPage();} else {
-        this.showHomePage();}}, 400);},
+        this.showHomePage();}
+}, 400);},
 
   // Navigate methods
   navigateHome() {
@@ -637,7 +664,9 @@ const app = {
             val = Math.max(25, val + (Math.floor(Math.random() * 5) - 2));
             num.innerText = val;
             num.style.color = '#fff';
-            setTimeout(() => num.style.color = '', 400);}}}}, 4000);},
+            setTimeout(() => num.style.color = '', 400);}
+}}
+}, 4000);},
 
   openSmartRecommenderModal() {
     const modal = document.getElementById('foodModal');
@@ -735,7 +764,9 @@ const app = {
       // 4. Rating Booster
       score += (item.restaurantRating - 4) * 20;
 
-      return { ...item, mlScore: Math.round(score)};});
+      return { ...item, mlScore: Math.round(score);
+  }
+});
 
     return scored.sort((a, b) => b.mlScore - a.mlScore).slice(0, 3);},
 
@@ -979,7 +1010,8 @@ const app = {
       if (r) {
         restaurant = r;
         place = p;
-        break;}}
+        break;}
+}
 
     if (!restaurant || !place) {
       this.showHomePage();
@@ -1006,7 +1038,8 @@ const app = {
       if (r) {
         restaurant = r;
         place = p;
-        break;}}
+        break;}
+}
 
     if (!restaurant) return;
 
@@ -1064,7 +1097,8 @@ const app = {
     let restaurant = null;
     for (const p of window.restaurantData.places) {
       const r = p.restaurants.find(r => r.id === restaurantId);
-      if (r) { restaurant = r; break;}}
+      if (r) { restaurant = r; break;}
+}
 
     const text = `Check out this amazing place I found on Food Vista! 🤤\n\n🍴 *${restaurant.name}*\n⭐ ${restaurant.rating} Rating\n📍 Kochi, Kerala\n\nOrder here: https://mishabkp.github.io/restaurant/#restaurant/${restaurantId}`;
     const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
@@ -1385,7 +1419,8 @@ const app = {
       const priceMatch = (r.priceForTwo || "₹500").match(/\d+/);
       if (priceMatch) {
         districtStats[r.placeName].avgPrice += parseInt(priceMatch[0]);
-        districtStats[r.placeName].priceCount++;}});
+        districtStats[r.placeName].priceCount++;}
+});
 
     const content = `
       <div class="analytics-container fade-in">
@@ -1483,8 +1518,11 @@ const app = {
       const reviews = await response.json();
       const reviewsList = document.getElementById('reviewsList');
       if (reviewsList) {
-        reviewsList.innerHTML = this.renderReviews(reviews);}} catch (err) {
-      console.error('Fetch Reviews Error:', err);}},
+        reviewsList.innerHTML = this.renderReviews(reviews);}
+} catch (err) {
+      
+      console.error('Fetch Reviews Error:', err);}
+},
 
   renderReviews(reviews) {
     if (!reviews || reviews.length === 0) {
@@ -1557,9 +1595,12 @@ const app = {
         this.fetchReviews(restaurantId);
         this.closeCheckout();
         this.showToast('Thank you! Your review has been published. ✨');} else {
-        this.showToast('Failed to post review. ❌');}} catch (err) {
+        this.showToast('Failed to post review. ❌');}
+} catch (err) {
+      
       console.error('Post Review Error:', err);
-      this.showToast('Server error while posting review. 🛠️');}},
+      this.showToast('Server error while posting review. 🛠️');}
+},
 
   showSkeletons(type) {
     const container = document.getElementById('mainContent');
@@ -1699,7 +1740,8 @@ const app = {
         return `
           <span class="breadcrumb-item'${item.onClick ? 'onclick="app.${item.onClick.name}(${item.onClick.toString().match(/\d+/)?.[0] || ''})"` : ''}>${item.label}</span>
           <span class="breadcrumb-separator">›</span>
-        `;}}).join('');
+        `;}
+}).join('');
 
     breadcrumb.innerHTML = html;},
 
@@ -1756,7 +1798,8 @@ const app = {
       signupFields.classList.add('hidden');
       authBtn.innerText = 'Sign In';
       subtitle.innerText="Sign in to explore Kerala's flavors";
-      toggleText.innerHTML = `Don't have an account? <a href="javascript:void(0)" class="footer-link" onclick="app.toggleAuthMode()">Register Now</a>`;}},
+      toggleText.innerHTML = `Don't have an account? <a href="javascript:void(0)" class="footer-link" onclick="app.toggleAuthMode()">Register Now</a>`;}
+},
 
   async handleAuth(event) {
     event.preventDefault();
@@ -1788,11 +1831,18 @@ const app = {
         this.showToast(this.isSignup ? 'Account created! Welcome 🎉' : 'Welcome back! 👋');
         this.toggleUIElements(true);
         this.handleRoute();} else {
-        this.showToast(data.msg || 'Authentication failed! ❌');}} catch (error) {
-      console.error('Auth Error:', error);
+        this.showToast(data.msg || 'Authentication failed! ❌');}
+} catch (error) {
+      
+      console.error('Auth Error Details:', {
+        message: error.message,
+        stack: error.stack,
+        url: `${this.apiBaseUrl}${endpoint}`
+      });
       this.showToast('Server connection error! Make sure backend is running. 🛠️');} finally {
       authBtn.innerText = this.isSignup ? 'Create Account' : 'Sign In';
-      authBtn.disabled = false;}},
+      authBtn.disabled = false;}
+},
 
   toggleUIElements(show) {
     const header = document.querySelector('.header');
@@ -1802,7 +1852,8 @@ const app = {
       footer?.classList.remove('hidden');} else {
       header?.classList.add('hidden');
       footer?.classList.add('hidden');
-      window.scrollTo(0, 0);}},
+      window.scrollTo(0, 0);}
+},
 
 
   logout() {
@@ -1844,18 +1895,20 @@ const app = {
     this.showSkeletons('dashboard');
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
 
     try {
       const ordersResponse = await fetch(`${this.apiBaseUrl}/api/orders/${user.id}`, { signal: controller.signal});
       const orders = await ordersResponse.json();
       clearTimeout(timeoutId);
       this.renderDashboardPage(orders);} catch (err) {
+      
       clearTimeout(timeoutId);
       console.error('Dashboard Error:', err);
       if (err.name === 'AbortError') {
         this.showToast('Orders request timed out. Showing fallback. 🛠️');}
-      this.renderDashboardPage([]);}},
+      this.renderDashboardPage([]);}
+},
 
   renderDashboardPage(orders) {
 
@@ -1865,7 +1918,9 @@ const app = {
         if (place.restaurants) {
           place.restaurants.forEach(rest => {
             if (this.favorites && this.favorites.restaurants && this.favorites.restaurants.includes(rest.id)) {
-              favRestaurants.push(rest);}});}});}
+              favRestaurants.push(rest);}
+});}
+});}
 
     const favItems = [];
     if (window.restaurantData && window.restaurantData.places) {
@@ -1879,7 +1934,10 @@ const app = {
                   favItems.push({
                     ...item,
                     restaurantId: rest.id,
-                    restaurantName: rest.name});}});}});}});}
+                    restaurantName: rest.name});}
+});}
+});}
+});}
 
     const content = `
       <h1 class="page-title"> Welcome Back, ${JSON.parse(localStorage.getItem('user'))?.name || 'Foodie'}! 👋</h1>
@@ -2604,7 +2662,8 @@ const app = {
         // If not UPI, skip straight to Address
         this.currentCheckoutStep = 3;
         this.renderCheckout();
-        return;}} else if (this.currentCheckoutStep === 3) {
+        return;}
+} else if (this.currentCheckoutStep === 3) {
       stepHtml = `
   <div class="checkout-steps">
           <div class="step done">✓</div>
@@ -2705,8 +2764,11 @@ const app = {
         this.updateTrackingUI(data.status);
 
         if (data.status === 'Arrived' || data.status === 'Delivered') {
-clearInterval(this.trackingInterval);}} catch (err) {
-  console.error('Tracking Error:', err);}};
+clearInterval(this.trackingInterval);}
+} catch (err) {
+      
+  console.error('Tracking Error:', err);}
+};
 
 // First fetch
 await fetchStatus();
@@ -2738,7 +2800,8 @@ updateTrackingUI(status) {
 
     // Stage 4: Arrived
     'Arrived': { width: '100%', node: 4, bikePos: '90%', text: 'Order Arrived! Please collect your food.', color: 'var(--success-color)'},
-    'Delivered': { width: '100%', node: 4, bikePos: '90%', text: 'Order Delivered! Enjoy your food.', color: 'var(--success-color)'}};
+    'Delivered': { width: '100%', node: 4, bikePos: '90%', text: 'Order Delivered! Enjoy your food.', color: 'var(--success-color)'}
+};
 
   const config = nodes[status] || nodes['Confirmed'];
 
@@ -2754,7 +2817,8 @@ updateTrackingUI(status) {
     const node = document.getElementById(`node${i}`);
     if (node) {
       node.classList.add('active');
-      if (i === config.node && i <4) node.classList.add('pulse');}}
+      if (i === config.node && i <4) node.classList.add('pulse');}
+}
 
   if (progress) progress.style.width = config.width;
   if (statusText) {
@@ -2766,7 +2830,8 @@ updateTrackingUI(status) {
     bikeIcon.style.left = config.bikePos;
     if (status !== 'Arrived' && status !== 'Delivered') {
       bikeIcon.classList.add('riding');} else {
-      bikeIcon.classList.remove('riding');}}
+      bikeIcon.classList.remove('riding');}
+}
 
   if (status === 'Arrived' || status === 'Delivered') {
     const btn = document.getElementById('finishTrackBtn');
@@ -2775,11 +2840,13 @@ updateTrackingUI(status) {
     if (container) {
       // Keep it visible but stop riding
       bikeIcon.classList.remove('riding');}
-    this.celebrate();}},
+    this.celebrate();}
+},
 
 celebrate() {
   // Basic celebration effect without library
-  const icon = document.querySelector('.success-icon') || { style: {}};
+  const icon = document.querySelector('.success-icon') || { style: {}
+};
   icon.innerText = '🎊';},
 
 renderUserStats(orderCount = 0) {
@@ -2870,7 +2937,8 @@ renderOrders(orders) {
   const modal = document.getElementById('checkoutModal');
   if (modal) {
     modal.classList.remove('hidden');
-    this.startTracking(orderId);}},
+    this.startTracking(orderId);}
+},
 
 
 openBookingModal(restaurantId) {
@@ -2981,7 +3049,8 @@ verifyUPI() {
   if (id && id.includes('@')) {
     this.showToast('UPI ID Verified! ✅');
     setTimeout(() => this.nextCheckoutStep(), 500);} else {
-    this.showToast('Please enter a valid UPI ID! ⚠️');}},
+    this.showToast('Please enter a valid UPI ID! ⚠️');}
+},
 
   async placeOrder() {
   const orderId = 'NAV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
@@ -3034,9 +3103,11 @@ verifyUPI() {
       const stripe = Stripe(this.stripePublicKey);
       await stripe.redirectToCheckout({ sessionId: session.id});
       return;} catch (err) {
+      
       console.error('Stripe Error:', err);
       this.showToast(`Payment error: ${err.message}. 🛠️`);
-      return;}}
+      return;}
+}
 
   // Standard COD Flow
   try {
@@ -3054,9 +3125,12 @@ verifyUPI() {
       this.cart = [];
       this.saveCart();
       this.updateCartUI();} else {
-      this.showToast('Failed to place order. ❌');}} catch (err) {
+      this.showToast('Failed to place order. ❌');}
+} catch (err) {
+      
     console.error('Order Error:', err);
-    this.showToast('Server connection error. 🛠️');}},
+    this.showToast('Server connection error. 🛠️');}
+},
 
 
 calculateTotal() {
@@ -3067,7 +3141,8 @@ finishCheckout() {
   this.closeCheckout();
   if (this.currentView === 'dashboard') {
     this.showDashboardPage();} else {
-    this.navigateHome();}},
+    this.navigateHome();}
+},
 
 closeCheckout() {
   if (this.trackingInterval) {
@@ -3160,7 +3235,8 @@ closeSplitBill() {
   const modal = document.getElementById('splitBillModal');
   if (modal) {
     modal.classList.add('hidden');
-    document.body.style.overflow = 'auto';}},
+    document.body.style.overflow = 'auto';}
+},
 
 addSplitParticipant() {
   const input = document.getElementById('splitNameInput');
@@ -3169,7 +3245,8 @@ addSplitParticipant() {
   if (name && !this.splitParticipants.includes(name)) {
     this.splitParticipants.push(name);
     input.value = '';
-    this.renderSplitParticipants();}},
+    this.renderSplitParticipants();}
+},
 
 removeSplitParticipant(name) {
   if (name === 'Me') return; // Cannot remove self
@@ -3180,7 +3257,8 @@ removeSplitParticipant(name) {
     this.splitAssignments[itemId] = this.splitAssignments[itemId].filter(p => p !== name);
     // Ensure at least someone is assigned (fallback to Me)
     if (this.splitAssignments[itemId].length === 0) {
-      this.splitAssignments[itemId] = ['Me'];}});
+      this.splitAssignments[itemId] = ['Me'];}
+});
 
   this.renderSplitParticipants();},
 
@@ -3237,7 +3315,8 @@ toggleSplitAssignment(itemId, person) {
     // Remove
     if (assigned.length> 1) { // Prevent removing last person
       this.splitAssignments[itemId] = assigned.filter(p => p !== person);} else {
-      this.showToast("Item must be assigned to at least one person!");}} else {
+      this.showToast("Item must be assigned to at least one person!");}
+} else {
     // Add
     this.splitAssignments[itemId].push(person);}
   this.renderSplitItems();},
