@@ -6215,7 +6215,7 @@ body {
   background: rgba(15, 15, 25, 0.95);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 1.5rem 2rem;
+  padding: 2.5rem;
   border-radius: 2rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
   color: white;
@@ -6254,58 +6254,42 @@ body {
 .modal-subtitle-premium {
   text-align: left;
   color: #9ca3af;
-  margin-bottom: 1.5rem;
-  font-size: 1.05rem;
-  line-height: 1.4;
+  margin-bottom: 2.5rem;
+  font-size: 1.1rem;
+  line-height: 1.5;
 }
 
 .smart-label {
   display: block;
   font-weight: 800;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1.2rem;
   color: #e5e7eb;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   letter-spacing: 0.5px;
 }
 
 .vibe-grid {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.8rem;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
-}
-
-.vibe-grid::-webkit-scrollbar {
-  height: 4px;
-}
-
-.vibe-grid::-webkit-scrollbar-thumb {
-  background: rgba(102, 126, 234, 0.5);
-  border-radius: 4px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
 }
 
 .vibe-chip {
-  flex: 1;
-  min-width: 100px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 1rem 0.5rem;
-  border-radius: 1.2rem;
+  padding: 1.2rem 1rem;
+  border-radius: 1.5rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 700;
-  font-size: 0.95rem;
   color: #d1d5db;
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  white-space: nowrap;
+  gap: 0.5rem;
 }
 
 .vibe-chip::before {

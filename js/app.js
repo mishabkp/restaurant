@@ -704,10 +704,9 @@ const app = {
 
   renderTrendingRadar() {
     const trending = [];
-    const places = window.restaurantData?.places || [];
-    if (places.length > 0) {
+    if (this.places && this.places.length > 0) {
       const allRests = [];
-      places.forEach(p => {
+      this.places.forEach(p => {
         p.restaurants.forEach(r => allRests.push({ ...r, placeId: p.id }));
       });
       trending.push(...allRests.sort(() => 0.5 - Math.random()).slice(0, 3));
