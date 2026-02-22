@@ -9,6 +9,13 @@ const FoodItemSchema = new mongoose.Schema({
     isVeg: { type: Boolean, default: false }
 });
 
+const RoomSchema = new mongoose.Schema({
+    type: { type: String, required: true },
+    price: { type: String, required: true },
+    amenities: { type: [String] },
+    image: { type: String }
+});
+
 const RestaurantSchema = new mongoose.Schema({
     id: { type: Number, required: true, unique: true },
     name: { type: String, required: true },
@@ -25,6 +32,7 @@ const RestaurantSchema = new mongoose.Schema({
         close: { type: String }
     },
     address: { type: String },
+    rooms: [RoomSchema],
     foodItems: [FoodItemSchema]
 });
 
