@@ -603,7 +603,7 @@ const adminPortal = {
                 <div style="display: flex; gap: 0.5rem;">
                     <button class="nav-btn" onclick="adminPortal.editRestaurant(${r.id})" style="font-size: 0.7rem;">✏️ Edit</button>
                     <button class="nav-btn" onclick="adminPortal.manageMenu(${r.id})" style="font-size: 0.7rem;">🍴 Menu</button>
-                    <button class="nav-btn" onclick="adminPortal.manageRooms(${r.id})" style="font-size: 0.7rem; background: rgba(102, 126, 234, 0.2); color: #667eea;">🛏️ Rooms</button>
+                    ${r.rooms && r.rooms.length > 0 ? `<button class="nav-btn" onclick="adminPortal.manageRooms(${r.id})" style="font-size: 0.7rem; background: rgba(102, 126, 234, 0.2); color: #667eea;">🛏️ Rooms</button>` : ''}
                 </div>
             </div>
         `).join('') || 'No restaurants';
