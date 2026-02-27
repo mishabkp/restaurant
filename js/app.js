@@ -1329,17 +1329,19 @@ const app = {
         </div>
       </div>
 `;
-    this.updateContent(content);
+    await this.updateContent(content);
     this.fetchReviews(restaurant.id);
 
     // Initialize Restaurant Map
-    this.initMap('restMap', restaurant.coords, 16, [{
-      name: restaurant.name,
-      cuisine: restaurant.cuisine,
-      coords: restaurant.coords,
-      onClick: `console.log('Already here')`,
-      linkText: "Located Here"
-    }]);
+    setTimeout(() => {
+      this.initMap('restMap', restaurant.coords, 16, [{
+        name: restaurant.name,
+        cuisine: restaurant.cuisine,
+        coords: restaurant.coords,
+        onClick: `console.log('Already here')`,
+        linkText: "Located Here"
+      }]);
+    }, 100);
   },
 
   renderRoomSection(restaurant) {
