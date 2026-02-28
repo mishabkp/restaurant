@@ -753,11 +753,17 @@ const app = {
 
           <p class="reco-subtitle-minimal">Our Smart Engine analyzes your vibe and cravings to find<br>your perfect match across Kerala.</p>
 
-          <!-- CTA — white pill, dark text -->
-          <button class="reco-cta-btn" onclick="app.openSmartRecommenderModal()">
-            Find My Match
-            <span class="reco-cta-arrow">→</span>
-          </button>
+          <!-- CTA Buttons -->
+          <div class="reco-cta-group">
+            <button class="reco-cta-btn" onclick="app.openSmartRecommenderModal()">
+              Find My Match
+              <span class="reco-cta-arrow">→</span>
+            </button>
+            <button class="reco-cta-btn secondary" onclick="app.openTasteProfileQuiz()">
+              Start Taste Journey
+              <span class="reco-cta-arrow">✨</span>
+            </button>
+          </div>
 
         </div>
         <div class="reco-visual-deco">
@@ -767,6 +773,7 @@ const app = {
       </div>
     `;
   },
+
 
 
 
@@ -836,6 +843,275 @@ const app = {
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
   },
+
+  /* ========================================
+     AI TASTE PROFILER — CORE FEATURE
+     ======================================== */
+
+  openTasteProfileQuiz() {
+    const modal = document.getElementById('foodModal');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+
+    this.quizState = {
+      step: 1,
+      answers: {}
+    };
+
+    this.renderQuizStep();
+  },
+
+  renderQuizStep() {
+    const modalBody = document.getElementById('modalBody');
+    const { step } = this.quizState;
+
+    const steps = [
+      {
+        titleThin: "First, let's talk",
+        titleBold: "Cravings.",
+        question: "What flavor profile matches your mood?",
+        key: "craving",
+        options: [
+          { id: "spicy", label: "🌶 Spicy & Bold", desc: "Rich masalas and fire" },
+          { id: "sweet", label: "🍯 Sweet & Comforting", desc: "Creamy textures, mild notes" },
+          { id: "tangy", label: "🍋 Tangy & Refreshing", desc: "Citrus, tamarind, and zing" },
+          { id: "crispy", label: "🥘 Crispy & Crunchy", desc: "Deep fried perfections" }
+        ]
+      },
+      {
+        titleThin: "How much",
+        titleBold: "Heat?",
+        question: "Select your preferred spice tolerance.",
+        key: "spice",
+        options: [
+          { id: "low", label: "🌱 Just a Kiss", desc: "Zero to very low heat" },
+          { id: "med", label: "🔥 Nice Kick", desc: "The standard Kerala punch" },
+          { id: "high", label: "🌋 Fire Breathing!", desc: "Intense spice experience" }
+        ]
+      },
+      {
+        titleThin: "Where's the",
+        titleBold: "Spot?",
+        question: "What environment do you prefer today?",
+        key: "setting",
+        options: [
+          { id: "street", label: "🏍 Street Gem", desc: "Authentic, raw, local" },
+          { id: "fine", label: "🍷 Premium Dining", desc: "Elegance and comfort" },
+          { id: "cafe", label: "☕ Cozy Cafe", desc: "Light snacks and aesthetic" }
+        ]
+      },
+      {
+        titleThin: "The culinary",
+        titleBold: "Identity.",
+        question: "Which style defines your palette?",
+        key: "identity",
+        options: [
+          { id: "trad", label: "🏺 Traditionally Kerala", desc: "Rooted in heritage" },
+          { id: "fusion", label: "🍔 Modern Fusion", desc: "Kerala meets global" },
+          { id: "classic", label: "🥢 Street Classics", desc: "Timeless local favorites" }
+        ]
+      }
+    ];
+
+    const current = steps[step - 1];
+
+    modalBody.innerHTML = `
+      <div class="tp-quiz">
+        <!-- Progress -->
+        <div class="tp-progress">
+          <div class="tp-progress-bar" style="width: ${(step / steps.length) * 100}%"></div>
+        </div>
+
+        <!-- Header -->
+        <div class="tp-header">
+          <div class="tp-eyebrow">AI · Taste Profiler · Step 0${step}</div>
+          <h2 class="tp-title">
+            <span class="tp-title-thin">${current.titleThin}</span>
+            <span class="tp-title-bold">${current.titleBold}</span>
+          </h2>
+          <div class="tp-rule"></div>
+          <p class="tp-question">${current.question}</p>
+          <button class="tp-close" onclick="app.closeModal()">✕</button>
+        </div>
+
+        <!-- Options Container -->
+        <div class="tp-options">
+          ${current.options.map(opt => `
+            <div class="tp-option ${this.quizState.answers[current.key] === opt.id ? 'active' : ''}" 
+                 onclick="app.selectQuizOption('${current.key}', '${opt.id}')">
+              <div class="tp-option-label">${opt.label}</div>
+              <div class="tp-option-desc">${opt.desc}</div>
+              <div class="tp-option-check"></div>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- Footer -->
+        <div class="tp-footer">
+          ${step > 1 ? `<button class="tp-btn-back" onclick="app.prevQuizStep()">Back</button>` : '<div></div>'}
+          <button class="tp-btn-next" onclick="${step === steps.length ? 'app.processQuizResults()' : 'app.nextQuizStep()'}">
+            ${step === steps.length ? 'Reveal My Profile' : 'Next Step'}
+            <span class="tp-btn-arrow">→</span>
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  selectQuizOption(key, val) {
+    this.quizState.answers[key] = val;
+    this.renderQuizStep();
+  },
+
+  nextQuizStep() {
+    const keys = ["craving", "spice", "setting", "identity"];
+    if (!this.quizState.answers[keys[this.quizState.step - 1]]) {
+      this.showToast("Please choose an option to continue! ✨");
+      return;
+    }
+    this.quizState.step++;
+    this.renderQuizStep();
+  },
+
+  prevQuizStep() {
+    this.quizState.step--;
+    this.renderQuizStep();
+  },
+
+  processQuizResults() {
+    const keys = ["craving", "spice", "setting", "identity"];
+    if (!this.quizState.answers[keys[this.quizState.step - 1]]) {
+      this.showToast("Final step! Please choose an option. ✨");
+      return;
+    }
+
+    const modalBody = document.getElementById('modalBody');
+    modalBody.innerHTML = `
+      <div class="sr-loading">
+        <div class="tp-loader-aura"></div>
+        <p class="sr-loading-text">Crafting your unique flavor profile...</p>
+      </div>
+    `;
+
+    setTimeout(() => {
+      this.renderTasteIdentity();
+    }, 2000);
+  },
+
+  renderTasteIdentity() {
+    const modalBody = document.getElementById('modalBody');
+    const ans = this.quizState.answers;
+
+    // Matching logic
+    const results = this.getTasteProfileMatches(ans);
+
+    // Identify profile name
+    const profiles = {
+      spicy: "The Bold Adventurer",
+      sweet: "The Comfort Seeker",
+      tangy: "The Zesty Explorer",
+      crispy: "The Texture Sommelier"
+    };
+    const profileTitle = profiles[ans.craving] || "The Food Connoisseur";
+
+    modalBody.innerHTML = `
+      <div class="tp-results-wrapper">
+        <div class="tp-header">
+           <div class="tp-eyebrow">AI · Profile Revealed</div>
+           <h2 class="tp-title">
+            <span class="tp-title-thin">Your Taste</span>
+            <span class="tp-title-bold">Identity.</span>
+          </h2>
+          <div class="tp-rule"></div>
+        </div>
+
+        <div class="tp-id-card">
+          <div class="tp-id-overlay"></div>
+          <div class="tp-id-content">
+            <div class="tp-id-label">Assigned Profile</div>
+            <h3 class="tp-id-name">${profileTitle}</h3>
+            <div class="tp-id-tags">
+              <span>#${ans.craving}</span>
+              <span>#${ans.spice}Spice</span>
+              <span>#${ans.identity}</span>
+            </div>
+            <p class="tp-id-desc">Based on your palette, you prefer ${ans.craving} flavors with ${ans.spice} intensity. You thrive in ${ans.setting} settings.</p>
+          </div>
+        </div>
+
+        <div class="tp-reco-label">Recommended for your profile:</div>
+
+        <div class="sr-results">
+          ${results.slice(0, 3).map((item, i) => `
+            <div class="sr-result-card" onclick="app.showFoodModal(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}')">
+              <div class="sr-result-rank">${String(i + 1).padStart(2, '0')}</div>
+              <img src="${item.image}" alt="${item.name}" class="sr-result-img">
+              <div class="sr-result-info">
+                <h3 class="sr-result-name">${item.name}</h3>
+                <p class="sr-result-rest">at ${item.restaurantName}</p>
+                <div class="sr-result-meta">
+                  <span class="sr-result-price">${item.price}</span>
+                  <span class="sr-result-match">${90 + (i * -3)}% compatibility</span>
+                </div>
+              </div>
+              <div class="sr-result-arrow">→</div>
+            </div>
+          `).join('')}
+        </div>
+
+        <button class="sr-cta" onclick="app.closeModal()">
+          Explore My Matches
+          <span class="sr-cta-arrow">→</span>
+        </button>
+      </div>
+    `;
+  },
+
+  getTasteProfileMatches(ans) {
+    const allItems = [];
+    if (!window.restaurantData || !window.restaurantData.places) return [];
+
+    window.restaurantData.places.forEach(place => {
+      if (place.restaurants) {
+        place.restaurants.forEach(restaurant => {
+          if (restaurant.foodItems) {
+            restaurant.foodItems.forEach(item => {
+              allItems.push({
+                ...item,
+                restaurantId: restaurant.id,
+                restaurantName: restaurant.name
+              });
+            });
+          }
+        });
+      }
+    });
+
+    // Scoring logic
+    return allItems.map(item => {
+      let score = 0;
+      const desc = (item.description || "").toLowerCase();
+      const name = (item.name || "").toLowerCase();
+
+      // Craving match (approximate)
+      if (ans.craving === 'spicy' && (desc.includes('spice') || desc.includes('masala') || desc.includes('hot'))) score += 40;
+      if (ans.craving === 'sweet' && (desc.includes('sweet') || desc.includes('sugar') || desc.includes('dessert'))) score += 40;
+      if (ans.craving === 'tangy' && (desc.includes('tangy') || desc.includes('lemon') || desc.includes('tamarind'))) score += 40;
+      if (ans.craving === 'crispy' && (desc.includes('fried') || desc.includes('crispy') || name.includes('fried'))) score += 40;
+
+      // Identity match
+      if (ans.identity === 'trad' && item.category === 'Traditional') score += 30;
+      if (ans.identity === 'fusion' && item.category === 'Special') score += 30;
+      if (ans.identity === 'classic' && item.category === 'Signature') score += 30;
+
+      // Spice level match
+      if (ans.spice === 'high' && (desc.includes('spice') || desc.includes('hot'))) score += 20;
+      if (ans.spice === 'low' && (desc.includes('mild') || desc.includes('creamy'))) score += 20;
+
+      return { ...item, score };
+    }).sort((a, b) => b.score - a.score).slice(0, 5);
+  },
+
 
 
   selectVibe(el, vibe) {
