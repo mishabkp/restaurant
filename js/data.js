@@ -91,6 +91,7 @@ window.restaurantData = {
                             "price": "₹1200",
                             "isVeg": false,
                             "description": "Creamy lobster in rich sauce",
+                            "secret": "Our sauce uses a rare local saffron infusion for a golden, earthy depth.",
                             "image": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
@@ -235,6 +236,7 @@ window.restaurantData = {
                             "price": "₹480",
                             "isVeg": false,
                             "description": "Pearl spot fish in banana leaf",
+                            "secret": "Wrapped in banana leaves with a secret blend of 12 spices and bird's eye chili.",
                             "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
@@ -243,6 +245,7 @@ window.restaurantData = {
                             "price": "₹220",
                             "isVeg": false,
                             "description": "Spicy Kerala style beef",
+                            "secret": "Double-cooked with slow-roasted coconut shards and hand-pounded Malabar pepper.",
                             "image": "https://images.pexels.com/photos/675951/pexels-photo-675951.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {
@@ -251,6 +254,7 @@ window.restaurantData = {
                             "price": "₹180",
                             "isVeg": true,
                             "description": "Soft rice pancakes with coconut stew",
+                            "secret": "The batter is fermented with house-made coconut yeast for that authentic heirloom tang.",
                             "image": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=800"
                         },
                         {

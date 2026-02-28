@@ -8032,3 +8032,94 @@ h4 {
   margin-bottom: 1rem;
   padding-left: 0.5rem;
 }
+
+/* ========================================
+   CHEF'S SECRET TOOLTIP - PREMIUM MINIMAL
+   ======================================== */
+
+.chefs-secret-container {
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.chefs-secret-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  background: rgba(255, 193, 7, 0.08);
+  border: 1px solid rgba(255, 193, 7, 0.15);
+  border-radius: 8px;
+  cursor: help;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.chefs-secret-badge:hover {
+  background: rgba(255, 193, 7, 0.12);
+  border-color: rgba(255, 193, 7, 0.3);
+  transform: translateY(-1px);
+}
+
+.cs-icon {
+  font-size: 0.9rem;
+  filter: drop-shadow(0 0 4px rgba(255, 193, 7, 0.4));
+}
+
+.cs-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--primary-accent); /* Amber color */
+}
+
+/* Tooltip Styling */
+.cs-tooltip {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 0;
+  width: 260px;
+  padding: 1rem;
+  background: rgba(18, 18, 18, 0.98);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 193, 7, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.chefs-secret-badge:hover .cs-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.cs-tooltip p {
+  color: rgba(255, 255, 255, 0.85);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.cs-tooltip-arrow {
+  position: absolute;
+  top: 100%;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid rgba(18, 18, 18, 0.98);
+}
+

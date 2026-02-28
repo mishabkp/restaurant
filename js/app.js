@@ -3202,6 +3202,20 @@ const app = {
     <div class="modal-price">${item.price}</div>
   </div>
   <p class="modal-description">${item.description}</p>
+  
+  <!-- Chef's Secret Tooltip -->
+  ${item.secret ? `
+  <div class="chefs-secret-container">
+    <div class="chefs-secret-badge">
+      <span class="cs-icon">✨</span>
+      <span class="cs-label">Chef's Secret</span>
+      <div class="cs-tooltip">
+        <div class="cs-tooltip-arrow"></div>
+        <p>${item.secret}</p>
+      </div>
+    </div>
+  </div>
+  ` : ''}
   <div class="modal-footer">
     <button class="fav-btn ${isFav ? 'active' : ''}" onclick="app.toggleFavorite('${itemId}', 'item', this)">❤️ Favorite</button>
     <button class="submit-btn" style="flex:1;" onclick="app.addToCart(${restaurantId}, '${item.name.replace(/'/g, "\\'")}')">Add to Cart 🛒</button>
