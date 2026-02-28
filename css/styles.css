@@ -2754,29 +2754,54 @@ body {
   animation: fadeInUp 0.6s ease-out;
 }
 
+/* Minimalist eyebrow label — no pill, just clean uppercase text */
 .section-badge {
-  display: inline-block;
-  padding: 0.5rem 1.2rem;
-  background: var(--accent-gradient);
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 800;
-  border-radius: var(--radius-full);
-  letter-spacing: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
   margin-bottom: var(--spacing-md);
-  box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+  background: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* Fine horizontal lines flanking the badge text */
+.section-badge::before,
+.section-badge::after {
+  content: '';
+  display: block;
+  width: 30px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
 }
 
 .section-header .section-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.8px;
+  line-height: 1.1;
   margin-bottom: var(--spacing-xs);
-  font-size: 2.5rem;
+  color: var(--text-primary);
 }
 
 .section-subtitle {
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-  max-width: 600px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.95rem;
+  max-width: 540px;
   margin: 0 auto;
+  line-height: 1.75;
+  letter-spacing: 0.2px;
 }
 
 .map-section {
@@ -4939,6 +4964,101 @@ body {
   pointer-events: none;
 }
 
+/* ========================================
+   VIDEO HERO SECTION
+   ======================================== */
+
+.hero-video-section {
+  background: #0a0a0a;
+  /* Fallback before video loads */
+}
+
+/* The background video element */
+.hero-bg-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: cover;
+  z-index: 0;
+  filter: saturate(1.2) brightness(0.85);
+}
+
+/* Rich cinematic dark overlay for text readability */
+.hero-video-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+      rgba(5, 10, 20, 0.88) 0%,
+      rgba(10, 20, 30, 0.72) 45%,
+      rgba(20, 10, 5, 0.55) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Subtle Kerala-themed warmth pattern overlay */
+.hero-kerala-pattern {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 50%,
+      rgba(255, 140, 50, 0.07) 0%,
+      transparent 60%), radial-gradient(ellipse at 20% 80%,
+      rgba(34, 197, 94, 0.05) 0%,
+      transparent 50%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Enhanced badge for video hero */
+.hero-badge-video {
+  background: rgba(255, 140, 50, 0.15) !important;
+  border-color: rgba(255, 140, 50, 0.4) !important;
+  color: #ffb347 !important;
+  box-shadow: 0 4px 20px rgba(255, 140, 50, 0.2) !important;
+}
+
+/* Scroll hint at bottom of hero content */
+.hero-scroll-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.scroll-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 140, 50, 0.8);
+  animation: scrollPulse 1.8s ease-in-out infinite;
+  display: inline-block;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(255, 140, 50, 0.6);
+}
+
+@keyframes scrollPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.6);
+    opacity: 0.3;
+  }
+}
+
 .hero-split {
   position: relative;
   z-index: 2;
@@ -6109,59 +6229,114 @@ body {
   max-width: 700px;
 }
 
-.reco-badge-glow {
-  display: inline-block;
-  background: var(--accent-gradient);
-  color: white;
-  padding: 0.5rem 1.2rem;
-  border-radius: 2rem;
-  font-size: 0.8rem;
+/* Minimalist eyebrow label — no pill */
+.reco-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.6rem;
+}
+
+.reco-eyebrow-line {
+  flex: 0 0 30px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  display: block;
+}
+
+.reco-eyebrow-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+
+/* Two-weight minimalist title */
+.reco-title-minimal {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0 0 1rem 0;
+  line-height: 1;
+}
+
+.reco-t-thin {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 200;
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.reco-t-bold {
+  font-family: 'Outfit', sans-serif;
   font-weight: 800;
-  letter-spacing: 2px;
-  margin-bottom: 2rem;
-  box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+  font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+  letter-spacing: -1.5px;
+  color: #ffffff;
+  line-height: 1;
 }
 
-.reco-title {
-  font-family: var(--font-display);
-  font-size: 3.5rem;
-  font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-  color: var(--text-primary);
+/* Amber rule under title */
+.reco-rule {
+  width: 50px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 179, 71, 0.9), rgba(255, 179, 71, 0.1));
+  border-radius: 2px;
+  margin: 1rem auto 1.2rem;
 }
 
-.reco-subtitle {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  margin-bottom: 2.5rem;
-  line-height: 1.6;
+/* Minimalist subtitle */
+.reco-subtitle-minimal {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.75;
+  margin-bottom: 2.2rem;
+  letter-spacing: 0.2px;
 }
 
-.smart-cta-btn {
-  background: white;
-  color: var(--bg-dark);
-  border: none;
-  padding: 1.2rem 3rem;
-  border-radius: var(--radius-full);
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+/* Clean CTA button — white pill with dark text + arrow */
+.reco-cta-btn {
   display: inline-flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.7rem;
+  padding: 0.85rem 2rem;
+  background: #ffffff;
+  color: #0a0a0a;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.smart-cta-btn:hover {
-  transform: translateY(-5px) scale(1.05);
-  box-shadow: 0 15px 30px rgba(255, 255, 255, 0.2);
+.reco-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.15);
 }
 
-.sparkle {
-  font-size: 1.4rem;
-  animation: rotate 3s infinite linear;
+.reco-cta-arrow {
+  font-size: 1rem;
+  transition: transform 0.2s ease;
 }
+
+.reco-cta-btn:hover .reco-cta-arrow {
+  transform: translateX(4px);
+}
+
+
+
 
 .reco-visual-deco {
   position: absolute;
@@ -6505,211 +6680,13 @@ body {
   }
 }
 
-/* ========================================
-   TRENDING NOW RADAR STYLES
-   ======================================== */
 
-.trending-radar-container {
-  max-width: 1200px;
-  margin: 4rem auto;
-  padding: 0 2rem;
-}
 
-.radar-header {
-  text-align: center;
-  margin-bottom: 3rem;
-  position: relative;
-}
 
-.live-activity-badge {
-  display: inline-block;
-  background: #00f2fe;
-  color: #000;
-  font-weight: 900;
-  padding: 0.4rem 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.75rem;
-  letter-spacing: 1px;
-  box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
-  margin-bottom: 1.5rem;
-}
 
-.radar-title {
-  font-family: var(--font-display);
-  font-size: 3rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
-  color: #fff;
-}
 
-.radar-subtitle {
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-  margin-bottom: 2rem;
-}
 
-.pulse-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
-  background: rgba(0, 242, 254, 0.05);
-  border: 1px solid rgba(0, 242, 254, 0.2);
-  padding: 0.6rem 1.5rem;
-  border-radius: 2rem;
-  color: #00f2fe;
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 1px;
-}
 
-.pulse-dot {
-  width: 10px;
-  height: 10px;
-  background: #00f2fe;
-  border-radius: 50%;
-  position: relative;
-}
-
-.pulse-dot::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #00f2fe;
-  border-radius: 50%;
-  animation: pulse-cyan 2s infinite;
-}
-
-@keyframes pulse-cyan {
-  0% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-
-  70% {
-    transform: scale(3);
-    opacity: 0;
-  }
-
-  100% {
-    transform: scale(1);
-    opacity: 0;
-  }
-}
-
-.radar-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
-}
-
-.radar-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 2rem;
-  padding: 1.5rem;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.radar-card:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.15);
-  transform: translateY(-8px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-}
-
-.hot-badge-radar {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  background: #00f2fe;
-  color: #000;
-  padding: 0.3rem 0.8rem;
-  border-radius: 0.5rem;
-  font-weight: 900;
-  font-size: 0.7rem;
-  z-index: 2;
-}
-
-.radar-card-inner {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.radar-thumb {
-  width: 90px;
-  height: 90px;
-  border-radius: 1.5rem;
-  background-size: cover;
-  background-position: center;
-  flex-shrink: 0;
-}
-
-.radar-info {
-  flex: 1;
-}
-
-.radar-name {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: 0.8rem;
-  color: #fff;
-}
-
-.viewer-count-radar {
-  font-size: 0.9rem;
-  color: #aaa;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.count-num {
-  font-weight: 800;
-  color: #ff4e50;
-}
-
-.flame-icon {
-  animation: flicker 1.5s infinite alternate;
-}
-
-@keyframes flicker {
-  0% {
-    transform: scale(1);
-    filter: brightness(1);
-  }
-
-  100% {
-    transform: scale(1.1);
-    filter: brightness(1.3);
-  }
-}
-
-@media (max-width: 480px) {
-  .radar-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .radar-card-inner {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .radar-thumb {
-    width: 100%;
-    height: 200px;
-  }
-
-  .radar-title {
-    font-size: 2.2rem;
-  }
-}
 
 /* =========================================
    CINEMATIC PAGE TRANSITIONS (VIEW TRANSITIONS API)
@@ -6747,4 +6724,862 @@ body {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+/* ========================================
+   VIDEO HERO SECTION — FULL STYLES
+   ======================================== */
+
+/* --- Video bg --- */
+.hero-video-section {
+  background: #0a0a0a;
+}
+
+.hero-bg-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: cover;
+  z-index: 0;
+  filter: saturate(1.15) brightness(0.82);
+}
+
+/* --- Overlays --- */
+.hero-video-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(125deg,
+      rgba(4, 8, 16, 0.90) 0%,
+      rgba(8, 14, 26, 0.75) 50%,
+      rgba(15, 8, 4, 0.50) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-kerala-pattern {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 70% 40%, rgba(255, 140, 50, 0.06) 0%, transparent 55%),
+    radial-gradient(ellipse at 15% 85%, rgba(34, 197, 94, 0.04) 0%, transparent 45%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* --- Eyebrow label --- */
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.6rem;
+}
+
+.eyebrow-line {
+  flex: 0 0 40px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+  display: block;
+}
+
+.eyebrow-text {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+}
+
+/* --- Main title — three-line editorial --- */
+.hero-title-minimal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin: 0 0 1.6rem 0;
+  line-height: 1.1;
+}
+
+.title-thin {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 200;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+}
+
+.title-bold {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: clamp(3rem, 6.5vw, 6rem);
+  letter-spacing: -1px;
+  color: #ffffff;
+  line-height: 0.95;
+}
+
+.title-accent {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: clamp(3rem, 6.5vw, 6rem);
+  letter-spacing: -1px;
+  line-height: 0.95;
+  background: linear-gradient(90deg, #ffb347 0%, #f9d423 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* --- Horizontal divider rule --- */
+.hero-rule {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 179, 71, 0.9), rgba(255, 179, 71, 0.1));
+  border-radius: 2px;
+  margin-bottom: 1.4rem;
+}
+
+/* --- Subtitle --- */
+.hero-subtitle-minimal {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.8;
+  max-width: 480px;
+  margin-bottom: 2rem;
+  letter-spacing: 0.2px;
+}
+
+/* --- Stats row --- */
+.hero-stats-minimal {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+  margin-bottom: 0;
+}
+
+.stat-minimal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-num {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+}
+
+.stat-lbl {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.stat-sep {
+  width: 1px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+}
+
+/* --- Scroll hint --- */
+.hero-scroll-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2.5rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.scroll-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 179, 71, 0.85);
+  animation: scrollPulse 2s ease-in-out infinite;
+  display: inline-block;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(255, 179, 71, 0.5);
+}
+
+@keyframes scrollPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+
+  50% {
+    transform: scale(1.7);
+    opacity: 0.25;
+  }
+}
+
+/* ========================================
+   GLOBAL MINIMALIST TYPOGRAPHY OVERHAUL
+   Applied consistently across entire app
+   ======================================== */
+
+/* --- Base headings — all use Outfit, clean weights --- */
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.3px;
+}
+
+/* --- Page-level titles (Discover Kerala's Best, etc.) --- */
+.page-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  letter-spacing: -1px;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.page-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 1rem;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+  line-height: 1.7;
+}
+
+/* --- Section headers (badges + titles above map, trending etc.) --- */
+.section-badge {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: var(--accent-color);
+  opacity: 0.85;
+}
+
+.section-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+
+.section-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.75;
+  letter-spacing: 0.2px;
+}
+
+/* --- Card titles (place cards, restaurant cards) --- */
+.card-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.card-description {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+/* --- Smart Recommender section --- */
+.reco-title,
+.reco-hero-content h2 {
+  font-family: 'Outfit', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.5px !important;
+  line-height: 1.1 !important;
+}
+
+.reco-subtitle,
+.reco-hero-content p {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 300 !important;
+  font-size: 0.95rem !important;
+  letter-spacing: 0.2px !important;
+  color: var(--text-muted) !important;
+  line-height: 1.75 !important;
+}
+
+.reco-badge-glow {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 3.5px;
+}
+
+/* --- Trending Radar section --- */
+.radar-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.radar-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.2px;
+}
+
+.radar-name {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+/* --- Restaurant / Place page headings --- */
+.restaurant-name,
+.place-hero-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1;
+}
+
+.place-hero-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.2px;
+}
+
+/* --- Modal titles --- */
+.modal-title-premium {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.modal-subtitle-premium,
+.modal-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.2px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* --- Smart CTA button --- */
+.smart-cta-btn {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* --- Section heading inside place page (Curated Dining List) --- */
+.section-heading {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  font-size: 1.6rem;
+}
+
+/* --- Nav logo — keep clean Outfit --- */
+.logo {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+/* --- Nav links --- */
+.nav-link {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  font-size: 0.9rem;
+}
+
+/* --- Footer --- */
+.footer-text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.3px;
+}
+
+/* ========================================
+   SMART RECOMMENDER MODAL — REDESIGN
+   Minimalist · Premium · Editorial
+   ======================================== */
+
+.sr-modal {
+  padding: 2rem 2.2rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 0;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* --- Header block --- */
+.sr-header {
+  position: relative;
+  margin-bottom: 1.8rem;
+}
+
+.sr-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 0.8rem;
+}
+
+.sr-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.sr-title-thin {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 200;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+}
+
+.sr-title-bold {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  letter-spacing: -1px;
+  color: #fff;
+  line-height: 1;
+}
+
+.sr-rule {
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 179, 71, 0.9), rgba(255, 179, 71, 0.1));
+  border-radius: 2px;
+  margin-bottom: 0.9rem;
+}
+
+.sr-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.6;
+  letter-spacing: 0.2px;
+}
+
+.sr-subtitle strong {
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+}
+
+/* --- Close button — top right --- */
+.sr-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sr-close:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+/* --- Section (step) --- */
+.sr-section {
+  margin-bottom: 1.4rem;
+}
+
+.sr-step-label {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.9rem;
+}
+
+.sr-step-num {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: rgba(255, 179, 71, 0.7);
+}
+
+.sr-step-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* --- Chip row --- */
+.sr-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.sr-chip {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  padding: 0.55rem 1.1rem;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.sr-chip:hover {
+  border-color: rgba(255, 179, 71, 0.4);
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 179, 71, 0.06);
+}
+
+.sr-chip.active {
+  border-color: rgba(255, 179, 71, 0.7);
+  background: rgba(255, 179, 71, 0.1);
+  color: #ffb347;
+  font-weight: 600;
+}
+
+/* --- Thin divider between steps --- */
+.sr-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 0 0 1.4rem 0;
+}
+
+/* --- CTA button --- */
+.sr-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  width: 100%;
+  padding: 0.9rem 1.5rem;
+  margin-top: 1.2rem;
+  background: #fff;
+  color: #0a0a0a;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sr-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.15);
+}
+
+.sr-cta.sr-cta-outline {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-weight: 400;
+}
+
+.sr-cta.sr-cta-outline:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: none;
+}
+
+.sr-cta-arrow {
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.sr-cta:hover .sr-cta-arrow {
+  transform: translateX(4px);
+}
+
+/* --- Loading state --- */
+.sr-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 1.5rem;
+}
+
+.sr-loader-ring {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top-color: rgba(255, 179, 71, 0.8);
+  border-radius: 50%;
+  animation: srSpin 0.8s linear infinite;
+}
+
+@keyframes srSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sr-loading-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* --- Results list --- */
+.sr-results {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 0.5rem;
+}
+
+.sr-result-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sr-result-card:last-child {
+  border-bottom: none;
+}
+
+.sr-result-card:hover {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  padding-left: 0.5rem;
+}
+
+.sr-result-rank {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: rgba(255, 179, 71, 0.5);
+  flex-shrink: 0;
+  width: 24px;
+}
+
+.sr-result-img {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  filter: brightness(0.9);
+}
+
+.sr-result-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sr-result-name {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.2px;
+}
+
+.sr-result-rest {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 0.15rem;
+}
+
+.sr-result-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.35rem;
+}
+
+.sr-result-price {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.sr-result-match {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: rgba(255, 179, 71, 0.7);
+  text-transform: uppercase;
+}
+
+.sr-result-arrow {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sr-result-card:hover .sr-result-arrow {
+  color: rgba(255, 255, 255, 0.6);
+  transform: translateX(3px);
+}
+/* ========================================
+   ABOUT PAGE � MINIMALIST PREMIUM TYPOGRAPHY
+   ======================================== */
+
+/* Eyebrow label */
+.about-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.6rem;
+}
+.about-section-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+.about-eyebrow-line {
+  flex: 0 0 30px;
+  height: 1px;
+  background: rgba(255,255,255,0.2);
+  display: block;
+}
+.about-eyebrow-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  white-space: nowrap;
+}
+
+/* Three-line hero title */
+.about-title-minimal {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0 0 1.2rem 0;
+  line-height: 1;
+  text-align: center;
+}
+.about-t-thin {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 200;
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+.about-t-bold {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  letter-spacing: -2px;
+  color: #ffffff;
+  line-height: 0.95;
+}
+.about-t-accent {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  letter-spacing: -2px;
+  line-height: 0.95;
+  background: linear-gradient(90deg, #ffb347 0%, #f9d423 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Amber rule */
+.about-hero-rule {
+  width: 50px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255,179,71,0.9), rgba(255,179,71,0.1));
+  border-radius: 2px;
+  margin: 1rem auto 1.4rem;
+}
+
+/* Subtitle */
+.about-subtitle-minimal {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  color: rgba(255,255,255,0.45);
+  line-height: 1.75;
+  letter-spacing: 0.3px;
+  max-width: 500px;
+  margin: 0 auto 2.5rem;
+}
+
+/* Story section title */
+.about-section-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.8px;
+  line-height: 1.1;
+  color: #ffffff;
+  margin-bottom: 1.2rem;
 }

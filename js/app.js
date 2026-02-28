@@ -622,30 +622,64 @@ const app = {
 
 
     const content = `
-      <div class="hero-premium fade-slide-up" style="background-image: url('https://images.pexels.com/photos/1640773/pexels-photo-1640773.jpeg?auto=compress&cs=tinysrgb&w=1920'); background-size: cover; background-position: center;">
-        <div class="hero-overlay"></div>
+      <div class="hero-premium hero-video-section fade-slide-up">
+        <!-- Kerala Food Background Video -->
+        <video class="hero-bg-video" autoplay muted loop playsinline>
+          <source src="assets/hero.mp4.mp4" type="video/mp4">
+        </video>
+        <!-- Dark gradient overlay for text readability -->
+        <div class="hero-video-overlay"></div>
+        <!-- Kerala texture overlay for authentic feel -->
+        <div class="hero-kerala-pattern"></div>
         
         <div class="hero-split">
           <div class="hero-left">
-            <span class="hero-badge">Curated Excellence</span>
-            <h1 class="hero-title">Experience the Art of <span class="fancy">Kerala's Finest Flavors</span></h1>
-            <p class="hero-subtitle">Embark on a culinary journey through the heart of Kerala. From heritage recipes to modern gastronomic wonders.</p>
-            <div class="hero-stats">
-              <div class="stat-item">
-                <span class="stat-value">50+</span>
-                <span class="stat-label">Restaurants</span>
+
+            <!-- Eyebrow label -->
+            <div class="hero-eyebrow">
+              <span class="eyebrow-line"></span>
+              <span class="eyebrow-text">Kerala · India · Cuisine</span>
+              <span class="eyebrow-line"></span>
+            </div>
+
+            <!-- Main title — two-weight contrast -->
+            <h1 class="hero-title-minimal">
+              <span class="title-thin">Experience the Art of</span>
+              <span class="title-bold">Kerala's Finest</span>
+              <span class="title-accent">Flavors.</span>
+            </h1>
+
+            <!-- Divider rule -->
+            <div class="hero-rule"></div>
+
+            <!-- Subtitle -->
+            <p class="hero-subtitle-minimal">From heritage Sadya to coastal seafood — a culinary journey<br>through God's Own Country.</p>
+
+            <!-- Stats row -->
+            <div class="hero-stats-minimal">
+              <div class="stat-minimal">
+                <span class="stat-num">50+</span>
+                <span class="stat-lbl">Restaurants</span>
               </div>
-              <div class="stat-item">
-                <span class="stat-value">12</span>
-                <span class="stat-label">Locations</span>
+              <div class="stat-sep"></div>
+              <div class="stat-minimal">
+                <span class="stat-num">12</span>
+                <span class="stat-lbl">Locations</span>
               </div>
-              <div class="stat-item">
-                <span class="stat-value">4.8</span>
-                <span class="stat-label">Avg Rating</span>
+              <div class="stat-sep"></div>
+              <div class="stat-minimal">
+                <span class="stat-num">4.8★</span>
+                <span class="stat-lbl">Avg Rating</span>
               </div>
             </div>
+
+            <!-- Scroll hint -->
+            <div class="hero-scroll-hint">
+              <span class="scroll-dot"></span>
+              <span>Scroll to explore</span>
+            </div>
+
           </div>
-          <!-- No right visual needed for full-screen video impact, keeping text centered or split as per CSS -->
         </div>
       </div>
 
@@ -659,8 +693,6 @@ const app = {
         </div>
         <div id="mainMap" class="map-container"></div>
       </div>
-
-      ${this.renderTrendingRadar()}
 
       <h1 class="page-title">Discover Kerala's Best Restaurants</h1>
       <p class="page-subtitle">Choose a location to explore amazing dining experiences</p>
@@ -694,8 +726,6 @@ const app = {
     }));
     this.initMap('mainMap', [10.5, 76.5], 7, cityMarkers);
 
-    // Start live trending updates
-    this.startTrendingUpdates();
   },
 
 
@@ -704,12 +734,31 @@ const app = {
     return `
       <div class="smart-reco-section fade-slide-up">
         <div class="reco-hero-content">
-          <div class="reco-badge-glow">AI MAGIC</div>
-          <h2 class="reco-title">Can't decide <span class="text-gradient">what to eat?</span></h2>
-          <p class="reco-subtitle">Our Smart Engine analyzes your vibe and preferences to find your perfect match in Kerala.</p>
-          <button class="smart-cta-btn" onclick="app.openSmartRecommenderModal()">
-            <span class="sparkle">🪄</span> AI Smart Recommender
+
+          <!-- Eyebrow label — same style as hero -->
+          <div class="reco-eyebrow">
+            <span class="reco-eyebrow-line"></span>
+            <span class="reco-eyebrow-text">AI · Smart Engine</span>
+            <span class="reco-eyebrow-line"></span>
+          </div>
+
+          <!-- Two-weight title -->
+          <h2 class="reco-title-minimal">
+            <span class="reco-t-thin">Can't decide</span>
+            <span class="reco-t-bold">what to eat?</span>
+          </h2>
+
+          <!-- Amber rule -->
+          <div class="reco-rule"></div>
+
+          <p class="reco-subtitle-minimal">Our Smart Engine analyzes your vibe and cravings to find<br>your perfect match across Kerala.</p>
+
+          <!-- CTA — white pill, dark text -->
+          <button class="reco-cta-btn" onclick="app.openSmartRecommenderModal()">
+            Find My Match
+            <span class="reco-cta-arrow">→</span>
           </button>
+
         </div>
         <div class="reco-visual-deco">
           <div class="glow-orb-primary"></div>
@@ -719,104 +768,66 @@ const app = {
     `;
   },
 
-  renderTrendingRadar() {
-    const trending = [];
-    if (this.places && this.places.length > 0) {
-      const allRests = [];
-      this.places.forEach(p => {
-        p.restaurants.forEach(r => allRests.push({ ...r, placeId: p.id }));
-      });
-      trending.push(...allRests.sort(() => 0.5 - Math.random()).slice(0, 3));
-    }
 
-    if (trending.length === 0) return '';
 
-    return `
-      <section class="trending-radar-section fade-slide-up">
-        <div class="radar-header">
-          <div class="live-activity-badge">LIVE ACTIVITY</div>
-          <h2 class="radar-title">Trending Now Radar <span>🔥</span></h2>
-          <p class="radar-subtitle">See what's capturing hearts across Kerala right now</p>
-          <div class="pulse-chip">
-            <span class="pulse-dot"></span> REAL-TIME PULSE
-          </div>
-        </div>
 
-        <div class="radar-grid">
-          ${trending.map((r, idx) => {
-      const count = Math.floor(Math.random() * 80) + 40;
-      return `
-              <div class="radar-card" onclick="app.navigateToPlace(${r.placeId})">
-                <div class="hot-badge-radar">HOT</div>
-                <div class="radar-card-inner">
-                  <div class="radar-thumb" style="background-image: url('${r.image}')"></div>
-                  <div class="radar-info">
-                    <h3 class="radar-name">${r.name}</h3>
-                    <div class="viewer-count-radar" id="radarStat${idx}">
-                      <span>🔥</span> <span class="count-num">${count}</span> people are viewing this now
-                    </div>
-                  </div>
-                </div>
-              </div>
-            `;
-    }).join('')}
-        </div>
-      </section>
-    `;
-  },
-
-  startTrendingUpdates() {
-    if (this.trendingInterval) clearInterval(this.trendingInterval);
-    this.trendingInterval = setInterval(() => {
-      for (let i = 0; i < 3; i++) {
-        const el = document.getElementById(`radarStat${i}`);
-        if (el) {
-          const num = el.querySelector('.count-num');
-          if (num) {
-            let val = parseInt(num.innerText);
-            val = Math.max(25, val + (Math.floor(Math.random() * 5) - 2));
-            num.innerText = val;
-            num.style.color = '#fff';
-            setTimeout(() => num.style.color = '', 400);
-          }
-        }
-      }
-    }, 4000);
-  },
 
   openSmartRecommenderModal() {
     const modal = document.getElementById('foodModal');
     const modalBody = document.getElementById('modalBody');
 
     modalBody.innerHTML = `
-      <div class="smart-modal-container">
-        <h2 class="modal-title-premium">
-          Smart Recommender
-          <span style="font-weight: 300; font-size: 1.5rem; color: #a5b4fc; cursor: pointer;" onclick="document.getElementById('foodModal').classList.add('hidden'); document.body.style.overflow='auto';">×✨</span>
-        </h2>
-        <p class="modal-subtitle-premium">Tell us your preferences for a personalized match.</p>
-        
-        <div class="smart-step" id="recoStep1">
-          <label class="smart-label">What's your vibe right now?</label>
-          <div class="vibe-grid">
-            <div class="vibe-chip" onclick="app.selectVibe(this, 'Romantic')">🕯️ Romantic</div>
-            <div class="vibe-chip" onclick="app.selectVibe(this, 'Family')">👨‍👩‍👧‍👦 Family</div>
-            <div class="vibe-chip" onclick="app.selectVibe(this, 'Solo')">🎧 Solo</div>
-            <div class="vibe-chip" onclick="app.selectVibe(this, 'Friends')">🎉 Friends</div>
-          </div>
-          
-          <label class="smart-label" style="margin-top: 1.5rem;">What do you want to eat?</label>
-          <div class="vibe-grid">
-            <div class="vibe-chip" onclick="app.selectFoodChoice(this, 'Seafood')">🐟 Seafood</div>
-            <div class="vibe-chip" onclick="app.selectFoodChoice(this, 'Authentic Kerala')">🏺 Traditional</div>
-            <div class="vibe-chip" onclick="app.selectFoodChoice(this, 'Continental')">🍔 Modern</div>
-            <div class="vibe-chip" onclick="app.selectFoodChoice(this, 'Chinese')">🥢 Chinese</div>
-          </div>
-          
-          <button class="primary-btn-premium" style="margin-top: 2rem; width: 100%;" onclick="app.processAIRecommendations()">
-            Find My Match ➔
-          </button>
+      <div class="sr-modal">
+
+        <!-- Header -->
+        <div class="sr-header">
+          <div class="sr-eyebrow">AI · Smart Recommender</div>
+          <h2 class="sr-title">
+            <span class="sr-title-thin">Find your</span>
+            <span class="sr-title-bold">Perfect Match.</span>
+          </h2>
+          <div class="sr-rule"></div>
+          <p class="sr-subtitle">Tell us your vibe and craving — we'll do the rest.</p>
+          <button class="sr-close" onclick="app.closeModal()">✕</button>
         </div>
+
+        <!-- Step 1: Vibe -->
+        <div class="sr-section">
+          <div class="sr-step-label">
+            <span class="sr-step-num">01</span>
+            <span class="sr-step-text">What's your vibe right now?</span>
+          </div>
+          <div class="sr-chips" id="vibeChips">
+            <div class="sr-chip" onclick="app.selectVibe(this, 'Romantic')">🕯 Romantic</div>
+            <div class="sr-chip" onclick="app.selectVibe(this, 'Family')">👨‍👩‍👧 Family</div>
+            <div class="sr-chip" onclick="app.selectVibe(this, 'Solo')">🎧 Solo</div>
+            <div class="sr-chip" onclick="app.selectVibe(this, 'Friends')">🎉 Friends</div>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="sr-divider"></div>
+
+        <!-- Step 2: Food -->
+        <div class="sr-section">
+          <div class="sr-step-label">
+            <span class="sr-step-num">02</span>
+            <span class="sr-step-text">What do you want to eat?</span>
+          </div>
+          <div class="sr-chips" id="foodChips">
+            <div class="sr-chip" onclick="app.selectFoodChoice(this, 'Seafood')">🐟 Seafood</div>
+            <div class="sr-chip" onclick="app.selectFoodChoice(this, 'Authentic Kerala')">🏺 Traditional</div>
+            <div class="sr-chip" onclick="app.selectFoodChoice(this, 'Continental')">🍔 Modern</div>
+            <div class="sr-chip" onclick="app.selectFoodChoice(this, 'Chinese')">🥢 Chinese</div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <button class="sr-cta" onclick="app.processAIRecommendations()">
+          Find My Match
+          <span class="sr-cta-arrow">→</span>
+        </button>
+
       </div>
     `;
 
@@ -825,6 +836,7 @@ const app = {
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
   },
+
 
   selectVibe(el, vibe) {
     el.parentElement.querySelectorAll('.vibe-chip').forEach(c => c.classList.remove('active'));
@@ -846,9 +858,9 @@ const app = {
 
     const modalBody = document.getElementById('modalBody');
     modalBody.innerHTML = `
-      <div class="searching-state">
-        <div class="smart-loader"></div>
-        <p>Analyzing districts and restaurant classes...</p>
+      <div class="sr-loading">
+        <div class="sr-loader-ring"></div>
+        <p class="sr-loading-text">Curating your perfect match...</p>
       </div>
     `;
 
@@ -858,6 +870,7 @@ const app = {
       this.renderAIRecommendations(results);
     }, 1500);
   },
+
 
   getAIRecommendations(vibe, choice) {
     const allItems = [];
@@ -902,31 +915,47 @@ const app = {
   renderAIRecommendations(results) {
     const modalBody = document.getElementById('modalBody');
     modalBody.innerHTML = `
-      <div class="reco-results-container">
-        <h2 class="modal-title-premium" style="margin-bottom: 0.5rem;">Your Top Matches 🪄</h2>
-        <p class="modal-subtitle-premium" style="margin-bottom: 1.5rem;">Based on your <span class="highlight-alt">${this.selectedVibe}</span> vibe and <span class="highlight-alt">${this.selectedFoodChoice}</span> craving.</p>
-        
-        <div class="results-grid-premium">
-          ${results.map(item => {
+      <div class="sr-modal">
+
+        <!-- Results header -->
+        <div class="sr-header">
+          <div class="sr-eyebrow">AI · Smart Recommender</div>
+          <h2 class="sr-title">
+            <span class="sr-title-thin">Your Top</span>
+            <span class="sr-title-bold">Matches.</span>
+          </h2>
+          <div class="sr-rule"></div>
+          <p class="sr-subtitle">Curated for <strong>${this.selectedVibe}</strong> vibe · <strong>${this.selectedFoodChoice}</strong> craving</p>
+          <button class="sr-close" onclick="app.closeModal()">✕</button>
+        </div>
+
+        <!-- Results list -->
+        <div class="sr-results">
+          ${results.map((item, i) => {
       const matchPercent = Math.min(99, 85 + (item.mlScore % 14));
       return `
-              <div class="reco-card-premium fade-in" onclick="app.showFoodModal(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}')">
-                <div class="reco-match-badge">${matchPercent}% Match</div>
-                <img src="${item.image}" alt="${item.name}" class="reco-img-premium">
-                <div class="reco-content-premium">
-                  <h3 class="reco-item-name">${item.name}</h3>
-                  <p class="reco-item-rest">at ${item.restaurantName}</p>
-                  <div class="reco-footer-premium">
-                    <span class="reco-price">${item.price}</span>
-                    <span class="reco-reason">✨ Perfect Choice</span>
+              <div class="sr-result-card" onclick="app.showFoodModal(${item.restaurantId}, '${item.name.replace(/'/g, "\\'")}')">
+                <div class="sr-result-rank">${String(i + 1).padStart(2, '0')}</div>
+                <img src="${item.image}" alt="${item.name}" class="sr-result-img">
+                <div class="sr-result-info">
+                  <h3 class="sr-result-name">${item.name}</h3>
+                  <p class="sr-result-rest">at ${item.restaurantName}</p>
+                  <div class="sr-result-meta">
+                    <span class="sr-result-price">${item.price}</span>
+                    <span class="sr-result-match">${matchPercent}% match</span>
                   </div>
                 </div>
+                <div class="sr-result-arrow">→</div>
               </div>
             `;
     }).join('')}
         </div>
-        
-        <button class="secondary-btn-premium" style="margin-top: 1.5rem; width: 100%;" onclick="app.closeModal()">Close & Discover More</button>
+
+        <button class="sr-cta sr-cta-outline" onclick="app.closeModal()">
+          Close & Explore
+          <span class="sr-cta-arrow">→</span>
+        </button>
+
       </div>
     `;
   },
@@ -2290,8 +2319,26 @@ const app = {
   <div class="about-elite-wrapper">
         <section class="about-hero-elite">
           <div class="hero-glow-blob"></div>
-          <h1 class="hero-title-elite">Kerala's <span class="highlight-text">Culinary Compass</span></h1>
-          <p class="hero-subtitle-elite">Connecting the world to the authentic soul of God's Own Country.</p>
+
+          <!-- Eyebrow label -->
+          <div class="about-eyebrow">
+            <span class="about-eyebrow-line"></span>
+            <span class="about-eyebrow-text">Food Vista · About Us</span>
+            <span class="about-eyebrow-line"></span>
+          </div>
+
+          <!-- Two-weight title -->
+          <h1 class="about-title-minimal">
+            <span class="about-t-thin">Kerala's</span>
+            <span class="about-t-bold">Culinary</span>
+            <span class="about-t-accent">Compass.</span>
+          </h1>
+
+          <!-- Amber rule -->
+          <div class="about-hero-rule"></div>
+
+          <p class="about-subtitle-minimal">Connecting the world to the authentic soul of God's Own Country.</p>
+
           <div class="scroll-indicator-elite">
             <span>Explore Our Soul</span>
             <div class="mouse-icon"></div>
@@ -2307,8 +2354,12 @@ const app = {
               </div>
             </div>
             <div class="story-content-elite">
-              <span class="section-tag-elite">The Origin</span>
-              <h2 class="section-title-elite">A Journey of Taste</h2>
+              <!-- Minimalist section tag -->
+              <div class="about-section-eyebrow">
+                <span class="about-eyebrow-line"></span>
+                <span class="about-eyebrow-text">The Origin</span>
+              </div>
+              <h2 class="about-section-title">A Journey of Taste</h2>
               <p class="story-paragraph-elite">FOOD VISTA was born from a simple college epiphany: that Kerala's culinary map is as vast as its backwaters, yet undocumented in its fullest glory.</p>
               <p class="story-paragraph-elite">We didn't just build a directory; we crafted a tribute to the mothers, the local chefs, and the hidden gems across Kochi, Kozhikode, and Thrissur. We are here to ensure that every flavor of Kerala finds its home in your heart.</p>
               <div class="stats-grid-elite">
@@ -2324,6 +2375,7 @@ const app = {
             </div>
           </div>
         </section>
+
 
         <section class="visionaries-hub-elite">
           <div class="hub-header-elite">
