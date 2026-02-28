@@ -556,7 +556,7 @@ const adminPortal = {
                                 <td><b>${place.name}</b></td>
                                 <td id="rest-list-${place.id}">Loading...</td>
                                 <td>
-                                    <button class="nav-btn" title="Edit Place">✏️</button>
+                                    <button class="nav-btn" title="Edit Place" onclick="adminPortal.editPlace(${place.id})">✏️</button>
                                 </td>
                             </tr>
                         `).join('')}
@@ -855,6 +855,71 @@ const adminPortal = {
         } catch (err) {
             console.error(err);
             this.showToast('❌ Error: ' + err.message);
+        }
+    },
+
+    async editPlace(placeId) {
+        try {
+            let place;
+            // 1. Try fetching from backend
+            try {
+                // Assuming an endpoint exists or just uses global data. 
+                // Since places are already in window.restaurantData.places from fetchMenuData
+                place = window.restaurantData.places.find(p => p.id === placeId);
+            } catch (e) {
+                console.warn("Place fetch failed");
+            }
+
+            if (!place) throw new Error('Place not found');
+
+            document.getElementById('editPlaceId').value = place.id;
+            document.getElementById('placeName').value = place.name;
+            document.getElementById('placeDesc').value = place.description || '';
+            document.getElementById('placeImage').value = place.image || '';
+
+            document.getElementById('placeModal').classList.remove('hidden');
+        } catch (err) {
+            this.showToast('Failed to load district details');
+        }
+    },
+
+    async savePlace(e) {
+        e.preventDefault();
+        const id = document.getElementById('editPlaceId').value;
+        const data = {
+            name: document.getElementById('placeName').value,
+            description: document.getElementById('placeDesc').value,
+            image: document.getElementById('placeImage').value
+        };
+
+        try {
+            const resp = await fetch(`https://restaurant-99en.onrender.com/api/admin/places/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (resp.ok) {
+                this.showToast('District Updated! ✅');
+                this.closeModals();
+                this.fetchMenuData(); // Refresh table
+            } else {
+                throw new Error('Update failed');
+            }
+        } catch (err) {
+            console.warn('Backend update failed, updating local state only');
+            // Local fallback for demo/offline
+            if (window.restaurantData && window.restaurantData.places) {
+                const place = window.restaurantData.places.find(p => p.id == id);
+                if (place) {
+                    place.name = data.name;
+                    place.description = data.description;
+                    place.image = data.image;
+                    this.showToast('Local state updated! ⚠️');
+                    this.closeModals();
+                    this.renderMenuManagement(window.restaurantData.places);
+                }
+            }
         }
     },
 

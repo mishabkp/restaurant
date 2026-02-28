@@ -437,6 +437,32 @@
         </div>
     </div>
 
+    <!-- District / Place Management Modal -->
+    <div id="placeModal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <h2 class="section-title">District Details</h2>
+            <form id="placeForm" onsubmit="adminPortal.savePlace(event)">
+                <input type="hidden" id="editPlaceId">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>District Name</label>
+                    <input type="text" id="placeName" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Description</label>
+                    <textarea id="placeDesc" class="form-control" style="height: 80px;" required></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>District Image URL</label>
+                    <input type="text" id="placeImage" class="form-control" required>
+                </div>
+                <button type="submit" class="checkout-btn">Save District</button>
+                <button type="button" class="logout-btn"
+                    style="margin-top: 1rem; width: 100%; border: none; background: none; color: var(--text-muted);"
+                    onclick="adminPortal.closeModals()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Food Item Management Modal -->
     <div id="foodModal" class="modal-overlay hidden">
         <div class="modal-content" style="max-width: 800px;">
