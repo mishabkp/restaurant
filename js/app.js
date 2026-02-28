@@ -1759,6 +1759,7 @@ const app = {
         </div>
         <div class="review-stars">${'⭐'.repeat(r.rating)}</div>
         <p class="review-comment">${r.comment}</p>
+        ${r.image ? `<img src="${this.apiBaseUrl}/${r.image}" class="rev-image" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: 12px; margin-top: 1rem; cursor: pointer;" onclick="window.open(this.src)">` : ''}
       </div>
     `).join('');
   },
@@ -1782,6 +1783,8 @@ const app = {
       </div>
 
       <div class="checkout-form">
+        <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.8rem;">Add a photo (optional)</label>
+        <input type="file" id="reviewImage" accept="image/*" class="search-input" style="padding: 0.5rem; margin-bottom: 1rem; border: 1px dashed var(--card-border);">
         <textarea id="reviewComment" class="search-input" style="padding-left: 1rem; height: 120px; padding-top: 1rem;" placeholder="Tell us what you liked or disliked..."></textarea>
         <button class="checkout-btn" onclick="app.submitReview(${restaurantId})">Publish Review</button>
       </div>
@@ -1801,16 +1804,22 @@ const app = {
     const rating = parseInt(ratingEl.value);
     const userData = JSON.parse(localStorage.getItem('user')) || { name: 'Anonymous' };
 
+    const imageFile = document.getElementById('reviewImage').files[0];
+
+    const formData = new FormData();
+    formData.append('restaurantId', restaurantId);
+    formData.append('userName', userData.name);
+    formData.append('rating', rating);
+    formData.append('comment', comment);
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
     try {
       const response = await fetch(`${this.apiBaseUrl}/api/reviews`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          restaurantId,
-          userName: userData.name,
-          rating,
-          comment
-        })
+        // Note: No 'Content-Type' header here, fetch sets it for FormData
+        body: formData
       });
 
       if (response.ok) {
@@ -2455,9 +2464,23 @@ const app = {
     const content = `
   <div class="blog-elite-wrapper">
         <section class="blog-hero-elite">
-          <span class="section-tag-elite">Kerala Food Stories</span>
-          <h1 class="hero-title-elite">Culinary <span class="highlight-text">Chronicles</span></h1>
-          <p class="hero-subtitle-elite">Deep dives into the flavors, traditions, and legends of God's Own Country.</p>
+          <!-- Eyebrow label -->
+          <div class="blog-eyebrow">
+            <span class="blog-eyebrow-line"></span>
+            <span class="blog-eyebrow-text">Food Vista · Stories</span>
+            <span class="blog-eyebrow-line"></span>
+          </div>
+
+          <!-- Two-weight title -->
+          <h1 class="blog-title-minimal">
+            <span class="blog-t-thin">Culinary</span>
+            <span class="blog-t-bold">Chronicles.</span>
+          </h1>
+
+          <!-- Amber rule -->
+          <div class="blog-hero-rule"></div>
+
+          <p class="blog-subtitle-minimal">Deep dives into the flavors, traditions, and legends of God's Own Country.</p>
         </section>
 
         <div class="blog-grid-elite">
@@ -2545,9 +2568,23 @@ const app = {
     const content = `
   <div class="gallery-elite-wrapper">
         <section class="gallery-hero-elite">
-          <span class="section-tag-elite">Visual Discovery</span>
-          <h1 class="hero-title-elite">Hidden <span class="highlight-text">Gems</span></h1>
-          <p class="hero-subtitle-elite">A visual journey through Kerala's most authentic and undocumented food spots.</p>
+          <!-- Eyebrow label -->
+          <div class="gallery-eyebrow">
+            <span class="gallery-eyebrow-line"></span>
+            <span class="gallery-eyebrow-text">Visual Discovery</span>
+            <span class="gallery-eyebrow-line"></span>
+          </div>
+
+          <!-- Two-weight title -->
+          <h1 class="gallery-title-minimal">
+            <span class="gallery-t-thin">Hidden</span>
+            <span class="gallery-t-bold">Gems.</span>
+          </h1>
+
+          <!-- Amber rule -->
+          <div class="gallery-hero-rule"></div>
+
+          <p class="gallery-subtitle-minimal">A visual journey through Kerala's most authentic and undocumented food spots.</p>
         </section>
 
         <div class="gallery-grid-elite">

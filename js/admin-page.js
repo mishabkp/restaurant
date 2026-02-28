@@ -903,6 +903,7 @@ const adminPortal = {
                                 <th>User</th>
                                 <th>Rating</th>
                                 <th>Comment</th>
+                                <th>Photo</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -912,6 +913,9 @@ const adminPortal = {
                                     <td>${rev.userName}</td>
                                     <td>${'⭐'.repeat(rev.rating)}</td>
                                     <td style="max-width: 300px;">${rev.comment}</td>
+                                    <td>
+                                        ${rev.image ? `<img src="https://restaurant-99en.onrender.com/${rev.image}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; cursor: zoom-in;" onclick="window.open(this.src)">` : '-'}
+                                    </td>
                                     <td>
                                         <button class="logout-btn" onclick="adminPortal.deleteReview('${rev._id}')" style="padding: 0.3rem 0.6rem; font-size: 0.7rem;">Delete</button>
                                     </td>
