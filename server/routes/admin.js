@@ -13,6 +13,7 @@ const isAdmin = async (req, res, next) => {
 const Restaurant = require('../models/Restaurant');
 const User = require('../models/User');
 const Review = require('../models/Review');
+const Place = require('../models/Place');
 
 // @route   GET /api/admin/orders
 // @desc    Get all orders for all users
@@ -124,7 +125,7 @@ router.delete('/reviews/:id', isAdmin, async (req, res) => {
 router.post('/places/:placeId/link-restaurant', isAdmin, async (req, res) => {
     try {
         const { restaurantId } = req.body;
-        const place = await Place.findOne({ id: req.params.placeId });
+        const place = await Place.findOne({ id: Number(req.params.placeId) });
         if (!place) return res.status(404).json({ msg: 'Place not found' });
 
         if (!place.restaurants.includes(Number(restaurantId))) {
@@ -142,7 +143,7 @@ router.post('/places/:placeId/link-restaurant', isAdmin, async (req, res) => {
 // @desc    Update a place
 router.put('/places/:id', isAdmin, async (req, res) => {
     try {
-        const place = await Place.findOneAndUpdate({ id: req.params.id }, req.body, { new: true });
+        const place = await Place.findOneAndUpdate({ id: Number(req.params.id) }, req.body, { new: true });
         if (!place) return res.status(404).json({ msg: 'Place not found' });
         res.json(place);
     } catch (err) {
