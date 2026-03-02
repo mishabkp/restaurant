@@ -185,7 +185,7 @@ const app = {
           const localIds = localPlaces.map(p => p.id);
 
           data.forEach(p => {
-            const existingIndex = localIds.indexOf(p.id);
+            const existingIndex = localPlaces.findIndex(lp => lp.id == p.id);
             if (existingIndex !== -1) {
               // ALWAYS prioritize backend data if it exists to reflect admin changes
               localPlaces[existingIndex] = p;

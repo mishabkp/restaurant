@@ -1,6 +1,9 @@
 const adminPortal = {
     isLoggedIn: false,
     orders: [],
+    apiBaseUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:5000'
+        : 'https://restaurant-99en.onrender.com',
 
     init() {
         const admin = localStorage.getItem('adminUser');
@@ -43,8 +46,8 @@ const adminPortal = {
 
         try {
             const [storiesResp, galleryResp] = await Promise.all([
-                fetch('https://restaurant-99en.onrender.com/api/discovery/stories'),
-                fetch('https://restaurant-99en.onrender.com/api/discovery/gallery')
+                fetch(`${this.apiBaseUrl}/api/discovery/stories`),
+                fetch(`${this.apiBaseUrl}/api/discovery/gallery`)
             ]);
             const stories = await storiesResp.json();
             const gallery = await galleryResp.json();
@@ -101,7 +104,7 @@ const adminPortal = {
 
     async editStory(id) {
         try {
-            const resp = await fetch(`https://restaurant-99en.onrender.com/api/discovery/stories/${id}`);
+            const resp = await fetch(`${this.apiBaseUrl}/api/discovery/stories/${id}`);
             let story;
             if (resp.ok) {
                 story = await resp.json();
@@ -146,7 +149,7 @@ const adminPortal = {
         body.innerHTML = '<tr><td colspan="4">Loading items...</td></tr>';
 
         try {
-            const resp = await fetch(`https://restaurant-99en.onrender.com/api/restaurants/${restaurantId}`);
+            const resp = await fetch(`${this.apiBaseUrl}/api/restaurants/${restaurantId}`);
             if (resp.ok) {
                 const rest = await resp.json();
                 title.innerText = `Manage Rooms: ${rest.name}`;
@@ -189,7 +192,7 @@ const adminPortal = {
         try {
             let item;
             try {
-                const resp = await fetch(`https://restaurant-99en.onrender.com/api/restaurants/${this.currentManagingRest}`);
+                const resp = await fetch(`${this.apiBaseUrl}/api/restaurants/${this.currentManagingRest}`);
                 const rest = await resp.json();
                 item = rest.rooms[index];
             } catch (e) {
@@ -222,12 +225,12 @@ const adminPortal = {
     async deleteRoom(index) {
         if (!confirm('Delete this room?')) return;
         try {
-            const resp = await fetch(`https://restaurant-99en.onrender.com/api/restaurants/${this.currentManagingRest}`);
+            const resp = await fetch(`${this.apiBaseUrl}/api/restaurants/${this.currentManagingRest}`);
             const rest = await resp.json();
 
             rest.rooms.splice(index, 1);
 
-            const updateResp = await fetch(`https://restaurant-99en.onrender.com/api/admin/restaurants/${this.currentManagingRest}`, {
+            const updateResp = await fetch(`${this.apiBaseUrl}/api/admin/restaurants/${this.currentManagingRest}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ rooms: rest.rooms })
@@ -263,7 +266,7 @@ const adminPortal = {
         const editIndex = document.getElementById('editRoomIndex').value;
 
         try {
-            const resp = await fetch(`https://restaurant-99en.onrender.com/api/restaurants/${this.currentManagingRest}`);
+            const resp = await fetch(`${this.apiBaseUrl}/api/restaurants/${this.currentManagingRest}`);
             const rest = await resp.json();
 
             if (!rest.rooms) rest.rooms = [];
@@ -274,7 +277,7 @@ const adminPortal = {
                 rest.rooms.push(roomData);
             }
 
-            const updateResp = await fetch(`https://restaurant-99en.onrender.com/api/admin/restaurants/${this.currentManagingRest}`, {
+            const updateResp = await fetch(`${this.apiBaseUrl}/api/admin/restaurants/${this.currentManagingRest}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ rooms: rest.rooms })
@@ -313,8 +316,8 @@ const adminPortal = {
 
         try {
             const url = editId
-                ? `https://restaurant-99en.onrender.com/api/discovery/stories/${editId}`
-                : 'https://restaurant-99en.onrender.com/api/discovery/stories';
+                ? `${this.apiBaseUrl}/api/discovery/stories/${id}`
+                : `${this.apiBaseUrl}/api/discovery/stories`;
             const resp = await fetch(url, {
                 method: editId ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -335,7 +338,7 @@ const adminPortal = {
     async deleteStory(id) {
         if (!confirm('Delete this story?')) return;
         try {
-            const resp = await fetch(`https://restaurant-99en.onrender.com/api/discovery/stories/${id}`, { method: 'DELETE' });
+            const resp = await fetch(`${this.apiBaseUrl}/api/discovery/stories/${id}`, { method: 'DELETE' });
             if (resp.ok) {
                 this.showToast('Story deleted! 🗑️');
                 this.fetchDiscoveryData();
@@ -354,7 +357,7 @@ const adminPortal = {
 
     async editGalleryItem(id) {
         try {
-            const resp = await fetch('https://restaurant-99en.onrender.com/api/discovery/gallery');
+            const resp = await fetch(`${this.apiBaseUrl}/api/discovery/gallery`);
             if (resp.ok) {
                 const items = await resp.json();
                 const item = items.find(g => g.id === id);
@@ -399,8 +402,8 @@ const adminPortal = {
 
         try {
             const url = editId
-                ? `https://restaurant-99en.onrender.com/api/discovery/gallery/${editId}`
-                : 'https://restaurant-99en.onrender.com/api/discovery/gallery';
+                ? `${this.apiBaseUrl}/api/discovery/gallery/${id}`
+                : `${this.apiBaseUrl}/api/discovery/gallery`;
             const resp = await fetch(url, {
                 method: editId ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -421,7 +424,7 @@ const adminPortal = {
     async deleteGalleryItem(id) {
         if (!confirm('Delete this gallery item?')) return;
         try {
-            const resp = await fetch(`https://restaurant-99en.onrender.com/api/discovery/gallery/${id}`, { method: 'DELETE' });
+            const resp = await fetch(`${this.apiBaseUrl}/api/discovery/gallery/${id}`, { method: 'DELETE' });
             if (resp.ok) {
                 this.showToast('Gallery item deleted! 🗑️');
                 this.fetchDiscoveryData();
@@ -434,13 +437,13 @@ const adminPortal = {
 
     async loadDashboard() {
         try {
-            const statsResp = await fetch('https://restaurant-99en.onrender.com/api/admin/stats');
+            const statsResp = await fetch(`${this.apiBaseUrl}/api/admin/stats`);
             const stats = await statsResp.json();
 
-            const ordersResp = await fetch('https://restaurant-99en.onrender.com/api/admin/orders');
+            const ordersResp = await fetch(`${this.apiBaseUrl}/api/admin/orders`);
             const orders = await ordersResp.json();
 
-            const placesResp = await fetch('https://restaurant-99en.onrender.com/api/restaurants/places');
+            const placesResp = await fetch(`${this.apiBaseUrl}/api/restaurants/places`);
             const places = await placesResp.json();
 
             // Update Stat Cards
@@ -517,7 +520,7 @@ const adminPortal = {
         const menuContent = document.getElementById('menuContent');
         menuContent.innerHTML = '<div class="loading-state">Loading restaurants...</div>';
         try {
-            const response = await fetch('https://restaurant-99en.onrender.com/api/restaurants/places');
+            const response = await fetch(`${this.apiBaseUrl}/api/restaurants/places`);
             if (response.ok) {
                 const places = await response.json();
                 window.restaurantData = { places: places }; // Update global data for sync
@@ -574,7 +577,7 @@ const adminPortal = {
     async loadRestaurantsForPlace(placeId) {
         const listEl = document.getElementById(`rest-list-${placeId}`);
         try {
-            const resp = await fetch(`https://restaurant-99en.onrender.com/api/restaurants/place/${placeId}`);
+            const resp = await fetch(`${this.apiBaseUrl}/api/restaurants/place/${placeId}`);
             if (resp.ok) {
                 const rests = await resp.json();
                 this.renderRestaurantsList(listEl, rests);
@@ -613,7 +616,7 @@ const adminPortal = {
         try {
             let rest;
             try {
-                const resp = await fetch(`https://restaurant-99en.onrender.com/api/restaurants/${restaurantId}`);
+                const resp = await fetch(`${this.apiBaseUrl}/api/restaurants/${restaurantId}`);
                 rest = await resp.json();
             } catch (e) {
                 // Fallback to local
@@ -648,7 +651,7 @@ const adminPortal = {
         body.innerHTML = '<tr><td colspan="4">Loading items...</td></tr>';
 
         try {
-            const resp = await fetch(`https://restaurant-99en.onrender.com/api/restaurants/${restaurantId}`);
+            const resp = await fetch(`${this.apiBaseUrl}/api/restaurants/${restaurantId}`);
             if (resp.ok) {
                 const rest = await resp.json();
                 title.innerText = `Manage Menu: ${rest.name}`;
@@ -691,7 +694,7 @@ const adminPortal = {
         try {
             let item;
             try {
-                const resp = await fetch(`https://restaurant-99en.onrender.com/api/restaurants/${this.currentManagingRest}`);
+                const resp = await fetch(`${this.apiBaseUrl}/api/restaurants/${this.currentManagingRest}`);
                 const rest = await resp.json();
                 item = rest.foodItems[index];
             } catch (e) {
@@ -729,12 +732,12 @@ const adminPortal = {
     async deleteFood(index) {
         if (!confirm('Delete this food item?')) return;
         try {
-            const resp = await fetch(`https://restaurant-99en.onrender.com/api/restaurants/${this.currentManagingRest}`);
+            const resp = await fetch(`${this.apiBaseUrl}/api/restaurants/${this.currentManagingRest}`);
             const rest = await resp.json();
 
             rest.foodItems.splice(index, 1);
 
-            const updateResp = await fetch(`https://restaurant-99en.onrender.com/api/admin/restaurants/${this.currentManagingRest}`, {
+            const updateResp = await fetch(`${this.apiBaseUrl}/api/admin/restaurants/${this.currentManagingRest}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ foodItems: rest.foodItems })
@@ -771,7 +774,7 @@ const adminPortal = {
         const editIndex = document.getElementById('editFoodIndex').value;
 
         try {
-            const resp = await fetch(`https://restaurant-99en.onrender.com/api/restaurants/${this.currentManagingRest}`);
+            const resp = await fetch(`${this.apiBaseUrl}/api/restaurants/${this.currentManagingRest}`);
             const rest = await resp.json();
 
             if (editIndex !== '') {
@@ -782,7 +785,7 @@ const adminPortal = {
                 rest.foodItems.push(foodData);
             }
 
-            const updateResp = await fetch(`https://restaurant-99en.onrender.com/api/admin/restaurants/${this.currentManagingRest}`, {
+            const updateResp = await fetch(`${this.apiBaseUrl}/api/admin/restaurants/${this.currentManagingRest}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ foodItems: rest.foodItems })
@@ -828,8 +831,8 @@ const adminPortal = {
         try {
             // 1. Save/Update Restaurant
             const restUrl = isEdit
-                ? `https://restaurant-99en.onrender.com/api/admin/restaurants/${data.id}`
-                : 'https://restaurant-99en.onrender.com/api/admin/restaurants';
+                ? `${this.apiBaseUrl}/api/admin/restaurants/${data.id}`
+                : `${this.apiBaseUrl}/api/admin/restaurants`;
 
             const restResp = await fetch(restUrl, {
                 method: isEdit ? 'PUT' : 'POST',
@@ -841,7 +844,7 @@ const adminPortal = {
 
             // 2. If it's a new restaurant, we MUST link it to a Place
             if (!isEdit && placeId) {
-                const linkResp = await fetch(`https://restaurant-99en.onrender.com/api/admin/places/${placeId}/link-restaurant`, {
+                const linkResp = await fetch(`${this.apiBaseUrl}/api/admin/places/${placeId}/link-restaurant`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ restaurantId: data.id })
@@ -893,7 +896,7 @@ const adminPortal = {
         };
 
         try {
-            const resp = await fetch(`https://restaurant-99en.onrender.com/api/admin/places/${id}`, {
+            const resp = await fetch(`${this.apiBaseUrl}/api/admin/places/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
@@ -931,7 +934,7 @@ const adminPortal = {
         const content = document.getElementById('analyticsContent');
         content.innerHTML = '<div class="loading-state">Calculating stats...</div>';
         try {
-            const resp = await fetch('https://restaurant-99en.onrender.com/api/admin/stats');
+            const resp = await fetch(`${this.apiBaseUrl}/api/admin/stats`);
             const stats = await resp.json();
             content.innerHTML = `
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
@@ -958,7 +961,7 @@ const adminPortal = {
         const content = document.getElementById('reviewsContent');
         content.innerHTML = '<div class="loading-state">Loading reviews...</div>';
         try {
-            const resp = await fetch('https://restaurant-99en.onrender.com/api/admin/reviews');
+            const resp = await fetch(`${this.apiBaseUrl}/api/admin/reviews`);
             const reviews = await resp.json();
             content.innerHTML = `
                 <div class="table-responsive" style="margin-top: 2rem;">
@@ -979,7 +982,7 @@ const adminPortal = {
                                     <td>${'⭐'.repeat(rev.rating)}</td>
                                     <td style="max-width: 300px;">${rev.comment}</td>
                                     <td>
-                                        ${rev.image ? `<img src="https://restaurant-99en.onrender.com/${rev.image}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; cursor: zoom-in;" onclick="window.open(this.src)">` : '-'}
+                                        ${rev.image ? `<img src="${this.apiBaseUrl}/${rev.image}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; cursor: zoom-in;" onclick="window.open(this.src)">` : '-'}
                                     </td>
                                     <td>
                                         <button class="logout-btn" onclick="adminPortal.deleteReview('${rev._id}')" style="padding: 0.3rem 0.6rem; font-size: 0.7rem;">Delete</button>
@@ -998,7 +1001,7 @@ const adminPortal = {
     async deleteReview(id) {
         if (!confirm('Are you sure you want to delete this review?')) return;
         try {
-            const resp = await fetch(`https://restaurant-99en.onrender.com/api/admin/reviews/${id}`, { method: 'DELETE' });
+            const resp = await fetch(`${this.apiBaseUrl}/api/admin/reviews/${id}`, { method: 'DELETE' });
             if (resp.ok) {
                 this.showToast('Review deleted! 🗑️');
                 this.fetchReviews();
@@ -1012,7 +1015,7 @@ const adminPortal = {
         const content = document.getElementById('usersContent');
         content.innerHTML = '<div class="loading-state">Loading users...</div>';
         try {
-            const resp = await fetch('https://restaurant-99en.onrender.com/api/admin/users');
+            const resp = await fetch(`${this.apiBaseUrl}/api/admin/users`);
             const users = await resp.json();
             content.innerHTML = `
                 <div class="table-responsive" style="margin-top: 2rem;">
@@ -1049,7 +1052,7 @@ const adminPortal = {
         const password = document.getElementById('adminPass').value;
 
         try {
-            const response = await fetch('https://restaurant-99en.onrender.com/api/auth/login', {
+            const response = await fetch(`${this.apiBaseUrl}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -1082,7 +1085,7 @@ const adminPortal = {
 
     async fetchOrders() {
         try {
-            const response = await fetch('https://restaurant-99en.onrender.com/api/admin/orders');
+            const response = await fetch(`${this.apiBaseUrl}/api/admin/orders`);
             const data = await response.json();
             this.orders = data;
             this.renderOrders();
@@ -1136,7 +1139,7 @@ const adminPortal = {
     async updateStatus(orderId, status) {
         if (!status) return;
         try {
-            const response = await fetch(`https://restaurant-99en.onrender.com/api/admin/orders/${orderId}/status`, {
+            const response = await fetch(`${this.apiBaseUrl}/api/admin/orders/${orderId}/status`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status })
