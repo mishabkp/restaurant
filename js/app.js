@@ -187,12 +187,8 @@ const app = {
           data.forEach(p => {
             const existingIndex = localIds.indexOf(p.id);
             if (existingIndex !== -1) {
-              // Update existing place if backend has it (optional: depends on trust level)
-              // For now, let's prioritize local if it's already there to preserve manual edits
-              // But we can update restaurants if they are empty
-              if (localPlaces[existingIndex].restaurants.length === 0) {
-                localPlaces[existingIndex] = p;
-              }
+              // ALWAYS prioritize backend data if it exists to reflect admin changes
+              localPlaces[existingIndex] = p;
             } else {
               localPlaces.push(p);
             }
