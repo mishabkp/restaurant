@@ -154,7 +154,7 @@ const app = {
     // Fetch live data in background
     this.fetchInitialData().then(() => {
       // Re-handle route if data loaded successfully to show updated live content
-      if (this.currentView === 'home' || this.currentView === 'place') {
+      if (this.currentView === 'home' || this.currentView === 'place' || this.currentView === 'restaurant') {
         this.handleRoute();
       }
     });

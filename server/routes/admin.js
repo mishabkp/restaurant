@@ -138,4 +138,17 @@ router.post('/places/:placeId/link-restaurant', isAdmin, async (req, res) => {
     }
 });
 
+// @route   PUT /api/admin/places/:id
+// @desc    Update a place
+router.put('/places/:id', isAdmin, async (req, res) => {
+    try {
+        const place = await Place.findOneAndUpdate({ id: req.params.id }, req.body, { new: true });
+        if (!place) return res.status(404).json({ msg: 'Place not found' });
+        res.json(place);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
 module.exports = router;
