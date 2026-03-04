@@ -139,10 +139,36 @@ router.post('/places/:placeId/link-restaurant', isAdmin, async (req, res) => {
     }
 });
 
-// @route   PUT /api/admin/places/:id
-// @desc    Update a place
+// @route   GET /api/admin/test
+// @desc    Test admin route availability
+router.get('/test', isAdmin, (req, res) => {
+    res.json({ msg: 'Admin routes are active! ✅', timestamp: new Date().toISOString() });
+});
+
+// @route   POST /api/admin/places/:id/update
+// @desc    Update a place using POST (avoiding potential PUT issues)
+router.post('/places/:id/update', isAdmin, async (req, res) => {
+    console.log(`📡 ADMIN: Updating place ${req.params.id} via POST`, req.body);
+    try {
+        const placeId = Number(req.params.id);
+        const place = await Place.findOneAndUpdate({ id: placeId }, req.body, { new: true });
+
+        if (!place) {
+            console.warn(`⚠️ ADMIN: Place ${placeId} not found`);
+            return res.status(404).json({ msg: 'Place not found' });
+        }
+
+        console.log(`✅ ADMIN: Place ${placeId} updated successfully`);
+        res.json(place);
+    } catch (err) {
+        console.error('❌ ADMIN: Update error:', err);
+        res.status(500).send('Server Error');
+    }
+});
+
+// Keep original PUT route for compatibility but prefer POST
 router.put('/places/:id', isAdmin, async (req, res) => {
-    console.log(`📡 ADMIN: Updating place ${req.params.id}`, req.body);
+    console.log(`📡 ADMIN: Updating place ${req.params.id} via PUT`, req.body);
     try {
         const placeId = Number(req.params.id);
         const place = await Place.findOneAndUpdate({ id: placeId }, req.body, { new: true });

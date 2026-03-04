@@ -896,8 +896,8 @@ const adminPortal = {
         };
 
         try {
-            const resp = await fetch(`${this.apiBaseUrl}/api/admin/places/${id}`, {
-                method: 'PUT',
+            const resp = await fetch(`${this.apiBaseUrl}/api/admin/places/${id}/update`, {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
