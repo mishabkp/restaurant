@@ -187,8 +187,15 @@ const app = {
           data.forEach(p => {
             const existingIndex = localPlaces.findIndex(lp => lp.id == p.id);
             if (existingIndex !== -1) {
-              // ALWAYS prioritize backend data if it exists to reflect admin changes
-              localPlaces[existingIndex] = p;
+              // ALWAYS prioritize backend data but preserve critical UI elements if missing
+              const existing = localPlaces[existingIndex];
+              localPlaces[existingIndex] = {
+                ...existing,
+                ...p,
+                coords: (p.coords && p.coords.length === 2) ? p.coords : existing.coords,
+                image: p.image || existing.image,
+                description: p.description || existing.description
+              };
             } else {
               localPlaces.push(p);
             }
