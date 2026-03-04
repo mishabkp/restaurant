@@ -142,12 +142,20 @@ router.post('/places/:placeId/link-restaurant', isAdmin, async (req, res) => {
 // @route   PUT /api/admin/places/:id
 // @desc    Update a place
 router.put('/places/:id', isAdmin, async (req, res) => {
+    console.log(`📡 ADMIN: Updating place ${req.params.id}`, req.body);
     try {
-        const place = await Place.findOneAndUpdate({ id: Number(req.params.id) }, req.body, { new: true });
-        if (!place) return res.status(404).json({ msg: 'Place not found' });
+        const placeId = Number(req.params.id);
+        const place = await Place.findOneAndUpdate({ id: placeId }, req.body, { new: true });
+
+        if (!place) {
+            console.warn(`⚠️ ADMIN: Place ${placeId} not found`);
+            return res.status(404).json({ msg: 'Place not found' });
+        }
+
+        console.log(`✅ ADMIN: Place ${placeId} updated successfully`);
         res.json(place);
     } catch (err) {
-        console.error(err);
+        console.error('❌ ADMIN: Update error:', err);
         res.status(500).send('Server Error');
     }
 });
