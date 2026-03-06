@@ -30,8 +30,8 @@ app.use('/api/discovery', require('./routes/discovery'));
 app.get('/', (req, res) => {
     res.json({
         msg: 'Restaurant Navigator API is running...',
-        version: '1.2.0',
-        build_id: 'BUILD_DEBUG_V4',
+        version: '1.2.1',
+        build_id: 'BUILD_DEBUG_V5',
         deployment_time: new Date().toISOString()
     });
 });

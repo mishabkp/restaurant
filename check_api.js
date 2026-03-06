@@ -8,12 +8,12 @@ async function verify() {
     const rootData = await rootResp.json();
     console.log('📊 Server Info:', rootData);
 
-    if (rootData.build_id !== 'BUILD_DEBUG_V4') {
-        console.warn('⌛ Latest build (BUILD_DEBUG_V4) is not live yet. Retrying in 30s...');
+    if (rootData.build_id !== 'BUILD_DEBUG_V5') {
+        console.warn('⌛ Latest build (BUILD_DEBUG_V5) is not live yet. Retrying in 30s...');
         return;
     }
 
-    console.log('✅ BUILD_DEBUG_V4 is live! Proceeding with update...');
+    console.log('✅ BUILD_DEBUG_V5 is live! Proceeding with update...');
 
     const updateUrl = `${apiBaseUrl}/api/admin/places/${placeId}/update`;
     const updateData = {
