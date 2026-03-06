@@ -316,7 +316,7 @@ const adminPortal = {
 
         try {
             const url = editId
-                ? `${this.apiBaseUrl}/api/discovery/stories/${id}`
+                ? `${this.apiBaseUrl}/api/discovery/stories/${editId}`
                 : `${this.apiBaseUrl}/api/discovery/stories`;
             const resp = await fetch(url, {
                 method: editId ? 'PUT' : 'POST',
@@ -402,7 +402,7 @@ const adminPortal = {
 
         try {
             const url = editId
-                ? `${this.apiBaseUrl}/api/discovery/gallery/${id}`
+                ? `${this.apiBaseUrl}/api/discovery/gallery/${editId}`
                 : `${this.apiBaseUrl}/api/discovery/gallery`;
             const resp = await fetch(url, {
                 method: editId ? 'PUT' : 'POST',
@@ -549,6 +549,7 @@ const adminPortal = {
                     <thead>
                         <tr>
                             <th>Location</th>
+                            <th>Image</th>
                             <th>Restaurants</th>
                             <th>Action</th>
                         </tr>
@@ -557,6 +558,7 @@ const adminPortal = {
                         ${places.map(place => `
                             <tr>
                                 <td><b>${place.name}</b></td>
+                                <td><img src="${place.image}" style="width: 50px; height: 35px; object-fit: cover; border-radius: 4px;"></td>
                                 <td id="rest-list-${place.id}">Loading...</td>
                                 <td>
                                     <button class="nav-btn" title="Edit Place" onclick="adminPortal.editPlace(${place.id})">✏️</button>
@@ -602,7 +604,10 @@ const adminPortal = {
     renderRestaurantsList(container, rests) {
         container.innerHTML = rests.map(r => `
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: rgba(255,255,255,0.02); margin-bottom: 0.5rem; border-radius: 5px;">
-                <span>${r.name} (${r.cuisine})</span>
+                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                    <img src="${r.image}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                    <span>${r.name} (${r.cuisine})</span>
+                </div>
                 <div style="display: flex; gap: 0.5rem;">
                     <button class="nav-btn" onclick="adminPortal.editRestaurant(${r.id})" style="font-size: 0.7rem;">✏️ Edit</button>
                     <button class="nav-btn" onclick="adminPortal.manageMenu(${r.id})" style="font-size: 0.7rem;">🍴 Menu</button>
@@ -679,7 +684,15 @@ const adminPortal = {
         const body = document.getElementById('foodItemsBody');
         body.innerHTML = items.map((item, idx) => `
             <tr>
-                <td><b>${item.name}</b><br><small>${item.category || '<span style="color:red">NULL</span>'} - ${item.description || ''}</small></td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 0.8rem;">
+                        <img src="${item.image}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                        <div>
+                            <b>${item.name}</b><br>
+                            <small>${item.category || '<span style="color:red">NULL</span>'} - ${item.description || ''}</small>
+                        </div>
+                    </div>
+                </td>
                 <td>${item.price}</td>
                 <td>${item.isVeg ? '🟢 Veg' : '🔴 Non-Veg'}</td>
                 <td>
@@ -830,6 +843,9 @@ const adminPortal = {
 
         try {
             // 1. Save/Update Restaurant
+            const updateData = { ...data };
+            if (isEdit) delete updateData.id;
+
             const restUrl = isEdit
                 ? `${this.apiBaseUrl}/api/admin/restaurants/${data.id}`
                 : `${this.apiBaseUrl}/api/admin/restaurants`;
@@ -837,7 +853,7 @@ const adminPortal = {
             const restResp = await fetch(restUrl, {
                 method: isEdit ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: JSON.stringify(updateData)
             });
 
             if (!restResp.ok) throw new Error('Failed to save restaurant');
@@ -857,7 +873,7 @@ const adminPortal = {
             this.fetchMenuData(); // Refresh list
         } catch (err) {
             console.error(err);
-            this.showToast('❌ Error: ' + err.message);
+            this.showToast('❌ Backend Error: ' + err.message + '. Check if server is running/deployed.');
         }
     },
 
@@ -918,7 +934,7 @@ const adminPortal = {
                     place.name = data.name;
                     place.description = data.description;
                     place.image = data.image;
-                    this.showToast('Local state updated! ⚠️');
+                    this.showToast('Local state updated, but backend failed! ⚠️ Please deploy changes.');
                     this.closeModals();
                     this.renderMenuManagement(window.restaurantData.places);
                 }

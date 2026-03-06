@@ -187,14 +187,15 @@ const app = {
           data.forEach(p => {
             const existingIndex = localPlaces.findIndex(lp => lp.id == p.id);
             if (existingIndex !== -1) {
-              // ALWAYS prioritize backend data but preserve critical UI elements if missing
+              // ALWAYS prioritize backend data but preserve critical UI elements if missing in backend
               const existing = localPlaces[existingIndex];
               localPlaces[existingIndex] = {
                 ...existing,
                 ...p,
+                // Robust merging for specific fields
                 coords: (p.coords && p.coords.length === 2) ? p.coords : existing.coords,
-                image: p.image || existing.image,
-                description: p.description || existing.description
+                image: (p.image !== undefined && p.image !== null && p.image !== '') ? p.image : existing.image,
+                description: (p.description !== undefined && p.description !== null && p.description !== '') ? p.description : existing.description
               };
             } else {
               localPlaces.push(p);
