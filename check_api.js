@@ -8,12 +8,15 @@ async function verify() {
     const rootData = await rootResp.json();
     console.log('📊 Server Info:', rootData);
 
-    if (rootData.build_id !== 'BUILD_DEBUG_V5') {
-        console.warn('⌛ Latest build (BUILD_DEBUG_V5) is not live yet. Retrying in 30s...');
+    if (rootData.build_id !== 'BUILD_DEBUG_V6') {
+        console.warn('⌛ Latest build (BUILD_DEBUG_V6) is not live yet. Retrying in 30s...');
         return;
     }
 
-    console.log('✅ BUILD_DEBUG_V5 is live! Proceeding with update...');
+    console.log('✅ BUILD_DEBUG_V6 is live! Checking /api/ping...');
+    const pingResp = await fetch(`${apiBaseUrl}/api/ping`);
+    const pingData = await pingResp.json();
+    console.log('🔔 Ping Response:', pingData);
 
     const updateUrl = `${apiBaseUrl}/api/admin/places/${placeId}/update`;
     const updateData = {

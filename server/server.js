@@ -30,9 +30,9 @@ app.get('/api/ping', (req, res) => res.json({ msg: 'pong', build: 'BUILD_DEBUG_V
 // Basic Route
 app.get('/', (req, res) => {
     res.json({
-        msg: 'Restaurant Navigator API is running...',
-        version: '1.2.2',
-        build_id: 'BUILD_DEBUG_V6',
+        msg: '!!! HELLO WORLD !!!',
+        version: '1.2.3',
+        build_id: 'BUILD_DEBUG_V7',
         deployment_time: new Date().toISOString()
     });
 });

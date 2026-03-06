@@ -3,7 +3,7 @@ const placeId = 13; // Pathanamthitta
 
 async function test() {
     console.log(`📡 Testing GET /api/admin/stats...`);
-    const url = `${apiBaseUrl}/api/admin/stats`;
+    const url = `${apiBaseUrl}/api/admin/orders`;
 
     try {
         const resp = await fetch(url, {
