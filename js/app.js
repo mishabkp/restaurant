@@ -3717,26 +3717,26 @@ const app = {
       <div class="booking-form">
         <div class="form-group">
           <label>Number of Guests</label>
-          <select class="form-control" id="bookingGuests">
-            <option value="2">2 People</option>
-            <option value="4">4 People</option>
-            <option value="6">6 People</option>
-            <option value="8">8+ People</option>
+          <select class="form-control" id="bookingGuests" style="background: var(--bg-color, #1a1a2e); color: var(--text-color, #fff); border: 1px solid rgba(255,255,255,0.1);">
+            <option value="2" style="background: #1a1a2e; color: #fff;">2 People</option>
+            <option value="4" style="background: #1a1a2e; color: #fff;">4 People</option>
+            <option value="6" style="background: #1a1a2e; color: #fff;">6 People</option>
+            <option value="8" style="background: #1a1a2e; color: #fff;">8+ People</option>
           </select>
         </div>
         
         <div class="form-group">
           <label>Preferred Date</label>
-          <input type="date" class="form-control" id="bookingDate" value="${new Date().toISOString().split('T')[0]}">
+          <input type="date" class="form-control" id="bookingDate" value="${new Date().toISOString().split('T')[0]}" style="background: var(--bg-color, #1a1a2e); color: var(--text-color, #fff); border: 1px solid rgba(255,255,255,0.1);">
         </div>
         
         <div class="form-group">
           <label>Time Slot</label>
-          <select class="form-control" id="bookingTime">
-            <option value="19:00">7:00 PM</option>
-            <option value="20:00">8:00 PM</option>
-            <option value="21:00">9:00 PM</option>
-            <option value="22:00">10:00 PM</option>
+          <select class="form-control" id="bookingTime" style="background: var(--bg-color, #1a1a2e); color: var(--text-color, #fff); border: 1px solid rgba(255,255,255,0.1);">
+            <option value="19:00" style="background: #1a1a2e; color: #fff;">7:00 PM</option>
+            <option value="20:00" style="background: #1a1a2e; color: #fff;">8:00 PM</option>
+            <option value="21:00" style="background: #1a1a2e; color: #fff;">9:00 PM</option>
+            <option value="22:00" style="background: #1a1a2e; color: #fff;">10:00 PM</option>
           </select>
         </div>
 
