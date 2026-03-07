@@ -1139,13 +1139,13 @@ const adminPortal = {
                     </span>
                 </td>
                 <td>
-                    <select onchange="adminPortal.updateStatus('${order.orderId}', this.value)">
-                        <option value="">Update...</option>
-                        <option value="Confirmed">Confirmed</option>
-                        <option value="Preparing">Preparing</option>
-                        <option value="Delivery">Out for Delivery</option>
-                        <option value="Arrived">Arrived</option>
-                        <option value="Delivered">Delivered</option>
+                    <select onchange="adminPortal.updateStatus('${order.orderId}', this.value)" style="background: var(--bg-color, #1a1a2e); color: var(--text-color, #fff); padding: 0.4rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; cursor: pointer;">
+                        <option value="" style="background: #1a1a2e; color: #fff;">Update...</option>
+                        <option value="Confirmed" style="background: #1a1a2e; color: #fff;">Confirmed</option>
+                        <option value="Preparing" style="background: #1a1a2e; color: #fff;">Preparing</option>
+                        <option value="Delivery" style="background: #1a1a2e; color: #fff;">Out for Delivery</option>
+                        <option value="Arrived" style="background: #1a1a2e; color: #fff;">Arrived</option>
+                        <option value="Delivered" style="background: #1a1a2e; color: #fff;">Delivered</option>
                     </select>
                 </td>
             </tr>
