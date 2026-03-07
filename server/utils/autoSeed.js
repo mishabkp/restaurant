@@ -53,6 +53,10 @@ const placesData = [
             103,
             104,
             105
+        ],
+        "coords": [
+            9.9312,
+            76.2673
         ]
     },
     {
@@ -66,6 +70,10 @@ const placesData = [
             203,
             204,
             205
+        ],
+        "coords": [
+            8.5241,
+            76.9366
         ]
     },
     {
@@ -79,6 +87,10 @@ const placesData = [
             303,
             304,
             305
+        ],
+        "coords": [
+            11.2588,
+            75.7804
         ]
     },
     {
@@ -92,6 +104,10 @@ const placesData = [
             403,
             404,
             405
+        ],
+        "coords": [
+            10.5276,
+            76.2144
         ]
     },
     {
@@ -105,6 +121,10 @@ const placesData = [
             503,
             504,
             505
+        ],
+        "coords": [
+            11.8745,
+            75.3704
         ]
     },
     {
@@ -118,6 +138,10 @@ const placesData = [
             603,
             604,
             605
+        ],
+        "coords": [
+            11.051,
+            76.0711
         ]
     },
     {
@@ -129,6 +153,10 @@ const placesData = [
             701,
             3001,
             3002
+        ],
+        "coords": [
+            9.4981,
+            76.3329
         ]
     },
     {
@@ -140,6 +168,10 @@ const placesData = [
             801,
             3003,
             3004
+        ],
+        "coords": [
+            10.0889,
+            77.0595
         ]
     },
     {
@@ -151,6 +183,10 @@ const placesData = [
             901,
             3005,
             3006
+        ],
+        "coords": [
+            11.605,
+            76.083
         ]
     },
     {
@@ -162,6 +198,10 @@ const placesData = [
             1001,
             1002,
             3007
+        ],
+        "coords": [
+            12.4996,
+            74.9869
         ]
     },
     {
@@ -173,6 +213,10 @@ const placesData = [
             1101,
             1102,
             3008
+        ],
+        "coords": [
+            10.7867,
+            76.6547
         ]
     },
     {
@@ -184,6 +228,10 @@ const placesData = [
             1201,
             1202,
             3009
+        ],
+        "coords": [
+            9.5916,
+            76.5222
         ]
     },
     {
@@ -195,6 +243,10 @@ const placesData = [
             1301,
             1302,
             3010
+        ],
+        "coords": [
+            9.2644,
+            76.787
         ]
     },
     {
@@ -206,6 +258,10 @@ const placesData = [
             1401,
             1402,
             3011
+        ],
+        "coords": [
+            8.8932,
+            76.6141
         ]
     }
 ];
@@ -213,11 +269,21 @@ const placesData = [
 const restaurantsData = [
     {
         "id": 101,
+        "placeId": 1,
         "name": "Oceanos",
         "cuisine": "Seafood & Continental",
-        "class": "Luxury",
         "rating": 4.5,
-        "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg",
+        "isFeatured": true,
+        "hours": {
+            "open": "11:00",
+            "close": "23:00"
+        },
+        "tags": [
+            "Top Rated",
+            "Seafood",
+            "Modern"
+        ],
+        "class": "Luxury",
         "rooms": [
             {
                 "type": "Luxury Suite",
@@ -238,6 +304,20 @@ const restaurantsData = [
                     "AC"
                 ],
                 "image": "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800"
+            }
+        ],
+        "reviews": [
+            {
+                "user": "Arjun K.",
+                "rating": 5,
+                "comment": "Best seafood in Kochi! The Lobster Thermidor is a must-try.",
+                "date": "2 days ago"
+            },
+            {
+                "user": "Sarah M.",
+                "rating": 4,
+                "comment": "Beautiful ambiance and fresh fish. Slightly expensive but worth it.",
+                "date": "1 week ago"
             }
         ],
         "foodItems": [
@@ -271,6 +351,7 @@ const restaurantsData = [
                 "price": "₹1200",
                 "isVeg": false,
                 "description": "Creamy lobster in rich sauce",
+                "secret": "Our sauce uses a rare local saffron infusion for a golden, earthy depth.",
                 "image": "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=800"
             },
             {
@@ -321,14 +402,24 @@ const restaurantsData = [
                 "description": "Silky Italian cream dessert",
                 "image": "https://images.pexels.com/photos/1174399/pexels-photo-1174399.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            9.9658,
+            76.2421
         ]
     },
     {
         "id": 102,
+        "placeId": 1,
         "name": "Spice Garden",
         "cuisine": "Kerala Traditional",
-        "class": "Standard",
         "rating": 4.7,
+        "isFeatured": true,
+        "tags": [
+            "Traditional",
+            "Healthy",
+            "Top Rated"
+        ],
         "image": "https://media-cdn.tripadvisor.com/media/photo-p/11/ce/26/45/spice-garden-restaurant.jpg",
         "rooms": [
             {
@@ -350,6 +441,20 @@ const restaurantsData = [
                     "Kerala Style"
                 ],
                 "image": "https://images.pexels.com/photos/210532/pexels-photo-210532.jpeg?auto=compress&cs=tinysrgb&w=800"
+            }
+        ],
+        "reviews": [
+            {
+                "user": "Manoj P.",
+                "rating": 5,
+                "comment": "Authentic Kerala sadya. The Karimeen Pollichathu is exceptional!",
+                "date": "3 days ago"
+            },
+            {
+                "user": "Deepa V.",
+                "rating": 5,
+                "comment": "Best place for traditional family dinner.",
+                "date": "1 month ago"
             }
         ],
         "foodItems": [
@@ -391,6 +496,7 @@ const restaurantsData = [
                 "price": "₹480",
                 "isVeg": false,
                 "description": "Pearl spot fish in banana leaf",
+                "secret": "Wrapped in banana leaves with a secret blend of 12 spices and bird's eye chili.",
                 "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800"
             },
             {
@@ -399,6 +505,7 @@ const restaurantsData = [
                 "price": "₹220",
                 "isVeg": false,
                 "description": "Spicy Kerala style beef",
+                "secret": "Double-cooked with slow-roasted coconut shards and hand-pounded Malabar pepper.",
                 "image": "https://images.pexels.com/photos/675951/pexels-photo-675951.jpeg?auto=compress&cs=tinysrgb&w=800"
             },
             {
@@ -407,6 +514,7 @@ const restaurantsData = [
                 "price": "₹180",
                 "isVeg": true,
                 "description": "Soft rice pancakes with coconut stew",
+                "secret": "The batter is fermented with house-made coconut yeast for that authentic heirloom tang.",
                 "image": "https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=800"
             },
             {
@@ -433,16 +541,24 @@ const restaurantsData = [
                 "description": "Rice flakes in coconut milk",
                 "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            9.9631,
+            76.2458
         ]
     },
     {
         "id": 103,
+        "placeId": 1,
         "name": "Urban Bistro",
         "cuisine": "Continental & Italian",
-        "class": "Budget",
         "rating": 4.3,
+        "tags": [
+            "Fast Food",
+            "Modern"
+        ],
+        "class": "Budget",
         "image": "https://images.pexels.com/photos/1015568/pexels-photo-1015568.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Bruschetta",
@@ -514,16 +630,19 @@ const restaurantsData = [
                 "description": "Warm brownie with ice cream",
                 "image": "https://images.pexels.com/photos/45202/brownie-dessert-cake-sweet-45202.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            10.008,
+            76.315
         ]
     },
     {
         "id": 104,
+        "placeId": 1,
         "name": "Saffron Stories",
         "cuisine": "North Indian",
-        "class": "Standard",
         "rating": 4.6,
         "image": "https://upload.wikimedia.org/wikipedia/commons/5/53/Restaurant_interior.jpg",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Paneer Tikka",
@@ -595,16 +714,19 @@ const restaurantsData = [
                 "description": "Traditional Indian ice cream",
                 "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            9.9925,
+            76.299
         ]
     },
     {
         "id": 105,
+        "placeId": 1,
         "name": "Coastal Curry",
         "cuisine": "Mangalorean",
-        "class": "Standard",
         "rating": 4.4,
         "image": "https://images.unsplash.com/photo-1515669097368-22e68427d265?w=800&h=600&fit=crop",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Chicken Ghee Roast",
@@ -676,13 +798,17 @@ const restaurantsData = [
                 "description": "Sweet banana pudding",
                 "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            9.9385,
+            76.2605
         ]
     },
     {
         "id": 201,
+        "placeId": 2,
         "name": "Villa Maya",
         "cuisine": "Fine Dining Kerala",
-        "class": "Standard",
         "rating": 4.8,
         "image": "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=800&h=600&fit=crop",
         "rooms": [
@@ -790,16 +916,19 @@ const restaurantsData = [
                 "description": "Seasonal fresh fruits",
                 "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            8.487,
+            76.935
         ]
     },
     {
         "id": 202,
+        "placeId": 2,
         "name": "Zam Zam",
         "cuisine": "Arabian & Malabar",
-        "class": "Standard",
         "rating": 4.5,
         "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Shawarma",
@@ -871,16 +1000,19 @@ const restaurantsData = [
                 "description": "Rich dates dessert",
                 "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            8.506,
+            76.945
         ]
     },
     {
         "id": 203,
+        "placeId": 2,
         "name": "Café Mojo",
         "cuisine": "Café & Continental",
-        "class": "Standard",
         "rating": 4.2,
         "image": "https://images.unsplash.com/photo-1578474846511-04ba529f0b88?w=800&h=600&fit=crop",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Nachos",
@@ -952,16 +1084,19 @@ const restaurantsData = [
                 "description": "Warm pie with ice cream",
                 "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            8.52,
+            76.955
         ]
     },
     {
         "id": 204,
+        "placeId": 2,
         "name": "Ariya Nivaas",
         "cuisine": "South Indian Vegetarian",
-        "class": "Standard",
         "rating": 4.6,
         "image": "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&h=600&fit=crop",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Masala Dosa",
@@ -1033,13 +1168,17 @@ const restaurantsData = [
                 "description": "Sweet banana pancake",
                 "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            8.488,
+            76.948
         ]
     },
     {
         "id": 205,
+        "placeId": 2,
         "name": "The Terrace",
         "cuisine": "Multi-Cuisine",
-        "class": "Standard",
         "rating": 4.4,
         "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop",
         "rooms": [
@@ -1136,14 +1275,24 @@ const restaurantsData = [
                 "description": "Mixed tropical fruits",
                 "image": "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            8.558,
+            76.88
         ]
     },
     {
         "id": 301,
+        "placeId": 3,
         "name": "Paragon",
         "cuisine": "Malabar Cuisine",
-        "class": "Standard",
         "rating": 4.7,
+        "isFeatured": true,
+        "tags": [
+            "Famous",
+            "Authentic",
+            "Must Visit"
+        ],
         "image": "https://upload.wikimedia.org/wikipedia/commons/5/53/Restaurant_interior.jpg",
         "rooms": [
             {
@@ -1166,6 +1315,20 @@ const restaurantsData = [
                     "WiFi"
                 ],
                 "image": "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=800"
+            }
+        ],
+        "reviews": [
+            {
+                "user": "Siddharth R.",
+                "rating": 5,
+                "comment": "The legendary Malabar Biryani! Worth the travel to Kozhikode.",
+                "date": "4 days ago"
+            },
+            {
+                "user": "Anjali S.",
+                "rating": 4,
+                "comment": "Great food, but always crowded. Reservation recommended.",
+                "date": "2 weeks ago"
             }
         ],
         "foodItems": [
@@ -1239,16 +1402,19 @@ const restaurantsData = [
                 "description": "Tender coconut dessert",
                 "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.255,
+            75.775
         ]
     },
     {
         "id": 302,
+        "placeId": 3,
         "name": "Sagar Restaurant",
         "cuisine": "South Indian",
-        "class": "Standard",
         "rating": 4.3,
         "image": "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&h=600&fit=crop",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Ghee Roast Dosa",
@@ -1320,16 +1486,19 @@ const restaurantsData = [
                 "description": "Sweet coconut halwa",
                 "image": "https://images.unsplash.com/photo-1609501676725-7186f017a4b7?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.25,
+            75.785
         ]
     },
     {
         "id": 303,
+        "placeId": 3,
         "name": "Bombay Hotel",
         "cuisine": "Traditional Malabar",
-        "class": "Standard",
         "rating": 4.5,
         "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Pathiri",
@@ -1401,16 +1570,19 @@ const restaurantsData = [
                 "description": "Kerala style chips",
                 "image": "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.248,
+            75.772
         ]
     },
     {
         "id": 304,
+        "placeId": 3,
         "name": "Mezban",
         "cuisine": "Arabian",
-        "class": "Standard",
         "rating": 4.4,
         "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Mezban_Restaurant_in_Kozhikode.jpg/800px-Mezban_Restaurant_in_Kozhikode.jpg",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Shawarma Roll",
@@ -1482,16 +1654,19 @@ const restaurantsData = [
                 "description": "Sweet dumplings",
                 "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.265,
+            75.792
         ]
     },
     {
         "id": 305,
+        "placeId": 3,
         "name": "The Raviz",
         "cuisine": "Fine Dining",
-        "class": "Standard",
         "rating": 4.8,
         "image": "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&h=600&fit=crop",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Seafood Platter",
@@ -1563,13 +1738,17 @@ const restaurantsData = [
                 "description": "Three fruit sorbets",
                 "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.295,
+            75.775
         ]
     },
     {
         "id": 401,
+        "placeId": 4,
         "name": "Pathans",
         "cuisine": "Multi-Cuisine",
-        "class": "Standard",
         "rating": 4.5,
         "image": "https://upload.wikimedia.org/wikipedia/commons/5/53/Restaurant_interior.jpg",
         "rooms": [
@@ -1666,16 +1845,19 @@ const restaurantsData = [
                 "description": "Rice pudding",
                 "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            10.525,
+            76.215
         ]
     },
     {
         "id": 402,
+        "placeId": 4,
         "name": "Ming Palace",
         "cuisine": "Chinese",
-        "class": "Standard",
         "rating": 4.2,
         "image": "https://upload.wikimedia.org/wikipedia/commons/5/53/Restaurant_interior.jpg",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Spring Rolls",
@@ -1747,16 +1929,19 @@ const restaurantsData = [
                 "description": "Traditional cookie",
                 "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            10.53,
+            76.21
         ]
     },
     {
         "id": 403,
+        "placeId": 4,
         "name": "Hotel Bharath",
         "cuisine": "South Indian",
-        "class": "Standard",
         "rating": 4.4,
         "image": "https://upload.wikimedia.org/wikipedia/commons/5/53/Restaurant_interior.jpg",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Paper Dosa",
@@ -1828,13 +2013,17 @@ const restaurantsData = [
                 "description": "Sweet rice balls",
                 "image": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Unniyappam.jpg"
             }
+        ],
+        "coords": [
+            10.528,
+            76.218
         ]
     },
     {
         "id": 404,
+        "placeId": 4,
         "name": "Grill Inn",
         "cuisine": "Barbeque & Grills",
-        "class": "Standard",
         "rating": 4.6,
         "image": "https://upload.wikimedia.org/wikipedia/commons/5/53/Restaurant_interior.jpg",
         "rooms": [
@@ -1931,16 +2120,19 @@ const restaurantsData = [
                 "description": "Creamy pudding",
                 "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            10.535,
+            76.225
         ]
     },
     {
         "id": 405,
+        "placeId": 4,
         "name": "Café Coffee Day",
         "cuisine": "Café",
-        "class": "Standard",
         "rating": 4.1,
         "image": "https://images.unsplash.com/photo-1577659733926-0b8c9c8b9f5b?w=800&h=600&fit=crop",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Sandwiches",
@@ -2012,16 +2204,19 @@ const restaurantsData = [
                 "description": "Iced coffee drink",
                 "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            10.54,
+            76.23
         ]
     },
     {
         "id": 501,
+        "placeId": 5,
         "name": "Odhens Hotel",
         "cuisine": "Malabar",
-        "class": "Standard",
         "rating": 4.6,
         "image": "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&h=600&fit=crop",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Kallummakaya Nirachathu",
@@ -2093,16 +2288,19 @@ const restaurantsData = [
                 "description": "Famous halwa",
                 "image": "https://images.unsplash.com/photo-1609501676725-7186f017a4b7?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.87,
+            75.375
         ]
     },
     {
         "id": 502,
+        "placeId": 5,
         "name": "Raandhal",
         "cuisine": "Kerala Traditional",
-        "class": "Standard",
         "rating": 4.4,
         "image": "https://images.unsplash.com/photo-1609920658906-8223bd289001?w=800&h=600&fit=crop",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Kappa Biriyani",
@@ -2174,16 +2372,19 @@ const restaurantsData = [
                 "description": "Rice flakes dessert",
                 "image": "https://images.unsplash.com/photo-1570831739435-6601aa3fa4fb?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.875,
+            75.385
         ]
     },
     {
         "id": 503,
+        "placeId": 5,
         "name": "MVK Restaurant",
         "cuisine": "Multi-Cuisine",
-        "class": "Standard",
         "rating": 4.3,
         "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Chicken Tikka",
@@ -2255,16 +2456,19 @@ const restaurantsData = [
                 "description": "Sweet spiral",
                 "image": "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.88,
+            75.365
         ]
     },
     {
         "id": 504,
+        "placeId": 5,
         "name": "Dhe Puttu",
         "cuisine": "Puttu Specialty",
-        "class": "Standard",
         "rating": 4.7,
         "image": "https://images.unsplash.com/photo-1515669097368-22e68427d265?w=800&h=600&fit=crop",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Chakka Puttu",
@@ -2336,16 +2540,19 @@ const restaurantsData = [
                 "description": "Sweet coconut puttu",
                 "image": "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.865,
+            75.36
         ]
     },
     {
         "id": 505,
+        "placeId": 5,
         "name": "Sea Queen",
         "cuisine": "Seafood",
-        "class": "Standard",
         "rating": 4.5,
         "image": "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&h=600&fit=crop",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Crab Masala",
@@ -2417,14 +2624,28 @@ const restaurantsData = [
                 "description": "Mixed fruit dessert",
                 "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.85,
+            75.37
         ]
     },
     {
         "id": 601,
+        "placeId": 6,
         "name": "Rahmath Hotel",
         "cuisine": "Malabar Traditional",
-        "class": "Standard",
         "rating": 4.8,
+        "isFeatured": true,
+        "hours": {
+            "open": "06:00",
+            "close": "23:00"
+        },
+        "tags": [
+            "Top Rated",
+            "Traditional",
+            "Malabar"
+        ],
         "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop",
         "rooms": [
             {
@@ -2446,6 +2667,20 @@ const restaurantsData = [
                     "WiFi"
                 ],
                 "image": "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=800"
+            }
+        ],
+        "reviews": [
+            {
+                "user": "Rasheed K.",
+                "rating": 5,
+                "comment": "Best Malabar Biriyani in the entire district! Authentic taste that keeps me coming back.",
+                "date": "1 day ago"
+            },
+            {
+                "user": "Fathima N.",
+                "rating": 5,
+                "comment": "The Pathiri and Neychor combo is heavenly. True Malabar experience!",
+                "date": "3 days ago"
             }
         ],
         "foodItems": [
@@ -2529,16 +2764,43 @@ const restaurantsData = [
                 "description": "Stuffed mussels with spiced rice filling",
                 "image": "https://images.unsplash.com/photo-1559847844-5315695dadae?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.051,
+            76.0711
         ]
     },
     {
         "id": 602,
+        "placeId": 6,
         "name": "Salkara Restaurant",
         "cuisine": "Malabar & Mughlai",
-        "class": "Standard",
         "rating": 4.6,
+        "isFeatured": true,
+        "hours": {
+            "open": "07:00",
+            "close": "23:30"
+        },
+        "tags": [
+            "Top Rated",
+            "Traditional",
+            "Modern"
+        ],
         "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=400&fit=crop",
-        "rooms": [],
+        "reviews": [
+            {
+                "user": "Shafeeq M.",
+                "rating": 5,
+                "comment": "The Chicken Mandhi is absolutely amazing! Best in Malappuram.",
+                "date": "2 days ago"
+            },
+            {
+                "user": "Aisha R.",
+                "rating": 4,
+                "comment": "Great ambiance and food quality. The Shawarma is a must-try.",
+                "date": "1 week ago"
+            }
+        ],
         "foodItems": [
             {
                 "name": "Chicken Mandhi",
@@ -2620,16 +2882,43 @@ const restaurantsData = [
                 "description": "Strong black tea without milk, Malabar special",
                 "image": "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.043,
+            76.078
         ]
     },
     {
         "id": 603,
+        "placeId": 6,
         "name": "Top Form Restaurant",
         "cuisine": "Multi-Cuisine & Malabar",
-        "class": "Standard",
         "rating": 4.5,
+        "isFeatured": false,
+        "hours": {
+            "open": "08:00",
+            "close": "23:00"
+        },
+        "tags": [
+            "Modern",
+            "Traditional",
+            "Family"
+        ],
         "image": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&h=400&fit=crop",
-        "rooms": [],
+        "reviews": [
+            {
+                "user": "Ibrahim T.",
+                "rating": 4,
+                "comment": "Great ambiance and variety. Their fried rice is next level!",
+                "date": "5 days ago"
+            },
+            {
+                "user": "Safiya J.",
+                "rating": 5,
+                "comment": "Best family restaurant in town. Kids love it here!",
+                "date": "2 weeks ago"
+            }
+        ],
         "foodItems": [
             {
                 "name": "Dragon Chicken",
@@ -2711,16 +3000,43 @@ const restaurantsData = [
                 "description": "Fresh lime soda sweet or salt",
                 "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.056,
+            76.069
         ]
     },
     {
         "id": 604,
+        "placeId": 6,
         "name": "Zam Zam Restaurant",
         "cuisine": "Malabar & Arabian",
-        "class": "Standard",
         "rating": 4.7,
+        "isFeatured": true,
+        "hours": {
+            "open": "05:30",
+            "close": "23:30"
+        },
+        "tags": [
+            "Top Rated",
+            "Traditional",
+            "Seafood"
+        ],
         "image": "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&h=400&fit=crop",
-        "rooms": [],
+        "reviews": [
+            {
+                "user": "Navas P.",
+                "rating": 5,
+                "comment": "The Kallummakkaya Nirachathu is out of this world! Must visit.",
+                "date": "4 days ago"
+            },
+            {
+                "user": "Sunitha K.",
+                "rating": 4,
+                "comment": "Authentic Malabar flavors. Their Biriyani is legendary.",
+                "date": "2 weeks ago"
+            }
+        ],
         "foodItems": [
             {
                 "name": "Kallummakkaya Nirachathu",
@@ -2802,16 +3118,43 @@ const restaurantsData = [
                 "description": "Thick and creamy fresh mango milkshake",
                 "image": "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.047,
+            76.082
         ]
     },
     {
         "id": 605,
+        "placeId": 6,
         "name": "Al Buhari Restaurant",
         "cuisine": "Arabian & Malabar Fusion",
-        "class": "Standard",
         "rating": 4.4,
+        "isFeatured": false,
+        "hours": {
+            "open": "06:30",
+            "close": "00:00"
+        },
+        "tags": [
+            "Modern",
+            "Seafood",
+            "Traditional"
+        ],
         "image": "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&h=400&fit=crop",
-        "rooms": [],
+        "reviews": [
+            {
+                "user": "Anwar S.",
+                "rating": 4,
+                "comment": "Good food at great prices. The Mandhi is excellent!",
+                "date": "1 week ago"
+            },
+            {
+                "user": "Riya M.",
+                "rating": 5,
+                "comment": "Love their fusion twist on traditional Malabar dishes.",
+                "date": "3 days ago"
+            }
+        ],
         "foodItems": [
             {
                 "name": "Al Faham Grilled Chicken",
@@ -2893,10 +3236,15 @@ const restaurantsData = [
                 "description": "Mixed fruit fresh juice with seasonal fruits",
                 "image": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&h=300&fit=crop"
             }
+        ],
+        "coords": [
+            11.058,
+            76.074
         ]
     },
     {
         "id": 701,
+        "placeId": 7,
         "name": "Backwater Heritage",
         "cuisine": "Kuttanadan",
         "class": "Luxury",
@@ -2941,10 +3289,15 @@ const restaurantsData = [
                 "description": "Famous spicy fish curry served in toddy shops",
                 "image": "https://images.pexels.com/photos/1015568/pexels-photo-1015568.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            9.4981,
+            76.3329
         ]
     },
     {
         "id": 3001,
+        "placeId": 7,
         "name": "Alappuzha Grand Retreat 2",
         "cuisine": "Kerala & Multicuisine",
         "class": "Luxury",
@@ -2980,10 +3333,15 @@ const restaurantsData = [
                 "description": "Authentic vegetarian meals",
                 "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            10.96707949925417,
+            76.1415516009686
         ]
     },
     {
         "id": 3002,
+        "placeId": 7,
         "name": "Alappuzha Grand Retreat 3",
         "cuisine": "Kerala & Multicuisine",
         "class": "Luxury",
@@ -3019,10 +3377,15 @@ const restaurantsData = [
                 "description": "Authentic vegetarian meals",
                 "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            11.641944339899151,
+            76.10153522159945
         ]
     },
     {
         "id": 801,
+        "placeId": 8,
         "name": "Munnar Tea Garden",
         "cuisine": "Continental & Nadan",
         "class": "Luxury",
@@ -3067,10 +3430,15 @@ const restaurantsData = [
                 "description": "Freshly brewed tea from the gardens of Munnar",
                 "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            10.0889,
+            77.0595
         ]
     },
     {
         "id": 3003,
+        "placeId": 8,
         "name": "Idukki Grand Retreat 2",
         "cuisine": "Kerala & Multicuisine",
         "class": "Luxury",
@@ -3106,10 +3474,15 @@ const restaurantsData = [
                 "description": "Authentic vegetarian meals",
                 "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            10.126406984510595,
+            76.13797643145416
         ]
     },
     {
         "id": 3004,
+        "placeId": 8,
         "name": "Idukki Grand Retreat 3",
         "cuisine": "Kerala & Multicuisine",
         "class": "Luxury",
@@ -3145,10 +3518,15 @@ const restaurantsData = [
                 "description": "Authentic vegetarian meals",
                 "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            11.138322782880753,
+            76.79754754028623
         ]
     },
     {
         "id": 901,
+        "placeId": 9,
         "name": "Wayanad Forest Edge",
         "cuisine": "Nadan Special",
         "class": "Standard",
@@ -3186,10 +3564,15 @@ const restaurantsData = [
                 "description": "Unique payasam made with nutritious bamboo rice",
                 "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            11.605,
+            76.083
         ]
     },
     {
         "id": 3005,
+        "placeId": 9,
         "name": "Wayanad Grand Retreat 2",
         "cuisine": "Kerala & Multicuisine",
         "class": "Luxury",
@@ -3225,10 +3608,15 @@ const restaurantsData = [
                 "description": "Authentic vegetarian meals",
                 "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            11.559515848519943,
+            76.41654398984507
         ]
     },
     {
         "id": 3006,
+        "placeId": 9,
         "name": "Wayanad Grand Retreat 3",
         "cuisine": "Kerala & Multicuisine",
         "class": "Luxury",
@@ -3264,10 +3652,15 @@ const restaurantsData = [
                 "description": "Authentic vegetarian meals",
                 "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            11.487900417379011,
+            76.7232227339003
         ]
     },
     {
         "id": 1001,
+        "placeId": 10,
         "name": "Kasaragod Castle",
         "cuisine": "Tuluva & Malabar",
         "class": "Luxury",
@@ -3313,16 +3706,19 @@ const restaurantsData = [
                 "description": "Sweet fried banana bread, a regional favorite",
                 "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            12.4996,
+            74.9869
         ]
     },
     {
         "id": 1002,
+        "placeId": 10,
         "name": "Coastal Spice",
         "cuisine": "Konkan Seafood",
-        "class": "Standard",
         "rating": 4.4,
         "image": "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Kane Rava Fry",
@@ -3332,10 +3728,15 @@ const restaurantsData = [
                 "description": "Lady fish marinated in spices and semolina fried",
                 "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            12.5101,
+            74.985
         ]
     },
     {
         "id": 3007,
+        "placeId": 10,
         "name": "Kasaragod Grand Retreat 3",
         "cuisine": "Kerala & Multicuisine",
         "class": "Luxury",
@@ -3371,10 +3772,15 @@ const restaurantsData = [
                 "description": "Authentic vegetarian meals",
                 "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            11.619202232116074,
+            76.96702523413644
         ]
     },
     {
         "id": 1101,
+        "placeId": 11,
         "name": "Palakkad Heritage Inn",
         "cuisine": "Palakkadan Brahmin",
         "class": "Luxury",
@@ -3402,16 +3808,19 @@ const restaurantsData = [
                 "description": "Authentic Palakkadan sambhar with premium matta rice",
                 "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            10.7867,
+            76.6547
         ]
     },
     {
         "id": 1102,
+        "placeId": 11,
         "name": "The Paddy Field",
         "cuisine": "Nadan & Continental",
-        "class": "Standard",
         "rating": 4.3,
         "image": "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Kozhi Pidi",
@@ -3421,10 +3830,15 @@ const restaurantsData = [
                 "description": "Steamed rice dumplings in spicy chicken gravy",
                 "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            10.79,
+            76.66
         ]
     },
     {
         "id": 3008,
+        "placeId": 11,
         "name": "Palakkad Grand Retreat 3",
         "cuisine": "Kerala & Multicuisine",
         "class": "Luxury",
@@ -3460,10 +3874,15 @@ const restaurantsData = [
                 "description": "Authentic vegetarian meals",
                 "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            11.858220681352353,
+            76.97374340676524
         ]
     },
     {
         "id": 1201,
+        "placeId": 12,
         "name": "Syrian Heritage Resort",
         "cuisine": "Syrian Christian",
         "class": "Luxury",
@@ -3498,16 +3917,19 @@ const restaurantsData = [
                 "description": "Fiery red fish curry cooked in clay pot",
                 "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            9.5916,
+            76.5222
         ]
     },
     {
         "id": 1202,
+        "placeId": 12,
         "name": "Rubber Valley Grill",
         "cuisine": "Continental",
-        "class": "Standard",
         "rating": 4.5,
         "image": "https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Grilled Pork Ribs",
@@ -3517,10 +3939,15 @@ const restaurantsData = [
                 "description": "Honey glazed pork ribs with mashed potatoes",
                 "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            9.595,
+            76.53
         ]
     },
     {
         "id": 3009,
+        "placeId": 12,
         "name": "Kottayam Grand Retreat 3",
         "cuisine": "Kerala & Multicuisine",
         "class": "Luxury",
@@ -3556,10 +3983,15 @@ const restaurantsData = [
                 "description": "Authentic vegetarian meals",
                 "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            11.958570144096864,
+            76.24174497347059
         ]
     },
     {
         "id": 1301,
+        "placeId": 13,
         "name": "Aranmula Heritage",
         "cuisine": "Traditional Sadya",
         "class": "Luxury",
@@ -3586,16 +4018,19 @@ const restaurantsData = [
                 "description": "Authentic ceremonial feast with 60+ items on request",
                 "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            9.33,
+            76.68
         ]
     },
     {
         "id": 1302,
+        "placeId": 13,
         "name": "Pampa Breeze",
         "cuisine": "Nadan",
-        "class": "Standard",
         "rating": 4.2,
         "image": "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Karimeen Mappas",
@@ -3605,10 +4040,15 @@ const restaurantsData = [
                 "description": "Pearl spot fish in creamy coconut milk gravy",
                 "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            9.2644,
+            76.787
         ]
     },
     {
         "id": 3010,
+        "placeId": 13,
         "name": "Pathanamthitta Grand Retreat 3",
         "cuisine": "Kerala & Multicuisine",
         "class": "Luxury",
@@ -3644,10 +4084,15 @@ const restaurantsData = [
                 "description": "Authentic vegetarian meals",
                 "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            11.469643494306041,
+            76.0197604684746
         ]
     },
     {
         "id": 1401,
+        "placeId": 14,
         "name": "Quilon Port Grill",
         "cuisine": "Seafood & Grill",
         "class": "Luxury",
@@ -3674,16 +4119,19 @@ const restaurantsData = [
                 "description": "Famous spicy fish curry with gambooge",
                 "image": "https://images.pexels.com/photos/262959/pexels-photo-262959.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            8.8932,
+            76.6141
         ]
     },
     {
         "id": 1402,
+        "placeId": 14,
         "name": "Ashtamudi Flavours",
         "cuisine": "Backwater Traditional",
-        "class": "Standard",
         "rating": 4.5,
         "image": "https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800",
-        "rooms": [],
         "foodItems": [
             {
                 "name": "Chemmeen Ularthiyathu",
@@ -3693,10 +4141,15 @@ const restaurantsData = [
                 "description": "Pan-roasted prawns with coconut slices and curry leaves",
                 "image": "https://images.pexels.com/photos/1109197/pexels-photo-1109197.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            8.89,
+            76.61
         ]
     },
     {
         "id": 3011,
+        "placeId": 14,
         "name": "Kollam Grand Retreat 3",
         "cuisine": "Kerala & Multicuisine",
         "class": "Luxury",
@@ -3732,6 +4185,10 @@ const restaurantsData = [
                 "description": "Authentic vegetarian meals",
                 "image": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
             }
+        ],
+        "coords": [
+            10.943065581932967,
+            76.28192840376306
         ]
     }
 ];
