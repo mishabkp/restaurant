@@ -1727,19 +1727,19 @@ const app = {
         <form onsubmit="app.confirmRoomBooking(event, '${roomType.replace(/'/g, "\\'")}', '${price}')">
           <div class="form-group" style="margin-bottom: 1rem;">
             <label class="form-label" style="display:block;margin-bottom:0.5rem;color:var(--text-muted)">Check-in Date</label>
-            <input type="date" class="login-input" required id="roomCheckin" style="width:100%">
+            <input type="date" class="login-input" required id="roomCheckin" style="width:100%; background: var(--bg-color, #1a1a2e); color: var(--text-color, #fff);">
           </div>
           <div class="form-group" style="margin-bottom: 1rem;">
             <label class="form-label" style="display:block;margin-bottom:0.5rem;color:var(--text-muted)">Check-out Date</label>
-            <input type="date" class="login-input" required id="roomCheckout" style="width:100%">
+            <input type="date" class="login-input" required id="roomCheckout" style="width:100%; background: var(--bg-color, #1a1a2e); color: var(--text-color, #fff);">
           </div>
           <div class="form-group" style="margin-bottom: 1.5rem;">
             <label class="form-label" style="display:block;margin-bottom:0.5rem;color:var(--text-muted)">Guests</label>
-            <select class="login-input" id="roomGuests" style="width:100%">
-              <option>1 Adult</option>
-              <option>2 Adults</option>
-              <option>2 Adults + 1 Child</option>
-              <option>Family (4)</option>
+            <select class="login-input" id="roomGuests" style="width:100%; background: var(--bg-color, #1a1a2e); color: var(--text-color, #fff);">
+              <option style="background: #1a1a2e; color: #fff;">1 Adult</option>
+              <option style="background: #1a1a2e; color: #fff;">2 Adults</option>
+              <option style="background: #1a1a2e; color: #fff;">2 Adults + 1 Child</option>
+              <option style="background: #1a1a2e; color: #fff;">Family (4)</option>
             </select>
           </div>
           <button type="submit" class="submit-btn" style="width:100%;padding:1rem;font-size:1.1rem;">Confirm Booking ✨</button>
