@@ -1724,7 +1724,7 @@ const app = {
         <h2 style="font-size: 1.6rem; margin-bottom: 0.5rem;">🏨 ${roomType}</h2>
         <p style="color: var(--text-muted); margin-bottom: 1.5rem;">at ${restaurant.name}</p>
         <div style="font-size: 2rem; font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem;">${price}<span style="font-size: 1rem; font-weight: 400;">/night</span></div>
-        <form onsubmit="app.confirmRoomBooking(event, '${roomType.replace(/'/g, "\\'")}', '${price}')">
+        <form onsubmit="app.confirmRoomBooking(event, '${roomType.replace(/'/g, "\\'")}', '${price}', ${restaurantId})">
           <div class="form-group" style="margin-bottom: 1rem;">
             <label class="form-label" style="display:block;margin-bottom:0.5rem;color:var(--text-muted)">Check-in Date</label>
             <input type="date" class="login-input" required id="roomCheckin" style="width:100%; background: var(--bg-color, #1a1a2e); color: var(--text-color, #fff);">
@@ -1750,13 +1750,48 @@ const app = {
     document.body.style.overflow = 'hidden';
   },
 
-  confirmRoomBooking(event, roomType, price) {
+  confirmRoomBooking(event, roomType, price, restaurantId) {
     event.preventDefault();
     const checkin = document.getElementById('roomCheckin').value;
     const checkout = document.getElementById('roomCheckout').value;
     const guests = document.getElementById('roomGuests').value;
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (!user) {
+      this.closeModal();
+      this.showToast('Please login to make a reservation! ⚠️');
+      this.showLoginPage();
+      return;
+    }
+
+    const restaurant = this.findRestaurant(restaurantId);
+    const reservationId = 'RM-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+
+    // Save to backend
+    fetch(`${this.apiBaseUrl}/api/reservations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user: user.id,
+        restaurantId: restaurantId,
+        restaurantName: restaurant ? restaurant.name : 'Unknown',
+        type: 'Room',
+        guests: guests,
+        date: checkin,
+        checkoutDate: checkout,
+        roomType: roomType,
+        price: price,
+        reservationId: reservationId
+      })
+    }).then(resp => {
+      if (!resp.ok) throw new Error('Failed to save reservation');
+      return resp.json();
+    }).catch(err => {
+      console.error('Room reservation save error:', err);
+    });
+
     this.closeModal();
-    this.showToast(`🎉 Room "${roomType}" booked! ${checkin} to ${checkout} for ${guests}. Total: ${price}/night`);
+    this.showToast(`🎉 Room "${roomType}" booked! ${checkin} to ${checkout} for ${guests}. Booking ID: ${reservationId}`);
   },
 
   // ========================================
@@ -3375,21 +3410,22 @@ const app = {
           <h2 class="checkout-title">UPI Payment</h2>
           <div class="upi-verification" style="text-align: center; animation: fadeIn 0.5s ease-out;">
             <div class="qr-container" style="background: white; padding: 1rem; border-radius: 15px; display: inline-block; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-               <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=misha@upi&am=${this.calculateTotal()}&tn=FoodVistaOrder" alt="Payment QR" style="display: block;">
+               <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent('upi://pay?pa=ms4886285-2@okicici&pn=Mishab%20KP&am=' + this.calculateTotal() + '&tn=FoodVistaOrder&cu=INR')}" alt="Payment QR" style="display: block;">
                <p style="color: #333; font-size: 0.7rem; margin-top: 0.5rem; font-weight: 700;">Scan to Pay ₹${this.calculateTotal()}</p>
+               <p style="color: #888; font-size: 0.6rem; margin-top: 0.2rem;">UPI: ms4886285-2@okicici</p>
             </div>
             
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Or Choose Your App</p>
             <div class="upi-apps" style="display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 2rem;">
-              <div class="upi-app" style="cursor: pointer; transition: transform 0.3s;" onclick="this.style.transform='scale(0.9)'; setTimeout(() => app.nextCheckoutStep(), 300)">
+              <div class="upi-app" style="cursor: pointer; transition: transform 0.3s;" onclick="this.style.transform='scale(0.9)'; window.location.href='gpay://upi/pay?pa=ms4886285-2@okicici&pn=Mishab%20KP&am=${this.calculateTotal()}&tn=FoodVistaOrder&cu=INR'; setTimeout(() => app.nextCheckoutStep(), 800)">
                 <img src="https://logowik.com/content/uploads/images/google-pay-new-20207865.jpg" style="width: 50px; border-radius: 10px;">
                 <p style="font-size: 0.7rem; margin-top: 0.4rem;">GPay</p>
               </div>
-              <div class="upi-app" style="cursor: pointer; transition: transform 0.3s;" onclick="this.style.transform='scale(0.9)'; setTimeout(() => app.nextCheckoutStep(), 300)">
+              <div class="upi-app" style="cursor: pointer; transition: transform 0.3s;" onclick="this.style.transform='scale(0.9)'; window.location.href='phonepe://pay?pa=ms4886285-2@okicici&pn=Mishab%20KP&am=${this.calculateTotal()}&tn=FoodVistaOrder&cu=INR'; setTimeout(() => app.nextCheckoutStep(), 800)">
                 <img src="https://logowik.com/content/uploads/images/phonepe9082.jpg" style="width: 50px; border-radius: 10px;">
                 <p style="font-size: 0.7rem; margin-top: 0.4rem;">PhonePe</p>
               </div>
-              <div class="upi-app" style="cursor: pointer; transition: transform 0.3s;" onclick="this.style.transform='scale(0.9)'; setTimeout(() => app.nextCheckoutStep(), 300)">
+              <div class="upi-app" style="cursor: pointer; transition: transform 0.3s;" onclick="this.style.transform='scale(0.9)'; window.location.href='paytmmp://pay?pa=ms4886285-2@okicici&pn=Mishab%20KP&am=${this.calculateTotal()}&tn=FoodVistaOrder&cu=INR'; setTimeout(() => app.nextCheckoutStep(), 800)">
                 <img src="https://logowik.com/content/uploads/images/paytm6478.jpg" style="width: 50px; border-radius: 10px;">
                 <p style="font-size: 0.7rem; margin-top: 0.4rem;">Paytm</p>
               </div>
@@ -3754,6 +3790,38 @@ const app = {
     const guests = document.getElementById('bookingGuests').value;
     const date = document.getElementById('bookingDate').value;
     const time = document.getElementById('bookingTime').value;
+    const user = JSON.parse(localStorage.getItem('user'));
+    const restaurant = this.findRestaurant(restaurantId);
+
+    if (!user) {
+      this.showToast('Please login to make a reservation! ⚠️');
+      this.closeCheckout();
+      this.showLoginPage();
+      return;
+    }
+
+    const reservationId = 'BK-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+
+    // Save to backend
+    fetch(`${this.apiBaseUrl}/api/reservations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user: user.id,
+        restaurantId: restaurantId,
+        restaurantName: restaurant ? restaurant.name : 'Unknown',
+        type: 'Table',
+        guests: guests + ' People',
+        date: date,
+        time: time,
+        reservationId: reservationId
+      })
+    }).then(resp => {
+      if (!resp.ok) throw new Error('Failed to save reservation');
+      return resp.json();
+    }).catch(err => {
+      console.error('Reservation save error:', err);
+    });
 
     const body = document.getElementById('checkoutBody');
     body.innerHTML = `
@@ -3761,10 +3829,10 @@ const app = {
         <span class="success-icon">🎫</span>
         <h2 class="checkout-title" style="background: var(--accent-gradient); -webkit-background-clip: text;">Table Reserved!</h2>
         <p style="color: var(--text-secondary); margin-bottom: 2rem;">
-          Your table for ${guests} guests on ${date} at ${time} is confirmed at ${this.findRestaurant(restaurantId).name}.
+          Your table for ${guests} guests on ${date} at ${time} is confirmed at ${restaurant ? restaurant.name : 'the restaurant'}.
         </p>
         <div class="order-id" style="background: rgba(0, 242, 254, 0.1); color: var(--accent-color);">
-          Booking ID: BK-${Math.random().toString(36).substr(2, 6).toUpperCase()}
+          Booking ID: ${reservationId}
         </div>
         <button class="checkout-btn" style="margin-top: 2rem;" onclick="app.closeCheckout()">Done</button>
       </div>
