@@ -2288,7 +2288,7 @@ const app = {
         <!-- LEFT: Hero Section -->
         <div class="login-hero-side">
           <!-- Background video -->
-          <video class="login-hero-video" autoplay muted loop playsinline>
+          <video class="login-hero-video" autoplay muted loop playsinline poster="assets/login-hero.png">
             <source src="assets/hero2.mp4.mp4" type="video/mp4">
           </video>
           <!-- Layered overlay -->
