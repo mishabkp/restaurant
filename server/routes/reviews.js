@@ -42,6 +42,9 @@ router.get('/:restaurantId', async (req, res) => {
 // @desc    Add a review
 router.post('/', upload.single('image'), async (req, res) => {
     try {
+        console.log('[DEBUG] Review Submission Body:', req.body);
+        console.log('[DEBUG] Review Submission File:', req.file);
+
         const { restaurantId, userName, rating, comment } = req.body;
 
         // Explicitly cast to Number to pass Mongoose schema validation

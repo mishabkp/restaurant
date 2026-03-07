@@ -11,6 +11,11 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+// Tiny logger middleware
+app.use((req, res, next) => {
+    console.log(`[DEBUG] ${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+});
 // Forced redeploy 17:48 UTC
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

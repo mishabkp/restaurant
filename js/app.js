@@ -23,7 +23,7 @@ const app = {
   stripePublicKey: 'pk_test_51Pxy00PlaceholderKeyOnly', // Replace with real key
 
   // Dynamic API Configuration
-  apiBaseUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  apiBaseUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:' || window.location.hostname === ''
     ? 'http://localhost:5000'
     : 'https://restaurant-99en.onrender.com',
 
@@ -2096,23 +2096,34 @@ const app = {
     }
 
     try {
+      console.log(`[DEBUG] Attempting to POST to ${this.apiBaseUrl}/api/reviews`);
+      for (let pair of formData.entries()) {
+        console.log(`[DEBUG] FormData - ${pair[0]}: ${pair[1]}`);
+      }
+
       const response = await fetch(`${this.apiBaseUrl}/api/reviews`, {
         method: 'POST',
         // Note: No 'Content-Type' header here, fetch sets it for FormData
         body: formData
       });
 
+      console.log(`[DEBUG] Response status: ${response.status} ${response.statusText}`);
+
       if (response.ok) {
         this.fetchReviews(restaurantId);
         this.closeCheckout();
         this.showToast('Thank you! Your review has been published. ✨');
       } else {
-        const errorData = await response.json().catch(() => ({}));
-        this.showToast(errorData.msg || 'Failed to post review. ❌');
+        const errorText = await response.text();
+        console.error(`[DEBUG] Response Error Text:`, errorText);
+        let errorData = {};
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (e) { }
+        this.showToast(errorData.msg || `Failed to post review. Code: ${response.status} ❌`);
       }
     } catch (err) {
-
-      console.error('Post Review Error:', err);
+      console.error('[DEBUG] Post Review Network/Parse Error:', err);
       this.showToast('Server error while posting review. 🛠️');
     }
   },
