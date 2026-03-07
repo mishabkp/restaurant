@@ -2289,10 +2289,19 @@ const app = {
         <div class="login-hero-side">
           <!-- Background video -->
           <video class="login-hero-video" autoplay muted loop playsinline>
-            <source src="assets/hero.mp4.mp4" type="video/mp4">
+            <source src="assets/hero2.mp4.mp4" type="video/mp4">
           </video>
-          <!-- Gradient overlay -->
+          <!-- Layered overlay -->
           <div class="login-hero-overlay"></div>
+
+          <!-- Floating ambient food orbs -->
+          <div class="login-hero-orbs" aria-hidden="true">
+            <span>🍛</span>
+            <span>🥥</span>
+            <span>🐟</span>
+            <span>🍚</span>
+            <span>🌶</span>
+          </div>
 
           <!-- Hero content -->
           <div class="login-hero-content">
@@ -2330,15 +2339,22 @@ const app = {
 
         <!-- RIGHT: Login Panel -->
         <div class="login-panel-side">
-          <!-- Panel background image -->
-          <div class="login-panel-bg" style="background-image: url('assets/login-hero.png');"></div>
-          <div class="login-panel-overlay"></div>
+          <!-- Animated glow border -->
+          <div class="login-panel-border"></div>
 
           <div class="login-card-new">
+
+            <!-- Branded icon badge -->
+            <div class="login-badge">
+              <div class="login-badge-icon">🍽️</div>
+            </div>
+
             <div class="login-header">
-              <h1 class="login-logo">FOOD VISTA</h1>
+              <span class="login-logo">FOOD VISTA</span>
+              <span class="login-tagline">God's Own Cuisine</span>
               <p class="login-subtitle" id="loginSubtitle">Sign in to explore Kerala's flavors</p>
             </div>
+
             <form class="login-form" id="authForm" onsubmit="app.handleAuth(event)">
               <div id="signupFields" class="hidden">
                 <div class="form-group">
@@ -2348,14 +2364,15 @@ const app = {
               </div>
               <div class="form-group">
                 <label class="form-label">Email Address</label>
-                <input type="email" class="login-input" placeholder="Enter your email" required id="emailInput">
+                <input type="email" class="login-input" placeholder="your@email.com" required id="emailInput">
               </div>
               <div class="form-group">
                 <label class="form-label">Password</label>
                 <input type="password" class="login-input" placeholder="••••••••" required id="passwordInput">
               </div>
-              <button type="submit" class="login-button" id="authBtn">Sign In</button>
+              <button type="submit" class="login-button" id="authBtn">Sign In →</button>
             </form>
+
             <div class="login-footer">
               <p id="toggleAuthText">Don't have an account? <a href="javascript:void(0)" class="footer-link" onclick="app.toggleAuthMode()">Register Now</a></p>
             </div>
