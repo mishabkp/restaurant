@@ -2107,7 +2107,8 @@ const app = {
         this.closeCheckout();
         this.showToast('Thank you! Your review has been published. ✨');
       } else {
-        this.showToast('Failed to post review. ❌');
+        const errorData = await response.json().catch(() => ({}));
+        this.showToast(errorData.msg || 'Failed to post review. ❌');
       }
     } catch (err) {
 

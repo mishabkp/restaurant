@@ -8,7 +8,8 @@ const fs = require('fs');
 // Configure Multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadDir = 'uploads/reviews/';
+        // Use absolute path to ensure uploads work correctly across environments
+        const uploadDir = path.join(__dirname, '..', 'uploads', 'reviews');
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
@@ -25,34 +26,56 @@ const upload = multer({ storage: storage });
 // @desc    Get all reviews for a restaurant
 router.get('/:restaurantId', async (req, res) => {
     try {
-        const reviews = await Review.find({ restaurantId: req.params.restaurantId }).sort({ date: -1 });
+        const restaurantId = parseInt(req.params.restaurantId);
+        if (isNaN(restaurantId)) {
+            return res.status(400).json({ msg: 'Invalid restaurant ID' });
+        }
+        const reviews = await Review.find({ restaurantId }).sort({ date: -1 });
         res.json(reviews);
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
+        console.error('Fetch Reviews Error:', err.message);
+        res.status(500).json({ msg: 'Server Error', error: err.message });
     }
 });
 
 // @route   POST /api/reviews
 // @desc    Add a review
 router.post('/', upload.single('image'), async (req, res) => {
-    const { restaurantId, userName, rating, comment } = req.body;
-    const image = req.file ? req.file.path : null;
-
     try {
+        const { restaurantId, userName, rating, comment } = req.body;
+
+        // Explicitly cast to Number to pass Mongoose schema validation
+        const rid = parseInt(restaurantId);
+        const rtg = parseInt(rating);
+
+        if (isNaN(rid) || isNaN(rtg)) {
+            return res.status(400).json({ msg: 'Invalid restaurantId or rating values' });
+        }
+
+        let imagePath = null;
+        if (req.file) {
+            // Normalize path to use forward slashes for frontend compatibility
+            imagePath = req.file.path.replace(/\\/g, '/');
+            // Extract the relative path that the static middleware expects
+            const parts = imagePath.split('uploads/');
+            if (parts.length > 1) {
+                imagePath = 'uploads/' + parts[1];
+            }
+        }
+
         const newReview = new Review({
-            restaurantId,
+            restaurantId: rid,
             userName,
-            rating,
+            rating: rtg,
             comment,
-            image
+            image: imagePath
         });
 
         const review = await newReview.save();
         res.json(review);
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
+        console.error('Submit Review Error:', err.message);
+        res.status(400).json({ msg: 'Validation Failed or Database Error', error: err.message });
     }
 });
 
