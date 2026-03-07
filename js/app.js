@@ -2283,34 +2283,86 @@ const app = {
     mainContent.className = '';
 
     mainContent.innerHTML = `
-                  <div class="login-page">
-                    <div class="login-card">
-                      <div class="login-header">
-                        <h1 class="login-logo">FOOD VISTA</h1>
-                        <p class="login-subtitle" id="loginSubtitle">Sign in to explore Kerala's flavors</p>
-                      </div>
-                      <form class="login-form" id="authForm" onsubmit="app.handleAuth(event)">
-                        <div id="signupFields" class="hidden">
-                          <div class="form-group">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" class="login-input" placeholder="Enter your name" id="nameInput">
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label class="form-label">Email Address</label>
-                          <input type="email" class="login-input" placeholder="Enter your email" required id="emailInput">
-                        </div>
-                        <div class="form-group">
-                          <label class="form-label">Password</label>
-                          <input type="password" class="login-input" placeholder="••••••••" required id="passwordInput">
-                        </div>
-                        <button type="submit" class="login-button" id="authBtn">Sign In</button>
-                      </form>
-                      <div class="login-footer">
-                        <p id="toggleAuthText">Don't have an account? <a href="javascript:void(0)" class="footer-link" onclick="app.toggleAuthMode()">Register Now</a></p>
-                      </div>
-                    </div>
-      </div >
+      <div class="login-split-page">
+
+        <!-- LEFT: Hero Section -->
+        <div class="login-hero-side">
+          <!-- Background video -->
+          <video class="login-hero-video" autoplay muted loop playsinline>
+            <source src="assets/hero.mp4.mp4" type="video/mp4">
+          </video>
+          <!-- Gradient overlay -->
+          <div class="login-hero-overlay"></div>
+
+          <!-- Hero content -->
+          <div class="login-hero-content">
+            <div class="login-hero-eyebrow">
+              <span class="eyebrow-line"></span>
+              <span class="eyebrow-text">Kerala · India · Cuisine</span>
+              <span class="eyebrow-line"></span>
+            </div>
+            <h1 class="login-hero-title">
+              <span class="title-thin">Experience the Art of</span>
+              <span class="title-bold">Kerala's Finest</span>
+              <span class="title-accent">Flavors.</span>
+            </h1>
+            <div class="hero-rule"></div>
+            <p class="login-hero-subtitle">From heritage Sadya to coastal seafood —<br>a culinary journey through God's Own Country.</p>
+
+            <div class="hero-stats-minimal" style="margin-top:2.5rem;">
+              <div class="stat-minimal">
+                <span class="stat-num">50+</span>
+                <span class="stat-lbl">Restaurants</span>
+              </div>
+              <div class="stat-sep"></div>
+              <div class="stat-minimal">
+                <span class="stat-num">12</span>
+                <span class="stat-lbl">Locations</span>
+              </div>
+              <div class="stat-sep"></div>
+              <div class="stat-minimal">
+                <span class="stat-num">4.8★</span>
+                <span class="stat-lbl">Avg Rating</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Login Panel -->
+        <div class="login-panel-side">
+          <!-- Panel background image -->
+          <div class="login-panel-bg" style="background-image: url('assets/login-hero.png');"></div>
+          <div class="login-panel-overlay"></div>
+
+          <div class="login-card-new">
+            <div class="login-header">
+              <h1 class="login-logo">FOOD VISTA</h1>
+              <p class="login-subtitle" id="loginSubtitle">Sign in to explore Kerala's flavors</p>
+            </div>
+            <form class="login-form" id="authForm" onsubmit="app.handleAuth(event)">
+              <div id="signupFields" class="hidden">
+                <div class="form-group">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" class="login-input" placeholder="Enter your name" id="nameInput">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="login-input" placeholder="Enter your email" required id="emailInput">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="login-input" placeholder="••••••••" required id="passwordInput">
+              </div>
+              <button type="submit" class="login-button" id="authBtn">Sign In</button>
+            </form>
+            <div class="login-footer">
+              <p id="toggleAuthText">Don't have an account? <a href="javascript:void(0)" class="footer-link" onclick="app.toggleAuthMode()">Register Now</a></p>
+            </div>
+          </div>
+        </div>
+
+      </div>
   `;
   },
 

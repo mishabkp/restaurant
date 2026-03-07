@@ -204,3 +204,154 @@
         padding: 1rem;
     }
 }
+
+/* ========================================
+   SPLIT SCREEN LOGIN — NEW DESIGN
+   ======================================== */
+
+.login-split-page {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* ---- LEFT: Hero side ---- */
+.login-hero-side {
+    flex: 1 1 60%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    padding: 4rem 3.5rem;
+}
+
+.login-hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.login-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+            rgba(10, 10, 15, 0.75) 0%,
+            rgba(10, 10, 15, 0.5) 60%,
+            rgba(10, 10, 15, 0.7) 100%);
+    z-index: 1;
+}
+
+.login-hero-content {
+    position: relative;
+    z-index: 2;
+    animation: loginFadeIn 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.login-hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.login-hero-title {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-primary);
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+}
+
+.login-hero-subtitle {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-top: 1rem;
+}
+
+/* ---- RIGHT: Login panel ---- */
+.login-panel-side {
+    flex: 0 0 420px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.login-panel-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+}
+
+.login-panel-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg,
+            rgba(10, 10, 18, 0.88) 0%,
+            rgba(20, 15, 35, 0.92) 100%);
+    backdrop-filter: blur(2px);
+    z-index: 1;
+}
+
+.login-card-new {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 2.5rem 2.2rem;
+    animation: loginFadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
+}
+
+.login-card-new::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    border-radius: 0;
+    z-index: -1;
+}
+
+/* Mobile: stack vertically */
+@media (max-width: 768px) {
+    .login-split-page {
+        flex-direction: column;
+    }
+
+    .login-hero-side {
+        flex: 0 0 45%;
+        padding: 2rem 1.5rem;
+        align-items: center;
+    }
+
+    .login-hero-content {
+        text-align: center;
+    }
+
+    .login-hero-eyebrow {
+        justify-content: center;
+    }
+
+    .login-panel-side {
+        flex: 1 1 55%;
+        width: 100%;
+    }
+
+    .hero-stats-minimal {
+        justify-content: center;
+    }
+}
