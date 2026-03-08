@@ -187,4 +187,17 @@ router.put('/places/:id', isAdmin, async (req, res) => {
     }
 });
 
+// @route   DELETE /api/admin/reservations/:id
+// @desc    Delete a reservation
+router.delete('/reservations/:id', isAdmin, async (req, res) => {
+    try {
+        const Reservation = require('../models/Reservation'); // Local import to avoid circular dependency if any
+        await Reservation.findByIdAndDelete(req.params.id);
+        res.json({ msg: 'Reservation removed' });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 module.exports = router;

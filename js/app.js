@@ -1793,7 +1793,7 @@ const app = {
     });
 
     this.closeModal();
-    this.showToast(`🎉 Room "${roomType}" booked! ${checkin} to ${checkout} for ${guests}. Booking ID: ${reservationId}`);
+    this.showToast(`🎉 Room "${roomType}" requested! ${checkin} to ${checkout} for ${guests}. Booking ID: ${reservationId}. Please wait for admin confirmation.`);
   },
 
   // ========================================
@@ -3845,9 +3845,11 @@ const app = {
     body.innerHTML = `
       <div class="success-screen">
         <span class="success-icon">🎫</span>
-        <h2 class="checkout-title" style="background: var(--accent-gradient); -webkit-background-clip: text;">Table Reserved!</h2>
+        <h2 class="checkout-title" style="background: var(--accent-gradient); -webkit-background-clip: text;">Reservation Received!</h2>
         <p style="color: var(--text-secondary); margin-bottom: 2rem;">
-          Your table for ${guests} guests on ${date} at ${time} is confirmed at ${restaurant ? restaurant.name : 'the restaurant'}.
+          Your request for ${guests} guests on ${date} at ${time} at ${restaurant ? restaurant.name : 'the restaurant'} has been received.
+          <br><br>
+          <span style="color: #fdb931; font-weight: 600;">Status: Pending Admin Confirmation</span>
         </p>
         <div class="order-id" style="background: rgba(0, 242, 254, 0.1); color: var(--accent-color);">
           Booking ID: ${reservationId}

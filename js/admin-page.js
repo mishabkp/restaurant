@@ -1239,8 +1239,14 @@ const adminPortal = {
 
             const statusColor = r.status === 'Confirmed' ? '#00ff88' : (r.status === 'Cancelled' ? '#ff3d71' : '#fdb931');
             const createdDate = r.createdAt ? new Date(r.createdAt).toLocaleDateString() : '-';
-            const actionHTML = r.status === 'Pending'
-                ? `<button class="checkout-btn" onclick="adminPortal.confirmReservation('${r.reservationId}')" style="padding: 0.3rem 0.6rem; font-size: 0.7rem; background: var(--accent-gradient);">Confirm</button>` : `<span style="color: var(--text-muted); font-size: 0.8rem;">✓ ${r.status || 'Confirmed'}</span>`;
+            const actionHTML = `
+                <div style="display: flex; gap: 0.5rem;">
+                    ${r.status === 'Pending'
+                    ? `<button class="checkout-btn" onclick="adminPortal.confirmReservation('${r.reservationId}')" style="padding: 0.3rem 0.6rem; font-size: 0.7rem; background: var(--accent-gradient);">Confirm</button>`
+                    : `<span style="color: var(--text-muted); font-size: 0.8rem; display: flex; align-items: center;">✓ ${r.status || 'Confirmed'}</span>`}
+                    <button class="logout-btn" onclick="adminPortal.deleteReservation('${r._id}')" style="padding: 0.3rem 0.6rem; font-size: 0.7rem;">Delete</button>
+                </div>
+            `;
 
             return `
                 <tr>
@@ -1285,6 +1291,21 @@ const adminPortal = {
         } catch (err) {
             console.error('Confirm Reservation Error:', err);
             this.showToast('Failed to confirm reservation. 🛠️');
+        }
+    },
+    async deleteReservation(id) {
+        if (!confirm('Are you sure you want to delete this reservation?')) return;
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/api/admin/reservations/${id}`, { method: 'DELETE' });
+            if (response.ok) {
+                this.showToast('Reservation deleted! 🗑️');
+                this.loadReservations();
+            } else {
+                throw new Error('Delete failed');
+            }
+        } catch (err) {
+            console.error('Delete Reservation Error:', err);
+            this.showToast('Failed to delete reservation.');
         }
     }
 };
