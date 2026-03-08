@@ -4,13 +4,20 @@ const Reservation = require('../models/Reservation');
 
 // @route   POST /api/reservations
 // @desc    Create a new reservation (Table or Room)
-// @access  Public (in this setup, ideally should be Protected)
+// @access  Public
 router.post('/', async (req, res) => {
     try {
-        const { user, restaurantId, restaurantName, type, guests, date, checkoutDate, roomType, price, time, reservationId } = req.body;
+        const {
+            user, userName, userEmail,
+            restaurantId, restaurantName,
+            type, guests, date, checkoutDate,
+            roomType, price, time, reservationId
+        } = req.body;
 
         const newReservation = new Reservation({
-            user,
+            user: user || undefined,
+            userName,
+            userEmail,
             restaurantId,
             restaurantName,
             type,
@@ -27,16 +34,15 @@ router.post('/', async (req, res) => {
         res.status(201).json(savedReservation);
     } catch (err) {
         console.error('Create Reservation Error:', err);
-        res.status(500).json({ error: 'Server error while creating reservation' });
+        res.status(500).json({ error: 'Server error while creating reservation', details: err.message });
     }
 });
 
 // @route   GET /api/reservations
 // @desc    Get all reservations (for Admin)
-// @access  Public (in this setup, ideally should be Admin Protected)
+// @access  Public
 router.get('/', async (req, res) => {
     try {
-        // Populate user details to show who reserved
         const reservations = await Reservation.find()
             .populate('user', 'name email phone')
             .sort({ createdAt: -1 });

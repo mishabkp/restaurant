@@ -1773,6 +1773,8 @@ const app = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         user: user.id,
+        userName: user.name || user.username || 'Guest',
+        userEmail: user.email || '',
         restaurantId: restaurantId,
         restaurantName: restaurant ? restaurant.name : 'Unknown',
         type: 'Room',
@@ -3808,6 +3810,8 @@ const app = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         user: user.id,
+        userName: user.name || user.username || 'Guest',
+        userEmail: user.email || '',
         restaurantId: restaurantId,
         restaurantName: restaurant ? restaurant.name : 'Unknown',
         type: 'Table',

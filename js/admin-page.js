@@ -1,7 +1,7 @@
 const adminPortal = {
     isLoggedIn: false,
     orders: [],
-    apiBaseUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    apiBaseUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:' || window.location.hostname === ''
         ? 'http://localhost:5000'
         : 'https://restaurant-99en.onrender.com',
 
@@ -1218,8 +1218,8 @@ const adminPortal = {
             return;
         }
         body.innerHTML = reservations.map(r => {
-            const customerName = r.user ? (r.user.name || r.user.email || 'Unknown') : 'Unknown';
-            const customerEmail = r.user ? (r.user.email || '') : '';
+            const customerName = r.user ? (r.user.name || r.user.email || 'Unknown') : (r.userName || 'Guest');
+            const customerEmail = r.user ? (r.user.email || '') : (r.userEmail || '');
             const typeBadgeColor = r.type === 'Room' ? 'rgba(102, 126, 234, 0.2)' : 'rgba(0, 242, 254, 0.2)';
             const typeBadgeTextColor = r.type === 'Room' ? '#667eea' : '#00f2fe';
             const typeIcon = r.type === 'Room' ? '🛏️' : '🍽️';
