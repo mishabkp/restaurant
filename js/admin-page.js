@@ -35,6 +35,7 @@ const adminPortal = {
         if (pageId === 'reviews') this.fetchReviews();
         if (pageId === 'users') this.fetchUsers();
         if (pageId === 'discovery') this.fetchDiscoveryData();
+        if (pageId === 'reservations') this.loadReservations();
     },
 
     // ==================== DISCOVERY MANAGEMENT ====================
@@ -1183,18 +1184,83 @@ const adminPortal = {
     },
 
     showToast(msg) {
+        const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.style.background = 'rgba(0, 242, 254, 0.9)';
-        toast.style.color = 'black';
-        toast.style.padding = '1rem 2rem';
-        toast.style.borderRadius = '10px';
-        toast.style.marginBottom = '1rem';
-        toast.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
-        toast.style.animation = 'fadeInUp 0.3s ease-out';
         toast.innerText = msg;
-        document.getElementById('toastContainer').appendChild(toast);
-        setTimeout(() => toast.remove(), 4000);
+        toast.style.cssText =
+            'background: var(--card-bg); color: white; border: 1px solid var(--accent-color); padding: 1rem 2rem; border-radius: 10px; margin-top: 0.5rem; animation: fadeIn 0.4s ease; font-size: 0.95rem; pointer-events: auto;';
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    },
+
+    // ==================== RESERVATIONS MANAGEMENT ====================
+    async loadReservations() {
+        const body = document.getElementById('reservationsBody');
+        body.innerHTML = '<tr><td colspan="6" style="text-align: center;">Loading reservations...</td></tr>';
+        try {
+            const resp = await fetch(`${this.apiBaseUrl}/api/reservations`);
+            if (resp.ok) {
+                const reservations = await resp.json();
+                this.renderReservations(reservations);
+            } else {
+                throw new Error('Failed to fetch');
+            }
+        } catch (err) {
+            console.error('Reservations fetch error:', err);
+            body.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Failed to load reservations. Is the server running?</td></tr>';
+        }
+    },
+
+    renderReservations(reservations) {
+        const body = document.getElementById('reservationsBody');
+        if (!reservations || reservations.length === 0) {
+            body.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No reservations yet.</td></tr>';
+            return;
+        }
+        body.innerHTML = reservations.map(r => {
+            const customerName = r.user ? (r.user.name || r.user.email || 'Unknown') : 'Unknown';
+            const customerEmail = r.user ? (r.user.email || '') : '';
+            const typeBadgeColor = r.type === 'Room' ? 'rgba(102, 126, 234, 0.2)' : 'rgba(0, 242, 254, 0.2)';
+            const typeBadgeTextColor = r.type === 'Room' ? '#667eea' : '#00f2fe';
+            const typeIcon = r.type === 'Room' ? '🛏️' : '🍽️';
+
+            let details = '';
+            if (r.type === 'Room') {
+                details = `<b>${r.roomType || '-'}</b><br>
+                    <small>Check-in: ${r.date || '-'}</small><br>
+                    <small>Check-out: ${r.checkoutDate || '-'}</small><br>
+                    <small>Guests: ${r.guests || '-'}</small><br>
+                    <small>Price: ${r.price || '-'}/night</small>`;
+            } else {
+                details = `<small>Date: ${r.date || '-'}</small><br>
+                    <small>Time: ${r.time || '-'}</small><br>
+                    <small>Guests: ${r.guests || '-'}</small>`;
+            }
+
+            const statusColor = r.status === 'Confirmed' ? '#00ff88' : '#ff3d71';
+            const createdDate = r.createdAt ? new Date(r.createdAt).toLocaleDateString() : '-';
+
+            return `
+                <tr>
+                    <td><span style="font-weight: 700; color: var(--accent-color);">${r.reservationId || '-'}</span></td>
+                    <td>
+                        <b>${customerName}</b><br>
+                        <small style="color: var(--text-muted);">${customerEmail}</small>
+                    </td>
+                    <td>
+                        <span style="background: ${typeBadgeColor}; color: ${typeBadgeTextColor}; padding: 0.2rem 0.6rem; border-radius: 5px; font-size: 0.8rem; font-weight: 600;">
+                            ${typeIcon} ${r.type}
+                        </span>
+                    </td>
+                    <td>${r.restaurantName || '-'}</td>
+                    <td>${details}</td>
+                    <td>
+                        <span style="color: ${statusColor}; font-weight: 600;">${r.status || '-'}</span><br>
+                        <small style="color: var(--text-muted);">${createdDate}</small>
+                    </td>
+                </tr>
+            `;
+        }).join('');
     }
 };
 

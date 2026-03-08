@@ -27,6 +27,7 @@ app.use('/api/payments', require('./routes/payments'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/restaurants', require('./routes/restaurants'));
 app.use('/api/discovery', require('./routes/discovery'));
+app.use('/api/reservations', require('./routes/reservations'));
 app.get('/api/ping', (req, res) => res.json({ msg: 'pong', build: 'BUILD_DEBUG_V6' }));
 
 

@@ -235,6 +235,9 @@
             <li class="nav-item" onclick="adminPortal.switchPage('discovery', this)">
                 <span>📖</span> Discovery
             </li>
+            <li class="nav-item" onclick="adminPortal.switchPage('reservations', this)">
+                <span>📅</span> Reservations
+            </li>
         </ul>
         <div class="logout-section">
             <button class="logout-btn" style="width: 100%;" onclick="adminPortal.logout()">Logout</button>
@@ -332,6 +335,31 @@
         <div id="usersPage" class="page">
             <h2 class="section-title">User Management</h2>
             <div id="usersContent"></div>
+        </div>
+
+        <div id="reservationsPage" class="page">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 class="section-title" style="margin: 0;">Reservations</h2>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer</th>
+                            <th>Type</th>
+                            <th>Restaurant</th>
+                            <th>Details</th>
+                            <th>Status/Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservationsBody">
+                        <tr>
+                            <td colspan="6" style="text-align: center;">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div id="discoveryPage" class="page">
