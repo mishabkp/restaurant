@@ -39,8 +39,8 @@ const reservationSchema = new mongoose.Schema({
     time: { type: String },
     status: {
         type: String,
-        enum: ['Confirmed', 'Cancelled'],
-        default: 'Confirmed'
+        enum: ['Pending', 'Confirmed', 'Cancelled'],
+        default: 'Pending'
     },
     reservationId: {
         type: String,

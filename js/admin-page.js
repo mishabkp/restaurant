@@ -1196,7 +1196,7 @@ const adminPortal = {
     // ==================== RESERVATIONS MANAGEMENT ====================
     async loadReservations() {
         const body = document.getElementById('reservationsBody');
-        body.innerHTML = '<tr><td colspan="6" style="text-align: center;">Loading reservations...</td></tr>';
+        body.innerHTML = '<tr><td colspan="7" style="text-align: center;">Loading reservations...</td></tr>';
         try {
             const resp = await fetch(`${this.apiBaseUrl}/api/reservations`);
             if (resp.ok) {
@@ -1207,14 +1207,14 @@ const adminPortal = {
             }
         } catch (err) {
             console.error('Reservations fetch error:', err);
-            body.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Failed to load reservations. Is the server running?</td></tr>';
+            body.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Failed to load reservations. Is the server running?</td></tr>';
         }
     },
 
     renderReservations(reservations) {
         const body = document.getElementById('reservationsBody');
         if (!reservations || reservations.length === 0) {
-            body.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No reservations yet.</td></tr>';
+            body.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">No reservations yet.</td></tr>';
             return;
         }
         body.innerHTML = reservations.map(r => {
@@ -1237,8 +1237,10 @@ const adminPortal = {
                     <small>Guests: ${r.guests || '-'}</small>`;
             }
 
-            const statusColor = r.status === 'Confirmed' ? '#00ff88' : '#ff3d71';
+            const statusColor = r.status === 'Confirmed' ? '#00ff88' : (r.status === 'Cancelled' ? '#ff3d71' : '#fdb931');
             const createdDate = r.createdAt ? new Date(r.createdAt).toLocaleDateString() : '-';
+            const actionHTML = r.status === 'Pending'
+                ? `<button class="checkout-btn" onclick="adminPortal.confirmReservation('${r.reservationId}')" style="padding: 0.3rem 0.6rem; font-size: 0.7rem; background: var(--accent-gradient);">Confirm</button>` : `<span style="color: var(--text-muted); font-size: 0.8rem;">✓ ${r.status || 'Confirmed'}</span>`;
 
             return `
                 <tr>
@@ -1258,9 +1260,32 @@ const adminPortal = {
                         <span style="color: ${statusColor}; font-weight: 600;">${r.status || '-'}</span><br>
                         <small style="color: var(--text-muted);">${createdDate}</small>
                     </td>
+                    <td>${actionHTML}</td>
                 </tr>
             `;
         }).join('');
+    },
+
+    async confirmReservation(reservationId) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/api/reservations/${reservationId}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'Confirmed' })
+            });
+
+            if (response.ok) {
+                this.showToast('Reservation Confirmed! ✅');
+                // Optional: Send email confirmation to user here if backend supports it
+                this.loadReservations(); // Refresh the list
+            } else {
+                const data = await response.json();
+                throw new Error(data.error || 'Update failed');
+            }
+        } catch (err) {
+            console.error('Confirm Reservation Error:', err);
+            this.showToast('Failed to confirm reservation. 🛠️');
+        }
     }
 };
 

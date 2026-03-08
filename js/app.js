@@ -3287,15 +3287,29 @@ const app = {
 
   handleContactSubmit(event) {
     event.preventDefault();
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+
+    const text = `Name: ${name}\nEmail: ${email}\nMessage: ${message}`;
+    const whatsappUrl = `https://wa.me/919656760092?text=${encodeURIComponent(text)}`;
+
     const btn = document.getElementById('contactSubmit');
-    btn.innerHTML = 'Sending...';
+    const originalContent = btn.innerHTML;
+
+    btn.innerHTML = 'Redirecting...';
+
     setTimeout(() => {
+      window.open(whatsappUrl, '_blank');
       btn.innerHTML = 'Message Sent! ✅';
+      document.getElementById('contactForm').reset();
+
       setTimeout(() => {
-        btn.innerHTML = 'Send Message';
+        btn.innerHTML = originalContent;
         btn.disabled = false;
       }, 3000);
-    }, 1500);
+    }, 800);
   },
 
   showFoodModal(restaurantId, itemName) {
