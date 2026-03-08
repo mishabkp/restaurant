@@ -2621,7 +2621,7 @@ const app = {
           place.restaurants.forEach(rest => {
             if (rest.foodItems) {
               rest.foodItems.forEach(item => {
-                const itemId = `${rest.id} - ${item.name.replace(/\s+/g, '_')}`;
+                const itemId = `${rest.id}-${item.name.replace(/\s+/g, '_')}`;
                 if (this.favorites && this.favorites.items && this.favorites.items.includes(itemId)) {
                   favItems.push({
                     ...item,
