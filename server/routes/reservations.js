@@ -80,4 +80,18 @@ router.put('/:id/status', async (req, res) => {
     }
 });
 
+// @route   GET /api/reservations/user/:userId
+// @desc    Get reservations for a specific user
+// @access  Public (should be protected in prod)
+router.get('/user/:userId', async (req, res) => {
+    try {
+        const reservations = await Reservation.find({ user: req.params.userId })
+            .sort({ createdAt: -1 });
+        res.status(200).json(reservations);
+    } catch (err) {
+        console.error('Fetch User Reservations Error:', err);
+        res.status(500).json({ error: 'Server error while fetching user reservations' });
+    }
+});
+
 module.exports = router;

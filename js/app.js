@@ -2578,22 +2578,28 @@ const app = {
     const timeoutId = setTimeout(() => controller.abort(), 30000);
 
     try {
-      const ordersResponse = await fetch(`${this.apiBaseUrl}/api/orders/${user.id}`, { signal: controller.signal });
-      const orders = await ordersResponse.json();
-      clearTimeout(timeoutId);
-      this.renderDashboardPage(orders);
-    } catch (err) {
+      // Fetch both orders and reservations in parallel
+      const [ordersResp, reservationsResp] = await Promise.all([
+        fetch(`${this.apiBaseUrl}/api/orders/${user.id}`, { signal: controller.signal }),
+        fetch(`${this.apiBaseUrl}/api/reservations/user/${user.id}`, { signal: controller.signal })
+      ]);
 
+      const orders = await ordersResp.json();
+      const reservations = await reservationsResp.json();
+
+      clearTimeout(timeoutId);
+      this.renderDashboardPage(orders, reservations);
+    } catch (err) {
       clearTimeout(timeoutId);
       console.error('Dashboard Error:', err);
       if (err.name === 'AbortError') {
-        this.showToast('Orders request timed out. Showing fallback. 🛠️');
+        this.showToast('Dashboard request timed out. 🛠️');
       }
-      this.renderDashboardPage([]);
+      this.renderDashboardPage([], []);
     }
   },
 
-  renderDashboardPage(orders) {
+  renderDashboardPage(orders = [], reservations = []) {
 
     const favRestaurants = [];
     if (window.restaurantData && window.restaurantData.places) {
@@ -2634,10 +2640,15 @@ const app = {
       <h1 class="page-title"> Welcome Back, ${JSON.parse(localStorage.getItem('user'))?.name || 'Foodie'}! 👋</h1>
       <p class="page-subtitle">Manage your favorite spots and personal settings</p>
       
-      ${this.renderUserStats(orders.length)}
+      ${this.renderUserStats(orders.length, reservations.length)}
 
       <div class="dashboard-grid">
       <div class="dashboard-section main-content">
+        <h2 class="section-title">📅 My Reservations</h2>
+        <div class="reservations-list" style="margin-bottom: 3rem;">
+          ${this.renderUserReservations(reservations)}
+        </div>
+
         <h2 class="section-title">📦 Recent Orders</h2>
         <div class="orders-list" style="margin-bottom: 3rem;">
           ${this.renderOrders(orders)}
@@ -3659,16 +3670,16 @@ const app = {
     icon.innerText = '🎊';
   },
 
-  renderUserStats(orderCount = 0) {
-    // Simulated user stats combined with real order count
+  renderUserStats(orderCount = 0, bookingCount = 0) {
+    // Dynamic user stats
     const stats = {
       orders: orderCount,
-      bookings: 0,
-      loyaltyPoints: orderCount * 50,
+      bookings: bookingCount,
+      loyaltyPoints: (orderCount * 50) + (bookingCount * 100),
       nextLevel: 1000
     };
 
-    const progress = (stats.loyaltyPoints / stats.nextLevel) * 100;
+    const progress = Math.min(100, (stats.loyaltyPoints / stats.nextLevel) * 100);
 
     return `
       <div class="stats-container">
@@ -3704,6 +3715,41 @@ const app = {
     </div>
       </div>
     `;
+  },
+
+  renderUserReservations(reservations) {
+    if (!reservations || reservations.length === 0) {
+      return `
+        <div class="empty-state" style="background: rgba(255,255,255,0.03); border-radius: 15px; padding: 2rem;">
+          <div class="empty-state-icon">🗓️</div>
+          <p class="empty-state-text">No reservations yet. Plan your next visit?</p>
+          <button class="checkout-btn" style="width: auto; margin-top: 1rem; padding: 0.8rem 2rem;" onclick="app.navigateHome()">Book a Table</button>
+        </div>
+      `;
+    }
+
+    return reservations.map(res => {
+      const isConfirmed = res.status === 'Confirmed';
+      const isPending = res.status === 'Pending';
+      const statusColor = isConfirmed ? '#4caf50' : (isPending ? '#ff9800' : '#f44336');
+      const statusBg = isConfirmed ? 'rgba(76, 175, 80, 0.2)' : (isPending ? 'rgba(255, 152, 0, 0.2)' : 'rgba(244, 67, 54, 0.2)');
+
+      return `
+        <div class="order-card" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 1.5rem; margin-bottom: 1rem;">
+          <div class="order-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+            <div>
+              <div style="font-weight: 700; color: var(--accent-color); font-size: 1.1rem;">${res.type} at ${res.restaurantName}</div>
+              <div style="font-size: 0.85rem; color: var(--text-muted);">${new Date(res.date).toLocaleDateString()} ${res.time || ''}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">ID: ${res.reservationId} • ${res.guests} Guests</div>
+              ${res.roomType ? `<div style="font-size: 0.8rem; color: var(--accent-color); margin-top: 4px;">Room: ${res.roomType} (${res.price})</div>` : ''}
+            </div>
+            <span class="status-badge" style="background: ${statusBg}; color: ${statusColor}; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+              ${res.status}
+            </span>
+          </div>
+        </div>
+      `;
+    }).join('');
   },
 
   renderOrders(orders) {
