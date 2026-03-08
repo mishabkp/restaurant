@@ -687,6 +687,7 @@ const app = {
         </div>
       </div>
 
+      ${this.renderCuisineSection()}
       ${this.renderSmartRecommenderHero()}
       
       <div class="map-section">
@@ -697,6 +698,8 @@ const app = {
         </div>
         <div id="mainMap" class="map-container"></div>
       </div>
+
+      ${this.renderTrendingSection()}
 
       <h1 class="page-title">Discover Kerala's Best Restaurants</h1>
       <p class="page-subtitle">Choose a location to explore amazing dining experiences</p>
@@ -732,7 +735,72 @@ const app = {
 
   },
 
+  renderTrendingSection() {
+    // Collect all restaurants with high ratings (4.5+)
+    const allRestaurants = [];
+    window.restaurantData.places.forEach(place => {
+      place.restaurants.forEach(res => {
+        if (parseFloat(res.rating) >= 4.5) {
+          allRestaurants.push({ ...res, placeName: place.name });
+        }
+      });
+    });
 
+    if (allRestaurants.length === 0) return '';
+
+    // Pick a random one from the high-rated pool
+    const restaurant = allRestaurants[Math.floor(Math.random() * allRestaurants.length)];
+
+    return `
+      <section class="trending-premium fade-slide-up">
+        <div class="tp-bg-box">
+          <img src="${restaurant.image || restaurant.foodItems[0]?.image}" alt="${restaurant.name}" class="tp-bg-img">
+          <div class="tp-overlay"></div>
+          <div class="tp-pattern"></div>
+        </div>
+        
+        <div class="tp-container">
+          <div class="tp-content">
+            <!-- Eyebrow -->
+            <div class="tp-eyebrow">
+              <span class="tp-eyebrow-line"></span>
+              <span class="tp-eyebrow-text">Spotlight · Pick of the Week</span>
+              <span class="tp-eyebrow-line"></span>
+            </div>
+
+            <!-- Title -->
+            <h2 class="tp-title">
+              <span class="tp-t-thin">Discover</span>
+              <span class="tp-t-bold">${restaurant.name}</span>
+            </h2>
+
+            <!-- Rule -->
+            <div class="tp-rule"></div>
+
+            <!-- Description -->
+            <p class="tp-subtitle">${restaurant.cuisine} • ${window.restaurantData.places[0].name}<br>Experience Kochi's finest seafood with authentic coastal traditions.</p>
+
+            <!-- Actions -->
+            <div class="tp-actions">
+              <button class="tp-btn-primary" onclick="app.navigateToRestaurant(${restaurant.id})">
+                Explore Menu <span class="tp-arrow">→</span>
+              </button>
+              <button class="tp-btn-secondary" onclick="app.showFoodModal(${restaurant.id}, '${restaurant.foodItems[0]?.name.replace(/'/g, "\\'")}')">
+                Quick View
+              </button>
+            </div>
+          </div>
+          
+          <div class="tp-badge-box">
+            <div class="tp-rating-badge">
+              <span class="tp-star">★</span>
+              <span class="tp-num">${restaurant.rating}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  },
 
   renderSmartRecommenderHero() {
     return `
@@ -778,10 +846,96 @@ const app = {
     `;
   },
 
+  renderCuisineSection() {
+    const cuisines = [
+      { name: 'Malabar', img: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?q=80&fit=crop&w=600&h=800' },
+      { name: 'Seafood', img: 'https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?q=80&fit=crop&w=600&h=800' },
+      { name: 'Arabian', img: 'https://images.unsplash.com/photo-1511914678378-2906b1f69dcf?q=80&fit=crop&w=600&h=800' },
+      { name: 'Continental', img: 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&fit=crop&w=600&h=800' },
+      { name: 'Traditional', img: 'https://images.unsplash.com/photo-1541014741259-de529411b96a?q=80&fit=crop&w=600&h=800' },
+      { name: 'Chinese', img: 'https://images.unsplash.com/photo-1552611052-33e04de081de?q=80&fit=crop&w=600&h=800' },
+      { name: 'Desserts', img: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&fit=crop&w=600&h=800' }
+    ];
 
+    return `
+      <section class="cuisine-section-premium fade-slide-up">
+        <div class="tp-eyebrow" style="justify-content: center; margin-bottom: 12px;">
+          <span class="tp-eyebrow-line"></span>
+          <span class="tp-eyebrow-text">Quick Browse</span>
+          <span class="tp-eyebrow-line"></span>
+        </div>
+        
+        <h2 class="tp-title" style="align-items: center; text-align: center; margin-bottom: 40px;">
+          <span class="tp-t-thin">Explore by</span>
+          <span class="tp-t-bold">Cuisine</span>
+        </h2>
 
+        <div class="cuisine-grid-container">
+          <!-- Navigation Arrows -->
+          <button class="cuisine-nav-btn prev" onclick="app.scrollCuisine('left')">‹</button>
+          <button class="cuisine-nav-btn next" onclick="app.scrollCuisine('right')">›</button>
 
+          <div class="cuisine-premium-grid" id="cuisineGrid" onscroll="app.handleCuisineScroll(this)">
+            ${cuisines.map(c => `
+              <div class="cuisine-card-premium" onclick="app.filterByCuisine('${c.name}')">
+                <img src="${c.img}" alt="${c.name}" class="cc-bg-img">
+                <div class="cc-overlay"></div>
+                <div class="cc-content">
+                  <div class="cc-title">
+                    <span class="cc-t-thin">Discover</span>
+                    <span class="cc-t-bold">${c.name}</span>
+                  </div>
+                  <div class="cc-explore">Explore Selection →</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
 
+        <!-- Custom Scroll Indicator -->
+        <div class="cuisine-scroll-indicator-box">
+          <div class="cs-track">
+            <div class="cs-thumb" id="cuisineScrollThumb"></div>
+          </div>
+        </div>
+      </section>
+    `;
+  },
+
+  scrollCuisine(direction) {
+    const grid = document.getElementById('cuisineGrid');
+    if (!grid) return;
+    const scrollAmount = grid.clientWidth * 0.8;
+    grid.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
+  },
+
+  handleCuisineScroll(element) {
+    const thumb = document.getElementById('cuisineScrollThumb');
+    if (!thumb) return;
+
+    const scrollWidth = element.scrollWidth - element.clientWidth;
+    const scrollLeft = element.scrollLeft;
+    const progress = (scrollLeft / scrollWidth) * 100;
+
+    // Scale thumb based on content width approx
+    const thumbWidth = (element.clientWidth / element.scrollWidth) * 100;
+    thumb.style.width = `${Math.max(20, thumbWidth)}%`;
+    thumb.style.left = `${(progress * (100 - thumbWidth)) / 100}%`;
+  },
+
+  filterByCuisine(cuisine) {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.value = cuisine;
+      this.showToast(`Finding best ${cuisine} spots for you... ✨`);
+      const event = new Event('input', { bubbles: true });
+      searchInput.dispatchEvent(event);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  },
 
   openSmartRecommenderModal() {
     const modal = document.getElementById('foodModal');

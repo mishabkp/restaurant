@@ -8123,3 +8123,912 @@ h4 {
   border-top: 8px solid rgba(18, 18, 18, 0.98);
 }
 
+
+/* ========================================
+   TRENDING SECTION
+   ======================================== */
+.trending-section {
+  padding: 4rem 0;
+  margin: 3rem 0;
+  position: relative;
+}
+
+.trending-container {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  backdrop-filter: blur(10px);
+  position: relative;
+}
+
+.trending-badge {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: var(--primary-accent);
+  color: var(--bg-dark);
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  border-radius: 4px;
+  z-index: 10;
+}
+
+.trending-content-wrapper {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  min-height: 450px;
+}
+
+.trending-image-box {
+  position: relative;
+  overflow: hidden;
+}
+
+.trending-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--transition-base);
+}
+
+.trending-container:hover .trending-main-img {
+  transform: scale(1.05);
+}
+
+.trending-rating-pill {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 50px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.trending-rating-pill .star {
+  color: #ffc107;
+}
+
+.trending-text-box {
+  padding: 4rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.trending-name {
+  font-size: 3rem;
+  font-family: "Outfit", sans-serif;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.trending-cuisine {
+  color: var(--primary-accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+}
+
+.trending-desc {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.trending-features {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.t-feat {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.t-icon {
+  font-size: 1.25rem;
+}
+
+.trending-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.trending-btn-primary {
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: var(--transition-base);
+}
+
+.trending-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-glow);
+}
+
+.trending-btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.trending-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 992px) {
+  .trending-content-wrapper {
+    grid-template-columns: 1fr;
+  }
+  .trending-image-box {
+    height: 300px;
+  }
+  .trending-text-box {
+    padding: 2.5rem 1.5rem;
+  }
+  .trending-name {
+    font-size: 2.2rem;
+  }
+}
+
+/* ========================================
+   CUISINE CATEGORIES
+   ======================================== */
+.cuisine-section {
+  padding: 2rem 0;
+  margin-bottom: 3rem;
+}
+
+.cuisine-grid {
+  display: flex;
+  overflow-x: auto;
+  gap: 1.5rem;
+  padding: 1rem 0.5rem;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+.cuisine-grid::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.cuisine-chip {
+  flex: 0 0 auto;
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 50px;
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s var(--transition-base);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  white-space: nowrap;
+}
+
+.cuisine-chip:hover {
+  background: var(--primary-accent);
+  color: var(--bg-dark);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(255, 193, 7, 0.2);
+}
+
+.cuisine-icon {
+  font-size: 1.2rem;
+}
+
+
+/* ========================================
+   TOP RATED ROW
+   ======================================== */
+.top-rated-section {
+  padding: 3rem 0;
+  margin-bottom: 4rem;
+}
+
+.top-rated-scroll {
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  padding: 1rem 0.5rem 2rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-accent) transparent;
+}
+
+.top-rated-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.top-rated-scroll::-webkit-scrollbar-thumb {
+  background: var(--primary-accent);
+  border-radius: 10px;
+}
+
+.tr-card {
+  flex: 0 0 300px;
+  background: var(--bg-card);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.4s var(--transition-base);
+  cursor: pointer;
+}
+
+.tr-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  border-color: rgba(255, 193, 7, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.tr-card-image {
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.tr-rating-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--primary-accent);
+  color: var(--bg-dark);
+  padding: 0.4rem 0.8rem;
+  border-radius: 50px;
+  font-weight: 800;
+  font-size: 0.8rem;
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+}
+
+.tr-card-info {
+  padding: 1.5rem;
+}
+
+.tr-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: var(--text-primary);
+}
+
+.tr-meta {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+
+/* Minimal Trending Design */
+.trending-section.minimal {
+  padding: 2rem 0;
+  margin: 1.5rem 0;
+}
+
+.trending-container.minimal {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.trending-content-wrapper.minimal {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  min-height: auto;
+}
+
+.trending-image-box.minimal {
+  height: 250px;
+}
+
+.trending-rating-pill.minimal {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.trending-text-box.minimal {
+  padding: 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.trending-label-minimal {
+  display: inline-block;
+  color: var(--primary-accent);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.25rem;
+}
+
+.trending-name.minimal {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.1rem;
+}
+
+.trending-cuisine.minimal {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.trending-desc.minimal {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  max-width: 500px;
+}
+
+.trending-actions.minimal {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.trending-btn-primary.minimal {
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.trending-btn-secondary.minimal {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+@media (max-width: 768px) {
+  .trending-content-wrapper.minimal {
+    grid-template-columns: 1fr;
+  }
+  .trending-image-box.minimal {
+    height: 200px;
+  }
+  .trending-text-box.minimal {
+    padding: 1.5rem;
+  }
+}
+
+
+/* ========================================
+   PREMIUM TRENDING HERO SECTION
+   ======================================== */
+.trending-premium {
+  position: relative;
+  min-height: 500px;
+  margin: 4rem 0;
+  border-radius: 32px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 4rem;
+  background: #0a0a0a;
+}
+
+.tp-bg-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.tp-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.trending-premium:hover .tp-bg-img {
+  transform: scale(1.05);
+}
+
+.tp-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0.8) 40%, rgba(10, 10, 10, 0) 100%);
+  z-index: 2;
+}
+
+.tp-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://www.transparenttextures.com/patterns/carbon-fibre.png");
+  opacity: 0.1;
+  z-index: 3;
+}
+
+.tp-container {
+  position: relative;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  z-index: 10;
+}
+
+.tp-content {
+  max-width: 600px;
+}
+
+/* Eyebrow - Matching Hero */
+.tp-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.tp-eyebrow-line {
+  width: 30px;
+  height: 1px;
+  background: var(--primary-accent);
+  opacity: 0.6;
+}
+
+.tp-eyebrow-text {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--primary-accent);
+}
+
+/* Title - Matching Hero */
+.tp-title {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+
+.tp-t-thin {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: "Outfit", sans-serif;
+}
+
+.tp-t-bold {
+  font-size: 4rem;
+  font-weight: 800;
+  color: #fff;
+  font-family: "Outfit", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.tp-rule {
+  width: 60px;
+  height: 4px;
+  background: var(--primary-accent);
+  margin-bottom: 32px;
+  border-radius: 2px;
+}
+
+.tp-subtitle {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 40px;
+  font-weight: 400;
+}
+
+.tp-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.tp-btn-primary {
+  background: var(--primary-gradient);
+  color: #fff;
+  border: none;
+  padding: 1.2rem 2.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.tp-btn-primary:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(124, 58, 237, 0.3);
+}
+
+.tp-btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.2rem 2.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.tp-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-5px);
+}
+
+/* Badge System */
+.tp-badge-box {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.tp-rating-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tp-star {
+  color: var(--primary-accent);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.tp-num {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+  font-family: "Outfit", sans-serif;
+}
+
+@media (max-width: 992px) {
+  .trending-premium {
+    padding: 3rem 2rem;
+    min-height: auto;
+  }
+  .tp-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+  }
+  .tp-t-thin { font-size: 1.8rem; }
+  .tp-t-bold { font-size: 2.8rem; }
+  .tp-overlay {
+    background: linear-gradient(0deg, rgba(10, 10, 10, 0.9) 0%, rgba(10, 10, 10, 0.6) 100%);
+  }
+}
+
+
+/* ========================================
+   PREMIUM CUISINE CARDS
+   ======================================== */
+.cuisine-section-premium {
+  padding: 4rem 0;
+  margin-bottom: 2rem;
+}
+
+.cuisine-premium-grid {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  padding: 1rem 0 3rem 0;
+  scrollbar-width: none;
+  scroll-padding: 0 2rem;
+}
+
+.cuisine-premium-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.cuisine-card-premium {
+  position: relative;
+  min-width: 240px;
+  height: 340px;
+  border-radius: 32px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+  background: #111;
+}
+
+.cc-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+  filter: brightness(0.8);
+}
+
+.cuisine-card-premium:hover .cc-bg-img {
+  transform: scale(1.1);
+  filter: brightness(0.6);
+}
+
+.cc-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0) 0%, rgba(10, 10, 10, 0.8) 100%);
+  z-index: 2;
+  transition: all 0.4s ease;
+}
+
+.cuisine-card-premium:hover .cc-overlay {
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0.2) 0%, rgba(10, 10, 10, 0.9) 100%);
+}
+
+.cc-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 2.5rem 1.5rem;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.cc-title {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  transition: transform 0.4s ease;
+}
+
+.cc-t-thin {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--primary-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 4px;
+}
+
+.cc-t-bold {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+  font-family: "Outfit", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.cc-explore {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.cuisine-card-premium:hover .cc-explore {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cuisine-card-premium:hover .cc-title {
+  transform: translateY(-10px);
+}
+
+.cuisine-card-premium:hover {
+  transform: translateY(-15px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .cuisine-card-premium {
+    min-width: 200px;
+    height: 280px;
+  }
+  .cc-t-bold { font-size: 1.4rem; }
+}
+
+
+/* Layout Fix for Cuisine Cards Consistency */
+.cuisine-card-premium {
+  min-width: 240px;
+  max-width: 240px;
+  height: 340px !important; /* Force consistent height */
+  aspect-ratio: auto !important;
+}
+
+@media (max-width: 768px) {
+  .cuisine-card-premium {
+    min-width: 200px;
+    max-width: 200px;
+    height: 280px !important;
+  }
+}
+
+
+/* Cuisine Section Scroll Indicator */
+.cuisine-scroll-indicator-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  padding: 1rem 0;
+}
+
+.cs-track {
+  width: 120px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cs-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 30%;
+  background: var(--primary-gradient);
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+  transition: width 0.3s ease; /* Smooth width update, left is instant via JS */
+}
+
+/* Ensure centering of the track in the section */
+.cuisine-section-premium {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Adjust grid padding for scrollbar visibility/interaction if needed */
+.cuisine-premium-grid {
+  padding-bottom: 1.5rem; /* Space between cards and indicator */
+}
+
+
+/* Cuisine Navigation Arrows Styles */
+.cuisine-grid-container {
+  position: relative;
+  width: 100%;
+}
+
+.cuisine-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.cuisine-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-50%) scale(1.1);
+  border-color: var(--primary-accent);
+  box-shadow: 0 15px 40px rgba(124, 58, 237, 0.3);
+}
+
+.cuisine-nav-btn.prev {
+  left: -25px;
+}
+
+.cuisine-nav-btn.next {
+  right: -25px;
+}
+
+/* Hide arrows on mobile/touch where dragging is natural */
+@media (max-width: 1024px) {
+  .cuisine-nav-btn {
+    display: none;
+  }
+  .cuisine-nav-btn.prev { left: 10px; }
+  .cuisine-nav-btn.next { right: 10px; }
+}
+
+@media (pointer: coarse) {
+  .cuisine-nav-btn {
+    display: none;
+  }
+}
+
