@@ -86,6 +86,139 @@ const app = {
     }
   },
 
+  // ========================================
+  // AUDIO MANAGER - AMBIENT SOUNDSCAPE
+  // ========================================
+  audioManager: {
+    enabled: false,
+    currentTrack: null,
+    audioElement: null,
+    volume: 0.3,
+    fadeDuration: 1500,
+    tracks: {
+      warm: 'assets/audio/bgm.mp3' // User provided warm track
+    },
+
+    init() {
+      this.audioElement = new Audio();
+      this.audioElement.loop = true;
+      this.audioElement.volume = 0;
+
+      // Priming: Unlocks audio on first user interaction
+      const unlock = () => {
+        if (!this.audioElement.src || this.audioElement.src.includes('undefined')) {
+          this.audioElement.src = this.tracks.warm;
+        }
+
+        // Load and play silently to unlock context
+        this.audioElement.load();
+        this.audioElement.play().then(() => {
+          if (this.enabled) {
+            this.fadeIn();
+          } else {
+            this.audioElement.pause();
+            this.audioElement.volume = 0;
+          }
+          document.removeEventListener('click', unlock);
+          console.log('🔓 Audio unlocked via local asset');
+        }).catch(e => {
+          console.log('🔇 Audio still locked:', e.message);
+        });
+      };
+
+      document.addEventListener('click', unlock, { once: true });
+
+      this.audioElement.onerror = () => {
+        console.warn('🎵 Audio loading failed on local asset.');
+      };
+
+      if (localStorage.getItem('soundscapeEnabled') === 'true') {
+        this.enabled = true;
+      }
+    },
+
+    toggle() {
+      this.enabled = !this.enabled;
+      localStorage.setItem('soundscapeEnabled', this.enabled);
+
+      const btn = document.getElementById('soundToggle');
+      if (btn) {
+        btn.innerHTML = this.enabled ? '<span style="color: var(--accent-color)">🔊</span>' : '🔇';
+        btn.classList.toggle('active', this.enabled);
+      }
+
+      if (this.enabled) {
+        this.play();
+      } else {
+        this.stop();
+      }
+      return this.enabled;
+    },
+
+    play() {
+      if (!this.enabled) return;
+
+      const url = this.tracks.warm;
+      if (this.audioElement.src.includes(url) && !this.audioElement.paused) return;
+
+      // Ensure src is set if not already
+      if (!this.audioElement.src || this.audioElement.src.includes('undefined')) {
+        this.audioElement.src = url;
+      }
+
+      this.audioElement.play().then(() => {
+        this.fadeIn();
+      }).catch(() => {
+        // Silently fail, priming will handle next click
+      });
+    },
+
+    stop() {
+      this.fadeOut(() => {
+        this.audioElement.pause();
+      });
+    },
+
+    fadeIn() {
+      let vol = 0;
+      const interval = 50;
+      const step = this.volume / (this.fadeDuration / interval);
+      this.audioElement.volume = 0;
+
+      const fader = setInterval(() => {
+        vol += step;
+        if (vol >= this.volume) {
+          vol = this.volume;
+          clearInterval(fader);
+        }
+        this.audioElement.volume = vol;
+      }, interval);
+    },
+
+    fadeOut(callback) {
+      if (!this.audioElement || this.audioElement.paused || this.audioElement.volume === 0) {
+        if (callback) callback();
+        return;
+      }
+
+      let vol = this.audioElement.volume;
+      const interval = 50;
+      const step = vol / (this.fadeDuration / interval);
+
+      const fader = setInterval(() => {
+        vol -= step;
+        if (vol <= 0) {
+          vol = 0;
+          this.audioElement.volume = 0;
+          clearInterval(fader);
+          if (callback) callback();
+        } else {
+          this.audioElement.volume = vol;
+        }
+      }, interval);
+    }
+  },
+
   updateContent(html) {
     const mainContent = document.getElementById('mainContent');
     const updateDOM = () => {
@@ -142,6 +275,7 @@ const app = {
 
   // Initialize the application
   async init() {
+    this.audioManager.init();
     this.initTheme();
     this.checkAuth();
     this.loadFavorites(); // Non-blocking
@@ -547,6 +681,12 @@ const app = {
 
   // Handle routing based on URL hash
   handleRoute() {
+    const hashStr = window.location.hash;
+    // Sound logic
+    if (this.audioManager.enabled) {
+      this.audioManager.play();
+    }
+
     if (!this.isLoggedIn) {
       this.showLoginPage();
       return;
@@ -2479,6 +2619,53 @@ const app = {
     breadcrumb.innerHTML = html;
   },
 
+  showWelcomeSplash(user) {
+    const main = document.body;
+    const splash = document.createElement('div');
+    splash.id = 'welcomeSplash';
+    splash.className = 'splash-overlay';
+
+    const firstName = user.name ? user.name.split(' ')[0] : (user.email ? user.email.split('@')[0] : 'Gourmet');
+
+    splash.innerHTML = `
+      <div class="splash-panel splash-left"></div>
+      <div class="splash-panel splash-right"></div>
+      <div class="splash-content">
+        <div class="splash-logo-circle">🍽️</div>
+        <p class="splash-welcome">Welcome to Food Vista</p>
+        <h1 class="splash-user-name">${firstName}</h1>
+        <p class="splash-status">Preparing your culinary journey...</p>
+      </div>
+    `;
+
+    main.appendChild(splash);
+
+    // Explicitly hide UI elements during splash intro
+    this.toggleUIElements(false);
+
+    setTimeout(() => {
+      // Step 2: Render home in background
+      this.toggleUIElements(true);
+      this.handleRoute();
+
+      // Step 3: Trigger curtain reveal
+      setTimeout(() => {
+        splash.classList.add('reveal');
+
+        // Delay toast until reveal starts
+        setTimeout(() => {
+          this.showToast(`Logged in as ${firstName} 🍱`);
+        }, 800);
+
+        // Step 4: Cleanup
+        setTimeout(() => {
+          splash.classList.add('hidden-splash');
+          setTimeout(() => splash.remove(), 1000);
+        }, 1500);
+      }, 600);
+    }, 4500); // 4.5s intro + 0.5s reveal = 5s total
+  },
+
   showLoginPage() {
     this.toggleUIElements(false);
 
@@ -2635,9 +2822,7 @@ const app = {
         localStorage.setItem('isLoggedIn', 'true');
         this.isLoggedIn = true;
         await this.loadFavorites(); // Sync favorites after login
-        this.showToast(this.isSignup ? 'Account created! Welcome 🎉' : 'Welcome back! 👋');
-        this.toggleUIElements(true);
-        this.handleRoute();
+        this.showWelcomeSplash(data.user);
       } else {
         this.showToast(data.msg || 'Authentication failed! ❌');
       }
@@ -2661,9 +2846,7 @@ const app = {
       const savedFavs = localStorage.getItem('favorites');
       this.favorites = savedFavs ? JSON.parse(savedFavs) : { restaurants: [], items: [] };
 
-      this.showToast(this.isSignup ? 'Offline Account created! Welcome 🎉' : 'Offline Mode: Welcome back! 👋');
-      this.toggleUIElements(true);
-      this.handleRoute();
+      this.showWelcomeSplash(mockUser);
 
     } finally {
       authBtn.innerText = this.isSignup ? 'Create Account' : 'Sign In';
