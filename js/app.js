@@ -679,6 +679,25 @@ const app = {
     // Search functionality handled by search.js logic
   },
 
+  toggleMobileMenu() {
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const headerRight = document.querySelector('.header-right');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    if (headerRight && mobileMenuBtn) {
+      headerRight.classList.toggle('active');
+      mobileMenuBtn.innerHTML = headerRight.classList.contains('active') ? '✕' : '☰';
+
+      // Auto close when a link is clicked
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          headerRight.classList.remove('active');
+          mobileMenuBtn.innerHTML = '☰';
+        }, { once: true });
+      });
+    }
+  },
+
   // Handle routing based on URL hash
   handleRoute() {
     const hashStr = window.location.hash;
