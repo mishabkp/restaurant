@@ -3094,28 +3094,39 @@ const app = {
         <section class="about-hero-elite">
           <div class="hero-glow-blob"></div>
 
-          <!-- Eyebrow label -->
-          <div class="about-eyebrow">
-            <span class="about-eyebrow-line"></span>
-            <span class="about-eyebrow-text">Food Vista · About Us</span>
-            <span class="about-eyebrow-line"></span>
-          </div>
+          <div class="about-hero-split">
+            <div class="about-hero-left">
+              <!-- Eyebrow label -->
+              <div class="about-eyebrow">
+                <span class="about-eyebrow-line"></span>
+                <span class="about-eyebrow-text">Food Vista · About Us</span>
+                <span class="about-eyebrow-line"></span>
+              </div>
 
-          <!-- Two-weight title -->
-          <h1 class="about-title-minimal">
-            <span class="about-t-thin">Kerala's</span>
-            <span class="about-t-bold">Culinary</span>
-            <span class="about-t-accent">Compass.</span>
-          </h1>
+              <!-- Two-weight title -->
+              <h1 class="about-title-minimal">
+                <span class="about-t-thin">Kerala's</span>
+                <span class="about-t-bold">Culinary</span>
+                <span class="about-t-accent">Compass.</span>
+              </h1>
 
-          <!-- Amber rule -->
-          <div class="about-hero-rule"></div>
+              <!-- Amber rule -->
+              <div class="about-hero-rule"></div>
 
-          <p class="about-subtitle-minimal">Connecting the world to the authentic soul of God's Own Country.</p>
+              <p class="about-subtitle-minimal">Connecting the world to the authentic soul of God's Own Country.</p>
 
-          <div class="scroll-indicator-elite">
-            <span>Explore Our Soul</span>
-            <div class="mouse-icon"></div>
+              <div class="scroll-indicator-elite">
+                <span>Explore Our Soul</span>
+                <div class="mouse-icon"></div>
+              </div>
+            </div>
+
+            <div class="about-hero-right">
+              <div class="about-3d-container">
+                <canvas id="hero3D" class="hero-3d-canvas"></canvas>
+                <div class="hero-3d-label">✦ 3D Interactive Story</div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -3204,6 +3215,11 @@ const app = {
       </div>
   `;
     this.updateContent(content);
+    
+    // Initialize 3D scene for About page
+    setTimeout(() => {
+      if (typeof init3DHeroScene === 'function') init3DHeroScene();
+    }, 50);
   },
 
   showBlogPage() {

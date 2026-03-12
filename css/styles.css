@@ -1,4 +1,4 @@
-/* ========================================
+﻿/* ========================================
    RESTAURANT NAVIGATOR - MODERN CSS
    ======================================== */
 
@@ -2754,7 +2754,7 @@ body {
   animation: fadeInUp 0.6s ease-out;
 }
 
-/* Minimalist eyebrow label — no pill, just clean uppercase text */
+/* Minimalist eyebrow label â€” no pill, just clean uppercase text */
 .section-badge {
   display: inline-flex;
   align-items: center;
@@ -4744,7 +4744,7 @@ body {
 }
 
 /* ========================================
-   HIDDEN GEMS GALLERY — PREMIUM REDESIGN
+   HIDDEN GEMS GALLERY â€” PREMIUM REDESIGN
    ======================================== */
 
 /* Section Tag Badge */
@@ -5717,7 +5717,7 @@ body {
 }
 
 /* ========================================
-   ROOMS & ACCOMMODATION — ELITE DESIGN
+   ROOMS & ACCOMMODATION â€” ELITE DESIGN
    ======================================== */
 
 .rooms-elite-section {
@@ -6229,7 +6229,7 @@ body {
   max-width: 700px;
 }
 
-/* Minimalist eyebrow label — no pill */
+/* Minimalist eyebrow label â€” no pill */
 .reco-eyebrow {
   display: flex;
   align-items: center;
@@ -6303,7 +6303,7 @@ body {
   letter-spacing: 0.2px;
 }
 
-/* Clean CTA button — white pill with dark text + arrow */
+/* Clean CTA button â€” white pill with dark text + arrow */
 .reco-cta-btn {
   display: inline-flex;
   align-items: center;
@@ -6727,7 +6727,7 @@ body {
 }
 
 /* ========================================
-   VIDEO HERO SECTION — FULL STYLES
+   VIDEO HERO SECTION â€” FULL STYLES
    ======================================== */
 
 /* --- Video bg --- */
@@ -6796,7 +6796,7 @@ body {
   white-space: nowrap;
 }
 
-/* --- Main title — three-line editorial --- */
+/* --- Main title â€” three-line editorial --- */
 .hero-title-minimal {
   display: flex;
   flex-direction: column;
@@ -6938,7 +6938,7 @@ body {
    Applied consistently across entire app
    ======================================== */
 
-/* --- Base headings — all use Outfit, clean weights --- */
+/* --- Base headings â€” all use Outfit, clean weights --- */
 h1,
 h2,
 h3,
@@ -7100,7 +7100,7 @@ h4 {
   font-size: 1.6rem;
 }
 
-/* --- Nav logo — keep clean Outfit --- */
+/* --- Nav logo â€” keep clean Outfit --- */
 .logo {
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
@@ -7123,8 +7123,8 @@ h4 {
 }
 
 /* ========================================
-   SMART RECOMMENDER MODAL — REDESIGN
-   Minimalist · Premium · Editorial
+   SMART RECOMMENDER MODAL â€” REDESIGN
+   Minimalist Â· Premium Â· Editorial
    ======================================== */
 
 .sr-modal {
@@ -7200,7 +7200,7 @@ h4 {
   font-weight: 500;
 }
 
-/* --- Close button — top right --- */
+/* --- Close button â€” top right --- */
 .sr-close {
   position: absolute;
   top: 0;
@@ -7482,7 +7482,7 @@ h4 {
   transform: translateX(3px);
 }
 /* ========================================
-   ABOUT PAGE � MINIMALIST PREMIUM TYPOGRAPHY
+   ABOUT PAGE — MINIMALIST PREMIUM TYPOGRAPHY
    ======================================== */
 
 /* Eyebrow label */
@@ -7585,7 +7585,7 @@ h4 {
 }
 
 /* ========================================
-   STORIES & GALLERY � MINIMALIST PREMIUM
+   STORIES & GALLERY — MINIMALIST PREMIUM
    ======================================== */
 
 /* Stories Page (Blog) */
@@ -7693,7 +7693,7 @@ h4 {
 }
 
 /* ========================================
-   AI TASTE PROFILER � PREMIUM UI
+   AI TASTE PROFILER — PREMIUM UI
    ======================================== */
 
 .reco-cta-group {
@@ -9032,3 +9032,139 @@ h4 {
   }
 }
 
+
+/* ========================================
+   ABOUT SECTION — PREMIUM 3D REDESIGN
+   ======================================== */
+
+.about-hero-elite {
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-dark);
+  position: relative;
+  overflow: hidden;
+  padding: 4rem 5%;
+}
+
+.about-hero-split {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 4rem;
+  width: 100%;
+  max-width: 1400px;
+  align-items: center;
+  z-index: 5;
+}
+
+/* Redesigned Typography */
+.about-title-minimal {
+  font-family: 'Cinzel', serif; /* Ultra high-contrast serif */
+  font-size: clamp(3rem, 5vw, 5.5rem);
+  line-height: 0.9;
+  letter-spacing: -3px;
+  color: white;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+.about-t-thin {
+  font-weight: 300;
+  display: block;
+  font-size: 0.5em;
+  letter-spacing: 12px;
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+}
+
+.about-t-bold {
+  font-weight: 900;
+  display: block;
+}
+
+.about-t-accent {
+  font-weight: 900;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: block;
+}
+
+.about-subtitle-minimal {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 500px;
+  line-height: 1.6;
+  font-weight: 300;
+  margin-bottom: 3rem;
+}
+
+/* 3D Container for About */
+.about-3d-container {
+  position: relative;
+  width: 100%;
+  height: 550px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  filter: drop-shadow(0 0 50px rgba(255, 160, 0, 0.1));
+}
+
+.about-hero-right .hero-3d-canvas {
+  width: 100%;
+  height: 100%;
+  border-radius: 40px;
+}
+
+/* Global 3D Canvas Styles Re-added */
+.hero-3d-canvas {
+  width: 100%;
+  display: block;
+  cursor: grab;
+  border-radius: 20px;
+  filter: drop-shadow(0 0 40px rgba(255,160,0,0.18));
+}
+
+.hero-3d-label {
+  margin-top: 0.75rem;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 215, 102, 0.55);
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-weight: 600;
+  user-select: none;
+}
+
+/* Responsive Fixes */
+@media (max-width: 1100px) {
+  .about-hero-split {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 2rem;
+  }
+  
+  .about-hero-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .about-subtitle-minimal {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .about-3d-container {
+    height: 400px;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-hero-right {
+    display: none;
+  }
+}
