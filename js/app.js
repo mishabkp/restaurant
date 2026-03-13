@@ -3226,48 +3226,71 @@ const app = {
   },
 
   showShowcasePage() {
-    this.toggleUIElements(false); // Hide header/footer for immersive experience
+    this.toggleUIElements(false); 
     this.currentView = 'showcase';
     
     const content = `
       <div class="showcase-wrapper">
-        <div class="showcase-sticky-wrapper">
+        <!-- SECTION 1: SIGNATURE BURGER -->
+        <div class="showcase-sticky-wrapper showcase-section-burger">
           <div id="showcase3DContainer" class="showcase-3d-canvas"></div>
           
           <div class="showcase-overlay">
-            <div class="showcase-text showcase-text-1">
+            <div class="showcase-text">
               <h2 class="showcase-title">The Engineering of Taste</h2>
-              <p class="showcase-p">Crafted layer by layer with precision and passion.</p>
+              <p class="showcase-p">Crafted layer by layer with precision, ensuring every bite is a photorealistic masterpiece.</p>
             </div>
             
-            <div class="showcase-text showcase-text-2">
+            <div class="showcase-text">
               <h2 class="showcase-title">Handpicked Ingredients</h2>
-              <p class="showcase-p">Only the freshest farm-to-table components make the cut.</p>
+              <p class="showcase-p">Only the freshest, highest-quality components are selected for our signature dish.</p>
             </div>
             
-            <div class="showcase-text showcase-text-3">
+            <div class="showcase-text">
               <h2 class="showcase-title">A Symphony of Flavors</h2>
-              <p class="showcase-p">Experience the ultimate harmony in every bite.</p>
-              <button class="magic-btn" style="margin-top: 2rem;" onclick="app.navigateHome()">Order Signature Dish</button>
+              <p class="showcase-p">Experience the ultimate harmony as each layer reveals its unique character.</p>
             </div>
           </div>
-
-          <button class="showcase-back-btn" onclick="app.navigateHome()">✕ Close Showcase</button>
         </div>
-        
-        <!-- Spacer sections for scrolling -->
         <div class="showcase-scroll-spacer"></div>
         <div class="showcase-scroll-spacer"></div>
+
+        <!-- SECTION 2: KERALA SADYA -->
+        <div class="showcase-sticky-wrapper showcase-section-sadya">
+          <div id="sadya3DContainer" class="showcase-3d-canvas"></div>
+          
+          <div class="showcase-overlay">
+            <div class="showcase-text">
+              <h2 class="showcase-title">The Grand Kerala Feast</h2>
+              <p class="showcase-p">A celebration of heritage on a banana leaf, served with tradition and love.</p>
+            </div>
+            
+            <div class="showcase-text">
+              <h2 class="showcase-title">Art of Arrangement</h2>
+              <p class="showcase-p">Each dish has its place, carefully curated to balance spice, sweetness, and soul.</p>
+            </div>
+            
+            <div class="showcase-text">
+              <h2 class="showcase-title">Heart of Kerala</h2>
+              <p class="showcase-p">Experience the soul of Malayali hospitality in every floating morsel.</p>
+              <button class="magic-btn" onclick="app.navigateHome()">Order Full Sadya</button>
+            </div>
+          </div>
+        </div>
         <div class="showcase-scroll-spacer"></div>
+        <div class="showcase-scroll-spacer"></div>
+
+        <button class="showcase-back-btn" onclick="app.navigateHome()">✕ Close Showcase</button>
       </div>
     `;
     
     this.updateContent(content);
     
-    // Initialize 3D Showcase logic
+    // Initialize both 3D Showcase logic
     setTimeout(() => {
-      if (typeof initProductShowcase === 'function') initProductShowcase();
-    }, 100);
+      if (typeof initBurgerShowcase === 'function') initBurgerShowcase();
+      if (typeof initSadyaShowcase === 'function') initSadyaShowcase();
+    }, 150);
   },
 
   showBlogPage() {

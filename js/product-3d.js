@@ -1,13 +1,13 @@
 // ===============================================
-// FOOD VISTA - PHOTOREALISTIC 3D SHOWCASE (FINAL)
-// Uses Three.js & Photographic Textures
+// FOOD VISTA - MULTI-PRODUCT 3D SHOWCASE
+// Burger & Photorealistic Sadya
 // ===============================================
 
-function initProductShowcase() {
+// --- Burger Showcase ---
+function initBurgerShowcase() {
     const container = document.getElementById('showcase3DContainer');
     if (!container || typeof THREE === 'undefined' || typeof gsap === 'undefined') return;
 
-    // --- Scene Setup ---
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 7;
@@ -20,7 +20,6 @@ function initProductShowcase() {
     container.innerHTML = ''; 
     container.appendChild(renderer.domElement);
 
-    // --- Texture Loading ---
     const loader = new THREE.TextureLoader();
     const textures = {
         bunTop: loader.load('assets/textures/bun_top.png'),
@@ -29,33 +28,19 @@ function initProductShowcase() {
         bunBottom: loader.load('assets/textures/bun_bottom.png')
     };
 
-    // --- Lighting (Photorealistic Tuning) ---
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambientLight);
-
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
     const keyLight = new THREE.DirectionalLight(0xfff5e6, 1.2);
     keyLight.position.set(2, 5, 5);
     scene.add(keyLight);
 
-    const goldSpot = new THREE.SpotLight(0xffaa00, 2);
-    goldSpot.position.set(-5, 8, 2);
-    scene.add(goldSpot);
-
-    // --- Modeling Layers ---
     const layers = [];
     const layerGroup = new THREE.Group();
     scene.add(layerGroup);
 
-    // Helper: Realistic Material
     function foodMat(map, roughness = 0.8) {
-        return new THREE.MeshStandardMaterial({ 
-            map: map,
-            roughness: roughness,
-            metalness: 0
-        });
+        return new THREE.MeshStandardMaterial({ map, roughness, metalness: 0 });
     }
 
-    // Geometries
     const bunGeom = (isTop) => {
         const points = [];
         for (let i = 0; i < 11; i++) {
@@ -66,64 +51,44 @@ function initProductShowcase() {
         return new THREE.LatheGeometry(points, 64);
     };
 
-    // 1. Top Bun
     const topBun = new THREE.Mesh(bunGeom(true), foodMat(textures.bunTop, 0.6));
     topBun.position.y = 1.3;
     layerGroup.add(topBun);
     layers.push({ mesh: topBun, originalY: 1.3 });
 
-    // 2. Lettuce
     const lettuceGeo = new THREE.CylinderGeometry(1.7, 1.7, 0.1, 32);
     const lettuce = new THREE.Mesh(lettuceGeo, foodMat(textures.lettuce, 0.9));
     lettuce.position.y = 0.8;
-    lettuce.rotation.z = 0.15;
     layerGroup.add(lettuce);
     layers.push({ mesh: lettuce, originalY: 0.8 });
 
-    // 3. Cheese (Solid color, but with slight gloss)
     const cheeseGeo = new THREE.BoxGeometry(2.3, 0.05, 2.3);
-    const cheeseMat = new THREE.MeshStandardMaterial({ color: 0xffcc00, roughness: 0.2 });
-    const cheese = new THREE.Mesh(cheeseGeo, cheeseMat);
+    const cheese = new THREE.Mesh(cheeseGeo, new THREE.MeshStandardMaterial({ color: 0xffcc00, roughness: 0.2 }));
     cheese.position.y = 0.6;
-    cheese.rotation.y = Math.PI / 8;
     layerGroup.add(cheese);
     layers.push({ mesh: cheese, originalY: 0.6 });
 
-    // 4. Meat Patty
     const pattyGeo = new THREE.CylinderGeometry(1.5, 1.5, 0.45, 32);
     const patty = new THREE.Mesh(pattyGeo, foodMat(textures.patty, 1));
     patty.position.y = 0.25;
     layerGroup.add(patty);
     layers.push({ mesh: patty, originalY: 0.25 });
 
-    // 5. Bottom Bun
     const bottomBun = new THREE.Mesh(bunGeom(false), foodMat(textures.bunBottom, 0.7));
     bottomBun.position.y = -0.3;
     layerGroup.add(bottomBun);
     layers.push({ mesh: bottomBun, originalY: -0.3 });
 
-    // --- Atmosphere ---
-    const partGeo = new THREE.BufferGeometry();
-    const posArray = new Float32Array(150 * 3);
-    for(let i=0; i<150*3; i++) posArray[i] = (Math.random() - 0.5) * 8;
-    partGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-    const partMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffd700, transparent: true, opacity: 0.4 });
-    const particles = new THREE.Points(partGeo, partMat);
-    scene.add(particles);
-
-    // --- Animation ---
     function animate() {
         requestAnimationFrame(animate);
         layerGroup.rotation.y += 0.002;
-        particles.rotation.y -= 0.0005;
         renderer.render(scene, camera);
     }
     animate();
 
-    // --- GSAP Scroll ---
     const tl = gsap.timeline({
         scrollTrigger: {
-            trigger: ".showcase-sticky-wrapper",
+            trigger: ".showcase-section-burger",
             start: "top top",
             end: "bottom bottom",
             scrub: 1.2,
@@ -136,21 +101,117 @@ function initProductShowcase() {
         tl.to(layer.mesh.rotation, { x: 0.5, z: 0.1, ease: "power2.inOut" }, 0);
     });
 
-    // Typography Fade (Cleaner Sequence)
-    const textSections = document.querySelectorAll('.showcase-text');
-    textSections.forEach((text, i) => {
-        const start = i * 0.33;
-        tl.fromTo(text, 
-            { opacity: 0, y: 30, filter: 'blur(10px)' },
-            { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.2 },
-            start
-        );
-        if(i < textSections.length - 1) {
-            tl.to(text, { opacity: 0, scale: 0.9, duration: 0.2 }, start + 0.25);
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+}
+
+// --- Sadya Showcase ---
+function initSadyaShowcase() {
+    const container = document.getElementById('sadya3DContainer');
+    if (!container || typeof THREE === 'undefined' || typeof gsap === 'undefined') return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 4, 8);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.innerHTML = '';
+    container.appendChild(renderer.domElement);
+
+    const loader = new THREE.TextureLoader();
+    const textures = {
+        leaf: loader.load('assets/textures/banana_leaf.png'),
+        rice: loader.load('assets/textures/rice.png')
+    };
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+    const sun = new THREE.DirectionalLight(0xffffff, 1);
+    sun.position.set(5, 10, 5);
+    scene.add(sun);
+
+    const layers = [];
+    const layerGroup = new THREE.Group();
+    scene.add(layerGroup);
+
+    // 1. Banana Leaf (Base)
+    const leafGeo = new THREE.PlaneGeometry(6, 4);
+    const leafMat = new THREE.MeshStandardMaterial({ map: textures.leaf, transparent: true, side: THREE.DoubleSide });
+    const leaf = new THREE.Mesh(leafGeo, leafMat);
+    leaf.rotation.x = -Math.PI / 2.2;
+    layerGroup.add(leaf);
+    layers.push({ mesh: leaf, originalY: 0, isBase: true });
+
+    // 2. Rice Heap
+    const riceGeo = new THREE.SphereGeometry(1, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+    const riceMat = new THREE.MeshStandardMaterial({ map: textures.rice });
+    const rice = new THREE.Mesh(riceGeo, riceMat);
+    rice.position.set(0, 0.1, 0.5);
+    rice.scale.y = 0.6;
+    layerGroup.add(rice);
+    layers.push({ mesh: rice, originalY: 0.1, originalX: 0, originalZ: 0.5 });
+
+    // 3. Sambar / Parippu (Stylized bowls)
+    const createBowl = (color, x, z, y=0.1) => {
+        const bowlGeo = new THREE.CylinderGeometry(0.4, 0.3, 0.3, 32);
+        const bowlMat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.3 });
+        const bowl = new THREE.Mesh(bowlGeo, bowlMat);
+        bowl.position.set(x, y, z);
+        layerGroup.add(bowl);
+        layers.push({ mesh: bowl, originalY: y, originalX: x, originalZ: z });
+    };
+
+    createBowl(0xdaa520, -1.5, -0.5); // Sambar
+    createBowl(0xffd700, -2.2, 0.2);  // Parippu
+    createBowl(0xff4500, 1.5, -0.8);  // Aviyal (Orange-ish)
+
+    // 4. Pappadam
+    const papGeo = new THREE.CircleGeometry(0.5, 32);
+    const papMat = new THREE.MeshStandardMaterial({ color: 0xffe4b5, side: THREE.DoubleSide });
+    const pappadam = new THREE.Mesh(papGeo, papMat);
+    pappadam.rotation.x = -Math.PI / 2;
+    pappadam.position.set(2, 0.1, 1);
+    layerGroup.add(pappadam);
+    layers.push({ mesh: pappadam, originalY: 0.1, originalX: 2, originalZ: 1 });
+
+    function animate() {
+        requestAnimationFrame(animate);
+        layerGroup.rotation.y += 0.001;
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    const tl = gsap.timeline({
+        scrollTrigger: {
+            trigger: ".showcase-section-sadya",
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 1.5,
         }
     });
 
-    // Resize
+    layers.forEach((layer, i) => {
+        if (layer.isBase) return;
+        const jump = (i + 1) * 1.2;
+        tl.to(layer.mesh.position, { 
+            y: layer.originalY + jump, 
+            x: layer.originalX * 1.2,
+            z: layer.originalZ * 1.5,
+            ease: "power2.out" 
+        }, 0);
+        
+        tl.to(layer.mesh.rotation, {
+            y: Math.PI * 0.5,
+            x: Math.PI * 0.1,
+            ease: "power2.out"
+        }, 0);
+    });
+
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();

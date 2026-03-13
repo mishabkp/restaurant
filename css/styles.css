@@ -9216,11 +9216,12 @@ h4 {
   position: absolute;
   max-width: 600px;
   padding: 0 2rem;
+  opacity: 0; /* Default hidden for GSAP */
 }
 
 .showcase-title {
   font-family: 'Cinzel', serif;
-  font-size: clamp(2rem, 4vw, 3.5rem); /* Reduced size for clean look */
+  font-size: clamp(2rem, 4vw, 3.5rem); 
   margin-bottom: 1rem;
   letter-spacing: 5px;
   line-height: 1.2;
@@ -9233,10 +9234,17 @@ h4 {
   filter: drop-shadow(0 0 20px rgba(255, 140, 0, 0.2));
 }
 
+/* Sadya Section Theme */
+.showcase-section-sadya .showcase-title {
+  background: linear-gradient(135deg, #98fb98 0%, #ffd700 50%, #228b22 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
 .showcase-p {
   font-family: 'Outfit', sans-serif;
-  font-size: clamp(0.9rem, 1.5vw, 1.1rem); /* Smaller, neater text */
-  max-width: 450px; /* Narrower for better readability */
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  max-width: 450px;
   color: rgba(255, 255, 255, 0.7);
   font-weight: 300;
   line-height: 1.8;
@@ -9245,18 +9253,18 @@ h4 {
 }
 
 .showcase-back-btn {
-  position: absolute;
+  position: fixed; /* Fixed so it stays while scrolling multiple sections */
   top: 1.5rem;
   right: 1.5rem;
-  z-index: 100;
-  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 215, 0, 0.2);
   color: #ffd700;
   padding: 0.6rem 1.4rem;
   font-size: 0.85rem;
   border-radius: 50px;
   cursor: pointer;
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(25px);
   font-family: 'Outfit', sans-serif;
   font-weight: 500;
   letter-spacing: 1px;
@@ -9283,13 +9291,17 @@ h4 {
   transition: all 0.3s ease;
 }
 
+.showcase-section-sadya .magic-btn {
+  background: linear-gradient(135deg, #98fb98, #ffd700);
+}
+
 .showcase-text .magic-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 15px 35px rgba(255, 140, 0, 0.5);
 }
 
 .showcase-scroll-spacer {
-  height: 180vh; /* Smooth, slightly longer scroll */
+  height: 100vh; 
 }
 
 /* Ensure the canvas doesn't capture clicks needed for scrolling */
