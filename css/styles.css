@@ -1,4 +1,4 @@
-﻿/* ========================================
+/* ========================================
    RESTAURANT NAVIGATOR - MODERN CSS
    ======================================== */
 
@@ -9220,20 +9220,29 @@ h4 {
 
 .showcase-title {
   font-family: 'Cinzel', serif;
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-size: clamp(3rem, 6vw, 5.5rem);
   margin-bottom: 1.5rem;
-  letter-spacing: 2px;
-  line-height: 1.1;
-  background: var(--primary-gradient);
+  letter-spacing: 4px;
+  line-height: 1;
+  font-weight: 900;
+  text-transform: uppercase;
+  /* Premium Gold Gradient */
+  background: linear-gradient(135deg, #ffd700 0%, #ff8c00 50%, #b8860b 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 30px rgba(255, 140, 0, 0.3));
 }
 
 .showcase-p {
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  color: rgba(255, 255, 255, 0.85);
   font-weight: 300;
-  line-height: 1.6;
+  line-height: 1.8;
+  letter-spacing: 1px;
+  max-width: 550px;
+  margin: 0 auto;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 .showcase-back-btn {
@@ -9241,25 +9250,46 @@ h4 {
   top: 2rem;
   right: 2rem;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 0.75rem 1.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffd700;
+  padding: 0.8rem 1.8rem;
   border-radius: 50px;
   cursor: pointer;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(15px);
+  font-family: 'Outfit', sans-serif;
   font-weight: 600;
-  transition: all 0.3s ease;
+  letter-spacing: 1px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .showcase-back-btn:hover {
   background: var(--accent-color);
+  color: white;
   border-color: var(--accent-color);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(255, 140, 0, 0.3);
+}
+
+/* Redesign Order button for Showcase */
+.showcase-text .magic-btn {
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  color: #000;
+  font-weight: 800;
+  padding: 1.2rem 3rem;
+  border-radius: 100px;
+  border: none;
+  box-shadow: 0 15px 35px rgba(255, 140, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.showcase-text .magic-btn:hover {
+  transform: scale(1.05) translateY(-5px);
+  box-shadow: 0 20px 40px rgba(255, 140, 0, 0.6);
 }
 
 .showcase-scroll-spacer {
-  height: 100vh;
+  height: 150vh; /* Slightly longer scroll for smoother feel */
 }
 
 /* Ensure the canvas doesn't capture clicks needed for scrolling */
