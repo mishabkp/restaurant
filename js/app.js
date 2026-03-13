@@ -751,6 +751,8 @@ const app = {
         this.showGalleryPage();
       } else if (parts[0] === 'trends') {
         this.showAnalyticalDashboard();
+      } else if (parts[0] === 'showcase') {
+        this.showShowcasePage();
       } else if (parts[0] === 'contact') {
         this.showContactPage();
       } else {
@@ -3118,6 +3120,7 @@ const app = {
               <div class="scroll-indicator-elite">
                 <span>Explore Our Soul</span>
                 <div class="mouse-icon"></div>
+                <button class="magic-btn" style="margin-top: 2rem;" onclick="window.location.hash = '/showcase'">View Our Craft (3D Showcase)</button>
               </div>
             </div>
 
@@ -3220,6 +3223,51 @@ const app = {
     setTimeout(() => {
       if (typeof init3DHeroScene === 'function') init3DHeroScene();
     }, 50);
+  },
+
+  showShowcasePage() {
+    this.toggleUIElements(false); // Hide header/footer for immersive experience
+    this.currentView = 'showcase';
+    
+    const content = `
+      <div class="showcase-wrapper">
+        <div class="showcase-sticky-wrapper">
+          <div id="showcase3DContainer" class="showcase-3d-canvas"></div>
+          
+          <div class="showcase-overlay">
+            <div class="showcase-text showcase-text-1">
+              <h2 class="showcase-title">The Engineering of Taste</h2>
+              <p class="showcase-p">Crafted layer by layer with precision and passion.</p>
+            </div>
+            
+            <div class="showcase-text showcase-text-2">
+              <h2 class="showcase-title">Handpicked Ingredients</h2>
+              <p class="showcase-p">Only the freshest farm-to-table components make the cut.</p>
+            </div>
+            
+            <div class="showcase-text showcase-text-3">
+              <h2 class="showcase-title">A Symphony of Flavors</h2>
+              <p class="showcase-p">Experience the ultimate harmony in every bite.</p>
+              <button class="magic-btn" style="margin-top: 2rem;" onclick="app.navigateHome()">Order Signature Dish</button>
+            </div>
+          </div>
+
+          <button class="showcase-back-btn" onclick="app.navigateHome()">✕ Close Showcase</button>
+        </div>
+        
+        <!-- Spacer sections for scrolling -->
+        <div class="showcase-scroll-spacer"></div>
+        <div class="showcase-scroll-spacer"></div>
+        <div class="showcase-scroll-spacer"></div>
+      </div>
+    `;
+    
+    this.updateContent(content);
+    
+    // Initialize 3D Showcase logic
+    setTimeout(() => {
+      if (typeof initProductShowcase === 'function') initProductShowcase();
+    }, 100);
   },
 
   showBlogPage() {
