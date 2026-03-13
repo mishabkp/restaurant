@@ -1,7 +1,7 @@
-// ========================================
-// FOOD VISTA - PREMIUM 3D SHOWCASE (REFINED)
-// Uses Three.js & GSAP ScrollTrigger
-// ========================================
+// ===============================================
+// FOOD VISTA - PHOTOREALISTIC 3D SHOWCASE (FINAL)
+// Uses Three.js & Photographic Textures
+// ===============================================
 
 function initProductShowcase() {
     const container = document.getElementById('showcase3DContainer');
@@ -9,183 +9,148 @@ function initProductShowcase() {
 
     // --- Scene Setup ---
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 6;
+    const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 7;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    container.innerHTML = ''; // Clear previous
+    renderer.toneMapping = THREE.ReinhardToneMapping;
+    renderer.toneMappingExposure = 1.2;
+    container.innerHTML = ''; 
     container.appendChild(renderer.domElement);
 
-    // --- Lighting (Cinematic Overhaul) ---
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    // --- Texture Loading ---
+    const loader = new THREE.TextureLoader();
+    const textures = {
+        bunTop: loader.load('assets/textures/bun_top.png'),
+        patty: loader.load('assets/textures/patty.png'),
+        lettuce: loader.load('assets/textures/lettuce.png'),
+        bunBottom: loader.load('assets/textures/bun_bottom.png')
+    };
+
+    // --- Lighting (Photorealistic Tuning) ---
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
 
-    // Warm Key Light
-    const keyLight = new THREE.DirectionalLight(0xffaa44, 1.5);
-    keyLight.position.set(5, 5, 5);
+    const keyLight = new THREE.DirectionalLight(0xfff5e6, 1.2);
+    keyLight.position.set(2, 5, 5);
     scene.add(keyLight);
 
-    // Cool Fill Light
-    const fillLight = new THREE.DirectionalLight(0x4488ff, 0.5);
-    fillLight.position.set(-5, 0, 2);
-    scene.add(fillLight);
+    const goldSpot = new THREE.SpotLight(0xffaa00, 2);
+    goldSpot.position.set(-5, 8, 2);
+    scene.add(goldSpot);
 
-    // Intense Gold Rim Light
-    const rimLight = new THREE.SpotLight(0xffd700, 4);
-    rimLight.position.set(0, 8, -5);
-    rimLight.angle = Math.PI / 4;
-    rimLight.penumbra = 0.3;
-    scene.add(rimLight);
-
-    // --- Modeling Helpers ---
-    function createRoundedBun(top = true) {
-        const points = [];
-        for (let i = 0; i < 10; i++) {
-            const x = Math.sin(i * 0.2) * 1.5;
-            const y = top ? Math.cos(i * 0.2) * 0.8 : -Math.cos(i * 0.2) * 0.5;
-            points.push(new THREE.Vector2(x, y));
-        }
-        const geometry = new THREE.LatheGeometry(points, 32);
-        const material = new THREE.MeshStandardMaterial({ 
-            color: 0xcd853f, 
-            roughness: 0.7, 
-            metalness: 0.1,
-            bumpScale: 0.02
-        });
-        return new THREE.Mesh(geometry, material);
-    }
-
-    // --- Layers Construction ---
+    // --- Modeling Layers ---
     const layers = [];
     const layerGroup = new THREE.Group();
     scene.add(layerGroup);
 
-    // 1. Top Bun with Sesame Seeds
-    const topBun = createRoundedBun(true);
-    topBun.position.y = 1.2;
-    topBun.name = "Top Bun";
-    layerGroup.add(topBun);
-    layers.push({ mesh: topBun, originalY: 1.2, delay: 0 });
-
-    // Sesame Seeds system
-    const seedGeo = new THREE.SphereGeometry(0.02, 8, 8);
-    const seedMat = new THREE.MeshStandardMaterial({ color: 0xfffdd0 });
-    for(let i=0; i<60; i++) {
-        const seed = new THREE.Mesh(seedGeo, seedMat);
-        const phi = Math.acos(-1 + (2 * i) / 60);
-        const theta = Math.sqrt(60 * Math.PI) * phi;
-        seed.position.setFromSphericalCoords(1.45, phi * 0.5, theta);
-        seed.position.y += 0.1;
-        topBun.add(seed);
+    // Helper: Realistic Material
+    function foodMat(map, roughness = 0.8) {
+        return new THREE.MeshStandardMaterial({ 
+            map: map,
+            roughness: roughness,
+            metalness: 0
+        });
     }
 
-    // 2. Lettuce (Custom shape)
-    const lettuceGeo = new THREE.TorusGeometry(1.2, 0.15, 16, 100);
-    const lettuceMat = new THREE.MeshStandardMaterial({ color: 0x228b22, roughness: 0.8 });
-    const lettuce = new THREE.Mesh(lettuceGeo, lettuceMat);
-    lettuce.rotation.x = Math.PI / 2;
-    lettuce.position.y = 0.7;
+    // Geometries
+    const bunGeom = (isTop) => {
+        const points = [];
+        for (let i = 0; i < 11; i++) {
+            const rad = isTop ? Math.sin(i * 0.16) * 1.6 : Math.sin(i * 0.1) * 1.55;
+            const h = isTop ? Math.cos(i * 0.16) * 0.9 : -Math.cos(i * 0.1) * 0.4;
+            points.push(new THREE.Vector2(rad, h));
+        }
+        return new THREE.LatheGeometry(points, 64);
+    };
+
+    // 1. Top Bun
+    const topBun = new THREE.Mesh(bunGeom(true), foodMat(textures.bunTop, 0.6));
+    topBun.position.y = 1.3;
+    layerGroup.add(topBun);
+    layers.push({ mesh: topBun, originalY: 1.3 });
+
+    // 2. Lettuce
+    const lettuceGeo = new THREE.CylinderGeometry(1.7, 1.7, 0.1, 32);
+    const lettuce = new THREE.Mesh(lettuceGeo, foodMat(textures.lettuce, 0.9));
+    lettuce.position.y = 0.8;
+    lettuce.rotation.z = 0.15;
     layerGroup.add(lettuce);
-    layers.push({ mesh: lettuce, originalY: 0.7, delay: 0.1 });
+    layers.push({ mesh: lettuce, originalY: 0.8 });
 
-    // 3. Cheese
-    const cheeseGeo = new THREE.BoxGeometry(2.2, 0.1, 2.2);
-    const cheeseMat = new THREE.MeshStandardMaterial({ color: 0xffd700, roughness: 0.3 });
+    // 3. Cheese (Solid color, but with slight gloss)
+    const cheeseGeo = new THREE.BoxGeometry(2.3, 0.05, 2.3);
+    const cheeseMat = new THREE.MeshStandardMaterial({ color: 0xffcc00, roughness: 0.2 });
     const cheese = new THREE.Mesh(cheeseGeo, cheeseMat);
-    cheese.position.y = 0.5;
-    cheese.rotation.y = Math.PI / 4;
+    cheese.position.y = 0.6;
+    cheese.rotation.y = Math.PI / 8;
     layerGroup.add(cheese);
-    layers.push({ mesh: cheese, originalY: 0.5, delay: 0.2 });
+    layers.push({ mesh: cheese, originalY: 0.6 });
 
-    // 4. Juicy Patty
-    const pattyGeo = new THREE.CylinderGeometry(1.4, 1.4, 0.4, 32);
-    const pattyMat = new THREE.MeshStandardMaterial({ color: 0x3d1c02, roughness: 0.9, metalness: 0 });
-    const patty = new THREE.Mesh(pattyGeo, pattyMat);
-    patty.position.y = 0.2;
+    // 4. Meat Patty
+    const pattyGeo = new THREE.CylinderGeometry(1.5, 1.5, 0.45, 32);
+    const patty = new THREE.Mesh(pattyGeo, foodMat(textures.patty, 1));
+    patty.position.y = 0.25;
     layerGroup.add(patty);
-    layers.push({ mesh: patty, originalY: 0.2, delay: 0.3 });
+    layers.push({ mesh: patty, originalY: 0.25 });
 
     // 5. Bottom Bun
-    const bottomBun = createRoundedBun(false);
+    const bottomBun = new THREE.Mesh(bunGeom(false), foodMat(textures.bunBottom, 0.7));
     bottomBun.position.y = -0.3;
     layerGroup.add(bottomBun);
-    layers.push({ mesh: bottomBun, originalY: -0.3, delay: 0.4 });
+    layers.push({ mesh: bottomBun, originalY: -0.3 });
 
-    // --- Atmospheric Particles ---
+    // --- Atmosphere ---
     const partGeo = new THREE.BufferGeometry();
-    const partCount = 200;
-    const posArray = new Float32Array(partCount * 3);
-    for(let i=0; i<partCount*3; i++) {
-        posArray[i] = (Math.random() - 0.5) * 10;
-    }
+    const posArray = new Float32Array(150 * 3);
+    for(let i=0; i<150*3; i++) posArray[i] = (Math.random() - 0.5) * 8;
     partGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-    const partMat = new THREE.PointsMaterial({
-        size: 0.05,
-        color: 0xffd700,
-        transparent: true,
-        opacity: 0.6,
-        blending: THREE.AdditiveBlending
-    });
+    const partMat = new THREE.PointsMaterial({ size: 0.03, color: 0xffd700, transparent: true, opacity: 0.4 });
     const particles = new THREE.Points(partGeo, partMat);
     scene.add(particles);
 
-    // --- Animation Loop ---
+    // --- Animation ---
     function animate() {
         requestAnimationFrame(animate);
-        layerGroup.rotation.y += 0.003;
-        particles.rotation.y += 0.001;
+        layerGroup.rotation.y += 0.002;
+        particles.rotation.y -= 0.0005;
         renderer.render(scene, camera);
     }
     animate();
 
-    // --- GSAP ScrollTrigger Integration ---
-    gsap.registerPlugin(ScrollTrigger);
-
+    // --- GSAP Scroll ---
     const tl = gsap.timeline({
         scrollTrigger: {
             trigger: ".showcase-sticky-wrapper",
             start: "top top",
             end: "bottom bottom",
-            scrub: 1.5,
+            scrub: 1.2,
         }
     });
 
-    // Explode layers with stagger and rotation
     layers.forEach((layer, i) => {
-        const factor = (i - 2) * 2.2;
-        tl.to(layer.mesh.position, {
-            y: layer.originalY + factor,
-            ease: "power3.inOut"
-        }, 0);
-        
-        tl.to(layer.mesh.rotation, {
-            x: Math.PI * 0.15,
-            z: Math.PI * 0.05,
-            ease: "power3.inOut"
-        }, 0);
+        const factor = (i - 2) * 2.5; 
+        tl.to(layer.mesh.position, { y: layer.originalY + factor, ease: "power2.inOut" }, 0);
+        tl.to(layer.mesh.rotation, { x: 0.5, z: 0.1, ease: "power2.inOut" }, 0);
     });
 
-    // Camera move on scroll
-    tl.to(camera.position, { z: 8, ease: "none" }, 0);
-    
-    // UI Text Animations (Redesigned for premium flow)
+    // Typography Fade (Cleaner Sequence)
     const textSections = document.querySelectorAll('.showcase-text');
     textSections.forEach((text, i) => {
-        const start = i * 0.3;
+        const start = i * 0.33;
         tl.fromTo(text, 
-            { opacity: 0, y: 50, filter: 'blur(10px)' },
+            { opacity: 0, y: 30, filter: 'blur(10px)' },
             { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.2 },
             start
         );
         if(i < textSections.length - 1) {
-            tl.to(text, { opacity: 0, y: -50, filter: 'blur(10px)', duration: 0.2 }, start + 0.25);
+            tl.to(text, { opacity: 0, scale: 0.9, duration: 0.2 }, start + 0.25);
         }
     });
 
-    // --- Responsive Resize ---
+    // Resize
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();

@@ -9220,77 +9220,76 @@ h4 {
 
 .showcase-title {
   font-family: 'Cinzel', serif;
-  font-size: clamp(3rem, 6vw, 5.5rem);
-  margin-bottom: 1.5rem;
-  letter-spacing: 4px;
-  line-height: 1;
-  font-weight: 900;
+  font-size: clamp(2rem, 4vw, 3.5rem); /* Reduced size for clean look */
+  margin-bottom: 1rem;
+  letter-spacing: 5px;
+  line-height: 1.2;
+  font-weight: 700;
   text-transform: uppercase;
-  /* Premium Gold Gradient */
-  background: linear-gradient(135deg, #ffd700 0%, #ff8c00 50%, #b8860b 100%);
+  background: linear-gradient(135deg, #ffd700 0%, #ffae42 50%, #b8860b 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 30px rgba(255, 140, 0, 0.3));
+  filter: drop-shadow(0 0 20px rgba(255, 140, 0, 0.2));
 }
 
 .showcase-p {
   font-family: 'Outfit', sans-serif;
-  font-size: clamp(1.1rem, 2vw, 1.4rem);
-  color: rgba(255, 255, 255, 0.85);
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem); /* Smaller, neater text */
+  max-width: 450px; /* Narrower for better readability */
+  color: rgba(255, 255, 255, 0.7);
   font-weight: 300;
   line-height: 1.8;
-  letter-spacing: 1px;
-  max-width: 550px;
+  letter-spacing: 0.5px;
   margin: 0 auto;
-  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 .showcase-back-btn {
   position: absolute;
-  top: 2rem;
-  right: 2rem;
+  top: 1.5rem;
+  right: 1.5rem;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 215, 0, 0.2);
   color: #ffd700;
-  padding: 0.8rem 1.8rem;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.85rem;
   border-radius: 50px;
   cursor: pointer;
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(20px);
   font-family: 'Outfit', sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 1px;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.4s ease;
 }
 
 .showcase-back-btn:hover {
-  background: var(--accent-color);
-  color: white;
-  border-color: var(--accent-color);
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(255, 140, 0, 0.3);
+  background: #ffd700;
+  color: #000;
+  transform: scale(1.05);
 }
 
-/* Redesign Order button for Showcase */
+/* Redesign Order button for Showcase - Neater */
 .showcase-text .magic-btn {
-  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  background: #ffd700;
   color: #000;
-  font-weight: 800;
-  padding: 1.2rem 3rem;
-  border-radius: 100px;
+  font-weight: 700;
+  padding: 0.8rem 2.2rem;
+  font-size: 0.9rem;
+  border-radius: 50px;
   border: none;
-  box-shadow: 0 15px 35px rgba(255, 140, 0, 0.4);
+  margin-top: 1.5rem;
+  box-shadow: 0 10px 30px rgba(255, 140, 0, 0.3);
   transition: all 0.3s ease;
 }
 
 .showcase-text .magic-btn:hover {
-  transform: scale(1.05) translateY(-5px);
-  box-shadow: 0 20px 40px rgba(255, 140, 0, 0.6);
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(255, 140, 0, 0.5);
 }
 
 .showcase-scroll-spacer {
-  height: 150vh; /* Slightly longer scroll for smoother feel */
+  height: 180vh; /* Smooth, slightly longer scroll */
 }
 
 /* Ensure the canvas doesn't capture clicks needed for scrolling */
