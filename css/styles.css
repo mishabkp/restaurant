@@ -9229,6 +9229,7 @@ h4 {
   /* Premium Gold Gradient */
   background: linear-gradient(135deg, #ffd700 0%, #ff8c00 50%, #b8860b 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 0 30px rgba(255, 140, 0, 0.3));
 }
