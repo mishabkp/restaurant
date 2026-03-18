@@ -1760,6 +1760,7 @@ const app = {
           <p class="card-cuisine">${restaurant.cuisine}</p>
           <div style="margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.3rem;">
             ${(restaurant.tags || []).map(tag => `<span class="tag-badge">${tag}</span>`).join('')}
+            ${restaurant.rooms && restaurant.rooms.length > 0 ? `<span class="tag-badge" style="background: var(--accent-gradient); color: white; border: none; font-weight: 600;">🏨 Rooms Available</span>` : ''}
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
             <span class="card-rating">
