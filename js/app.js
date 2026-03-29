@@ -859,6 +859,8 @@ const app = {
         <div id="mainMap" class="map-container"></div>
       </div>
 
+      ${this.renderScrollAnimationSection()}
+
       ${this.renderTrendingSection()}
 
       <h1 class="page-title">Discover Kerala's Best Restaurants</h1>
@@ -892,6 +894,136 @@ const app = {
       linkText: "View Restaurants"
     }));
     this.initMap('mainMap', [10.5, 76.5], 7, cityMarkers);
+    
+    // Initialize Scroll Animation
+    this.initScrollAnimation();
+  },
+
+  renderScrollAnimationSection() {
+    return `
+      <section class="scroll-anim-section" id="scrollAnimSection">
+        <div class="scroll-anim-sticky">
+          <!-- The canvas where the 240 frames are drawn -->
+          <canvas id="heroScrubCanvas"></canvas>
+          <div class="scroll-overlay-gradient"></div>
+
+          <!-- Text Containers animated based on scroll -->
+          <div class="scroll-text-container">
+            <div class="scroll-text-item" id="stext-1">
+              <div class="stext-eyebrow">Interactive 3D Experience</div>
+              <h2 class="stext-title">Discover Kerala.</h2>
+              <p class="stext-desc">Scroll to immerse yourself in flavors.</p>
+            </div>
+            
+            <div class="scroll-text-item" id="stext-2">
+              <div class="stext-eyebrow">Smart Matching</div>
+              <h2 class="stext-title">AI Taste Profiles.</h2>
+              <p class="stext-desc">Find your perfect dish instantly.</p>
+            </div>
+            
+            <div class="scroll-text-item" id="stext-3">
+              <div class="stext-eyebrow">Community</div>
+              <h2 class="stext-title">Honest Reviews.</h2>
+              <p class="stext-desc">Join 50k+ food lovers sharing their stories.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  },
+
+  initScrollAnimation() {
+    const canvas = document.getElementById("heroScrubCanvas");
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+
+    // Make the canvas fill window width/height, handle retina
+    const updateCanvasSize = () => {
+      // Size it to window, or a specific ratio based on images
+      // The images are likely 16:9 or similar. Let's make canvas exact window size
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', updateCanvasSize);
+    updateCanvasSize();
+
+    // Setup Frames
+    const frameCount = 240;
+    const currentFrame = index => (
+      `assets/food/ezgif-506832bdb3477620-png-split/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.png`
+    );
+
+    const images = [];
+    const airpods = {
+      frame: 0
+    };
+
+    // Preload first image
+    const initialImg = new Image();
+    initialImg.src = currentFrame(0);
+    initialImg.onload = () => {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      drawScaledImage(initialImg);
+    };
+
+    const drawScaledImage = (img) => {
+      if(!img || !img.complete || img.naturalWidth === 0) return;
+      const hRatio = canvas.width / img.naturalWidth;
+      const vRatio = canvas.height / img.naturalHeight;
+      const ratio = Math.max(hRatio, vRatio); // Use max for cover, min for contain
+      const centerShift_x = (canvas.width - img.naturalWidth * ratio) / 2;
+      const centerShift_y = (canvas.height - img.naturalHeight * ratio) / 2;
+      
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight,
+        centerShift_x, centerShift_y, img.naturalWidth * ratio, img.naturalHeight * ratio);
+    };
+
+    for (let i = 0; i < frameCount; i++) {
+      const img = new Image();
+      img.src = currentFrame(i);
+      images.push(img);
+    }
+
+    gsap.to(airpods, {
+      frame: frameCount - 1,
+      snap: "frame",
+      ease: "none",
+      scrollTrigger: {
+        trigger: "#scrollAnimSection",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.5
+      },
+      onUpdate: () => {
+        if (images[airpods.frame]) {
+          drawScaledImage(images[airpods.frame]);
+        }
+      }
+    });
+
+    // Text Animations inside the scrub using a unified timeline to prevent overlap
+    const textTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: "#scrollAnimSection",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1
+      }
+    });
+
+    textTl.fromTo("#stext-1", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 }) // Fade in stext-1
+          .to("#stext-1", { opacity: 1, duration: 1.5 }) // Hold
+          .to("#stext-1", { opacity: 0, y: -50, duration: 1 }) // Fade out stext-1
+          
+          .fromTo("#stext-2", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 }) // Fade in stext-2
+          .to("#stext-2", { opacity: 1, duration: 1.5 }) // Hold
+          .to("#stext-2", { opacity: 0, y: -50, duration: 1 }) // Fade out stext-2
+          
+          .fromTo("#stext-3", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 }) // Fade in stext-3
+          .to("#stext-3", { opacity: 1, duration: 2 }) // Hold a bit longer
+          .to("#stext-3", { opacity: 0, y: -50, duration: 1 }); // Fade out before exit
+
 
   },
 
