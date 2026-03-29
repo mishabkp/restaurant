@@ -903,17 +903,6 @@ const app = {
     return `
       <section class="scroll-anim-section" id="scrollAnimSection">
         <div class="scroll-anim-sticky">
-          <!-- The Loading Indicator -->
-          <div class="scroll-loader-wrapper" id="scrollLoader">
-            <div class="loader-content">
-              <div class="loader-spinner"></div>
-              <p class="loader-text pulse-text">Loading 3D Experience...</p>
-              <div class="loader-progress-track">
-                <div class="loader-progress-bar" id="scrollProgressBar" style="width: 0%;"></div>
-              </div>
-            </div>
-          </div>
-
           <!-- The canvas where the 240 frames are drawn -->
           <canvas id="heroScrubCanvas" class="hidden-initially"></canvas>
           <div class="scroll-overlay-gradient"></div>
@@ -947,8 +936,6 @@ const app = {
     const canvas = document.getElementById("heroScrubCanvas");
     if (!canvas) return;
     const context = canvas.getContext("2d");
-    const loader = document.getElementById("scrollLoader");
-    const progressBar = document.getElementById("scrollProgressBar");
 
     const updateCanvasSize = () => {
       canvas.width = window.innerWidth;
@@ -985,9 +972,8 @@ const app = {
 
     const startAnimation = () => {
       ready = true;
-      // Fade out loader, fade in canvas
-      gsap.to(loader, { opacity: 0, duration: 0.8, onComplete: () => loader.style.display = 'none' });
-      gsap.to(canvas, { opacity: 1, duration: 1 });
+      // Fade in canvas smoothly
+      gsap.to(canvas, { opacity: 1, duration: 1.2 });
 
       gsap.to(airpods, {
         frame: frameCount - 1,
@@ -1045,18 +1031,11 @@ const app = {
       img.src = currentFrame(i);
       img.onload = () => {
         loadedCount++;
-        const pct = Math.floor((loadedCount / frameCount) * 100);
-        if (progressBar) progressBar.style.width = `${pct}%`;
         
         // Start animation once threshold is met
         if (loadedCount >= threshold && !animationStarted) {
           animationStarted = true;
           startAnimation();
-        }
-        
-        // Final "Done" state for progress bar
-        if (loadedCount === frameCount && progressBar) {
-          progressBar.style.backgroundColor = '#4ade80'; // Success green
         }
       };
       img.onerror = () => {
