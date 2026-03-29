@@ -904,7 +904,7 @@ const app = {
       <section class="scroll-anim-section" id="scrollAnimSection">
         <div class="scroll-anim-sticky">
           <!-- The canvas where the 240 frames are drawn -->
-          <canvas id="heroScrubCanvas" class="hidden-initially"></canvas>
+          <canvas id="heroScrubCanvas"></canvas>
           <div class="scroll-overlay-gradient"></div>
 
           <!-- Text Containers animated based on scroll -->
@@ -971,9 +971,8 @@ const app = {
     };
 
     const startAnimation = () => {
+      if (ready) return; // Prevent double trigger
       ready = true;
-      // Fade in canvas smoothly
-      gsap.to(canvas, { opacity: 1, duration: 1.2 });
 
       gsap.to(airpods, {
         frame: frameCount - 1,
@@ -1022,8 +1021,17 @@ const app = {
             .to("#stext-3", { opacity: 0, y: -50, duration: 1 });
     };
 
-    // Progressive Preload Logic
-    const threshold = 40; // Load first 40 frames before starting
+    // Priority Load First Frame
+    const firstImg = new Image();
+    firstImg.src = currentFrame(0);
+    firstImg.onload = () => {
+      drawScaledImage(firstImg);
+      // Immediately display the canvas with the first frame
+      canvas.style.opacity = '1';
+    };
+
+    // Progressive Preload Logic for all remaining frames
+    const threshold = 40; 
     let animationStarted = false;
 
     for (let i = 0; i < frameCount; i++) {
