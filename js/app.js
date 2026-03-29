@@ -900,14 +900,11 @@ const app = {
   },
 
   renderScrollAnimationSection() {
-    // Detect GitHub Pages vs local to get correct asset path
-    const basePath = window.location.pathname.includes('/restaurant') ? '/restaurant/' : './';
-    const firstFrame = `${basePath}assets/food/ezgif-506832bdb3477620-png-split/ezgif-frame-001.png`;
     return `
       <section class="scroll-anim-section" id="scrollAnimSection">
-        <div class="scroll-anim-sticky" style="background-image: url('${firstFrame}'); background-size: cover; background-position: center;">
-          <!-- The canvas where the 240 frames are drawn. Starts hidden so CSS background shows through -->
-          <canvas id="heroScrubCanvas" style="opacity: 0; transition: opacity 0.5s ease;"></canvas>
+        <div class="scroll-anim-sticky">
+          <!-- The canvas where the 240 frames are drawn -->
+          <canvas id="heroScrubCanvas"></canvas>
           <div class="scroll-overlay-gradient"></div>
 
           <!-- Text Containers animated based on scroll -->
@@ -940,24 +937,9 @@ const app = {
     if (!canvas) return;
     const context = canvas.getContext("2d");
 
-    const updateCanvasSize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      if (ready && images[Math.round(airpods.frame)]) drawScaledImage(images[Math.round(airpods.frame)]);
-    };
-    window.addEventListener('resize', updateCanvasSize);
-    updateCanvasSize();
-
     const frameCount = 240;
-    const basePath = window.location.pathname.includes('/restaurant') ? '/restaurant/' : './';
-    const currentFrame = index => (
-      `${basePath}assets/food/ezgif-506832bdb3477620-png-split/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.png`
-    );
-
     const images = new Array(frameCount).fill(null);
-    const loadingSet = new Set();
     const airpods = { frame: 0 };
-    let ready = false;
 
     const drawScaledImage = (img) => {
       if (!img || !img.complete || img.naturalWidth === 0) return;
@@ -970,95 +952,77 @@ const app = {
       context.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, cx, cy, img.naturalWidth * ratio, img.naturalHeight * ratio);
     };
 
-    const loadFrame = (i) => {
-      if (i < 0 || i >= frameCount || loadingSet.has(i)) return;
-      loadingSet.add(i);
+    const updateCanvasSize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const frameIndex = Math.round(airpods.frame);
+      if (images[frameIndex]) drawScaledImage(images[frameIndex]);
+    };
+    window.addEventListener('resize', updateCanvasSize);
+    updateCanvasSize();
+
+    const basePath = window.location.pathname.includes('/restaurant') ? '/restaurant/' : './';
+    const currentFrame = index => (
+      `${basePath}assets/food/ezgif-506832bdb3477620-png-split/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.png`
+    );
+
+    // Light preload loop. Animation starts instantly, frames populate as they arrive.
+    for (let i = 0; i < frameCount; i++) {
       const img = new Image();
       img.onload = () => {
-        images[i] = img;
-        if (i === 0) {
-          drawScaledImage(img);
-          canvas.style.opacity = '1';
-          // After the canvas smoothly fades in (0.5s transition), remove the static CSS background
-          // so it doesn't stay visible behind the transparent PNG animation frames
-          setTimeout(() => {
-            const stickyDiv = document.querySelector('.scroll-anim-sticky');
-            if (stickyDiv) stickyDiv.style.backgroundImage = 'none';
-          }, 500);
-          startAnimation();
-        }
+        if (i === 0) drawScaledImage(img);
       };
-      img.onerror = () => { images[i] = null; loadingSet.delete(i); };
       img.src = currentFrame(i);
       images[i] = img;
-    };
+    }
 
-    const preloadRange = (start, end) => {
-      for (let i = Math.max(0, start); i <= Math.min(frameCount - 1, end); i++) {
-        loadFrame(i);
-      }
-    };
-
-    const startAnimation = () => {
-      if (ready) return;
-      ready = true;
-
-      gsap.to(airpods, {
-        frame: frameCount - 1,
-        snap: "frame",
-        ease: "none",
-        scrollTrigger: {
-          trigger: "#scrollAnimSection",
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 0.5
-        },
-        onUpdate: () => {
-          const frameIndex = Math.round(airpods.frame);
-          preloadRange(frameIndex, frameIndex + 25);
-
-          if (images[frameIndex] && images[frameIndex].complete && images[frameIndex].naturalWidth > 0) {
-            drawScaledImage(images[frameIndex]);
-          } else {
-            for (let d = 1; d < 60; d++) {
-              const prev = frameIndex - d;
-              const next = frameIndex + d;
-              if (prev >= 0 && images[prev] && images[prev].complete && images[prev].naturalWidth > 0) {
-                drawScaledImage(images[prev]); break;
-              }
-              if (next < frameCount && images[next] && images[next].complete && images[next].naturalWidth > 0) {
-                drawScaledImage(images[next]); break;
-              }
+    gsap.to(airpods, {
+      frame: frameCount - 1,
+      snap: "frame",
+      ease: "none",
+      scrollTrigger: {
+        trigger: "#scrollAnimSection",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.5
+      },
+      onUpdate: () => {
+        const frameIndex = Math.round(airpods.frame);
+        
+        let bestFrame = frameIndex;
+        if (!images[frameIndex] || !images[frameIndex].complete || images[frameIndex].naturalWidth === 0) {
+            for (let d = 1; d < frameCount; d++) {
+                if (frameIndex - d >= 0 && images[frameIndex - d] && images[frameIndex - d].complete && images[frameIndex - d].naturalWidth > 0) {
+                    bestFrame = frameIndex - d; break;
+                }
+                if (frameIndex + d < frameCount && images[frameIndex + d] && images[frameIndex + d].complete && images[frameIndex + d].naturalWidth > 0) {
+                    bestFrame = frameIndex + d; break;
+                }
             }
-          }
         }
-      });
-
-      const textTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: "#scrollAnimSection",
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 1
+        if (images[bestFrame] && images[bestFrame].complete && images[bestFrame].naturalWidth > 0) {
+            drawScaledImage(images[bestFrame]);
         }
-      });
-      textTl.fromTo("#stext-1", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
-            .to("#stext-1", { opacity: 1, duration: 1.5 })
-            .to("#stext-1", { opacity: 0, y: -50, duration: 1 })
-            .fromTo("#stext-2", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
-            .to("#stext-2", { opacity: 1, duration: 1.5 })
-            .to("#stext-2", { opacity: 0, y: -50, duration: 1 })
-            .fromTo("#stext-3", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
-            .to("#stext-3", { opacity: 1, duration: 2 })
-            .to("#stext-3", { opacity: 0, y: -50, duration: 1 });
-    };
+      }
+    });
 
-    // Load frame 0 first (reveals burger instantly, triggers animation start)
-    loadFrame(0);
-    // Load next 15 frames so early scrolling is smooth
-    setTimeout(() => preloadRange(1, 15), 50);
-    // Load all remaining frames quietly in background
-    setTimeout(() => preloadRange(16, frameCount - 1), 500);
+    const textTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: "#scrollAnimSection",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1
+      }
+    });
+    textTl.fromTo("#stext-1", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
+          .to("#stext-1", { opacity: 1, duration: 1.5 })
+          .to("#stext-1", { opacity: 0, y: -50, duration: 1 })
+          .fromTo("#stext-2", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
+          .to("#stext-2", { opacity: 1, duration: 1.5 })
+          .to("#stext-2", { opacity: 0, y: -50, duration: 1 })
+          .fromTo("#stext-3", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
+          .to("#stext-3", { opacity: 1, duration: 2 })
+          .to("#stext-3", { opacity: 0, y: -50, duration: 1 });
   },
 
   renderTrendingSection() {
