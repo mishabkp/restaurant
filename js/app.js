@@ -1000,8 +1000,17 @@ const app = {
           scrub: 0.5
         },
         onUpdate: () => {
-          if (images[airpods.frame]) {
-            drawScaledImage(images[airpods.frame]);
+          const frameIndex = airpods.frame;
+          if (images[frameIndex] && images[frameIndex].complete) {
+            drawScaledImage(images[frameIndex]);
+          } else {
+            // Nearest-neighbor fallback: Find the closest loaded frame
+            let nearest = -1;
+            for(let d=1; d<10; d++) {
+              if(images[frameIndex-d] && images[frameIndex-d].complete) { nearest = frameIndex-d; break; }
+              if(images[frameIndex+d] && images[frameIndex+d].complete) { nearest = frameIndex+d; break; }
+            }
+            if(nearest !== -1) drawScaledImage(images[nearest]);
           }
         }
       });
@@ -1027,7 +1036,10 @@ const app = {
             .to("#stext-3", { opacity: 0, y: -50, duration: 1 });
     };
 
-    // Preload Logic
+    // Progressive Preload Logic
+    const threshold = 40; // Load first 40 frames before starting
+    let animationStarted = false;
+
     for (let i = 0; i < frameCount; i++) {
       const img = new Image();
       img.src = currentFrame(i);
@@ -1036,13 +1048,23 @@ const app = {
         const pct = Math.floor((loadedCount / frameCount) * 100);
         if (progressBar) progressBar.style.width = `${pct}%`;
         
-        if (loadedCount === frameCount) {
+        // Start animation once threshold is met
+        if (loadedCount >= threshold && !animationStarted) {
+          animationStarted = true;
           startAnimation();
+        }
+        
+        // Final "Done" state for progress bar
+        if (loadedCount === frameCount && progressBar) {
+          progressBar.style.backgroundColor = '#4ade80'; // Success green
         }
       };
       img.onerror = () => {
-        loadedCount++; // Still count as "processed" to avoid blocking
-        if (loadedCount === frameCount) startAnimation();
+        loadedCount++;
+        if (loadedCount >= threshold && !animationStarted) {
+          animationStarted = true;
+          startAnimation();
+        }
       };
       images.push(img);
     }
