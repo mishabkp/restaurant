@@ -903,8 +903,19 @@ const app = {
     return `
       <section class="scroll-anim-section" id="scrollAnimSection">
         <div class="scroll-anim-sticky">
+          <!-- The Loading Indicator -->
+          <div class="scroll-loader-wrapper" id="scrollLoader">
+            <div class="loader-content">
+              <div class="loader-spinner"></div>
+              <p class="loader-text pulse-text">Loading 3D Experience...</p>
+              <div class="loader-progress-track">
+                <div class="loader-progress-bar" id="scrollProgressBar" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
           <!-- The canvas where the 240 frames are drawn -->
-          <canvas id="heroScrubCanvas"></canvas>
+          <canvas id="heroScrubCanvas" class="hidden-initially"></canvas>
           <div class="scroll-overlay-gradient"></div>
 
           <!-- Text Containers animated based on scroll -->
@@ -936,46 +947,34 @@ const app = {
     const canvas = document.getElementById("heroScrubCanvas");
     if (!canvas) return;
     const context = canvas.getContext("2d");
+    const loader = document.getElementById("scrollLoader");
+    const progressBar = document.getElementById("scrollProgressBar");
 
-    // Make the canvas fill window width/height, handle retina
     const updateCanvasSize = () => {
-      // Size it to window, or a specific ratio based on images
-      // The images are likely 16:9 or similar. Let's make canvas exact window size
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      // Re-draw current frame on resize if ready
+      if(ready && images[airpods.frame]) drawScaledImage(images[airpods.frame]);
     };
     window.addEventListener('resize', updateCanvasSize);
     updateCanvasSize();
 
-    // Setup Frames
     const frameCount = 240;
-    // Auto-detect base path for GitHub Pages compatibility
-    // On GitHub Pages: /restaurant/ | Locally: /
-    const basePath = window.location.pathname.includes('/restaurant') 
-      ? '/restaurant/' 
-      : './';
+    const basePath = window.location.pathname.includes('/restaurant') ? '/restaurant/' : './';
     const currentFrame = index => (
       `${basePath}assets/food/ezgif-506832bdb3477620-png-split/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.png`
     );
 
     const images = [];
-    const airpods = {
-      frame: 0
-    };
-
-    // Preload first image
-    const initialImg = new Image();
-    initialImg.src = currentFrame(0);
-    initialImg.onload = () => {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      drawScaledImage(initialImg);
-    };
+    const airpods = { frame: 0 };
+    let loadedCount = 0;
+    let ready = false;
 
     const drawScaledImage = (img) => {
       if(!img || !img.complete || img.naturalWidth === 0) return;
       const hRatio = canvas.width / img.naturalWidth;
       const vRatio = canvas.height / img.naturalHeight;
-      const ratio = Math.max(hRatio, vRatio); // Use max for cover, min for contain
+      const ratio = Math.max(hRatio, vRatio);
       const centerShift_x = (canvas.width - img.naturalWidth * ratio) / 2;
       const centerShift_y = (canvas.height - img.naturalHeight * ratio) / 2;
       
@@ -984,52 +983,69 @@ const app = {
         centerShift_x, centerShift_y, img.naturalWidth * ratio, img.naturalHeight * ratio);
     };
 
+    const startAnimation = () => {
+      ready = true;
+      // Fade out loader, fade in canvas
+      gsap.to(loader, { opacity: 0, duration: 0.8, onComplete: () => loader.style.display = 'none' });
+      gsap.to(canvas, { opacity: 1, duration: 1 });
+
+      gsap.to(airpods, {
+        frame: frameCount - 1,
+        snap: "frame",
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#scrollAnimSection",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.5
+        },
+        onUpdate: () => {
+          if (images[airpods.frame]) {
+            drawScaledImage(images[airpods.frame]);
+          }
+        }
+      });
+
+      // Text Animations inside the scrub
+      const textTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: "#scrollAnimSection",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1
+        }
+      });
+
+      textTl.fromTo("#stext-1", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
+            .to("#stext-1", { opacity: 1, duration: 1.5 })
+            .to("#stext-1", { opacity: 0, y: -50, duration: 1 })
+            .fromTo("#stext-2", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
+            .to("#stext-2", { opacity: 1, duration: 1.5 })
+            .to("#stext-2", { opacity: 0, y: -50, duration: 1 })
+            .fromTo("#stext-3", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
+            .to("#stext-3", { opacity: 1, duration: 2 })
+            .to("#stext-3", { opacity: 0, y: -50, duration: 1 });
+    };
+
+    // Preload Logic
     for (let i = 0; i < frameCount; i++) {
       const img = new Image();
       img.src = currentFrame(i);
+      img.onload = () => {
+        loadedCount++;
+        const pct = Math.floor((loadedCount / frameCount) * 100);
+        if (progressBar) progressBar.style.width = `${pct}%`;
+        
+        if (loadedCount === frameCount) {
+          startAnimation();
+        }
+      };
+      img.onerror = () => {
+        loadedCount++; // Still count as "processed" to avoid blocking
+        if (loadedCount === frameCount) startAnimation();
+      };
       images.push(img);
     }
-
-    gsap.to(airpods, {
-      frame: frameCount - 1,
-      snap: "frame",
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#scrollAnimSection",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.5
-      },
-      onUpdate: () => {
-        if (images[airpods.frame]) {
-          drawScaledImage(images[airpods.frame]);
-        }
-      }
-    });
-
-    // Text Animations inside the scrub using a unified timeline to prevent overlap
-    const textTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: "#scrollAnimSection",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1
-      }
-    });
-
-    textTl.fromTo("#stext-1", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 }) // Fade in stext-1
-          .to("#stext-1", { opacity: 1, duration: 1.5 }) // Hold
-          .to("#stext-1", { opacity: 0, y: -50, duration: 1 }) // Fade out stext-1
-          
-          .fromTo("#stext-2", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 }) // Fade in stext-2
-          .to("#stext-2", { opacity: 1, duration: 1.5 }) // Hold
-          .to("#stext-2", { opacity: 0, y: -50, duration: 1 }) // Fade out stext-2
-          
-          .fromTo("#stext-3", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 }) // Fade in stext-3
-          .to("#stext-3", { opacity: 1, duration: 2 }) // Hold a bit longer
-          .to("#stext-3", { opacity: 0, y: -50, duration: 1 }); // Fade out before exit
-
-
   },
 
   renderTrendingSection() {
