@@ -938,8 +938,25 @@ const app = {
     const context = canvas.getContext("2d");
 
     const frameCount = 240;
+    const THRESHOLD = 60; // Start scroll animation after 60 frames are ready
     const images = new Array(frameCount).fill(null);
     const airpods = { frame: 0 };
+    let loadedCount = 0;
+    let animationStarted = false;
+
+    const updateCanvasSize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const fi = Math.round(airpods.frame);
+      if (images[fi] && images[fi].complete) drawScaledImage(images[fi]);
+    };
+    window.addEventListener('resize', updateCanvasSize);
+    updateCanvasSize();
+
+    const basePath = window.location.pathname.includes('/restaurant') ? '/restaurant/' : './';
+    const currentFrame = index => (
+      `${basePath}assets/food/ezgif-506832bdb3477620-png-split/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.png`
+    );
 
     const drawScaledImage = (img) => {
       if (!img || !img.complete || img.naturalWidth === 0) return;
@@ -952,78 +969,71 @@ const app = {
       context.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, cx, cy, img.naturalWidth * ratio, img.naturalHeight * ratio);
     };
 
-    const updateCanvasSize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      const frameIndex = Math.round(airpods.frame);
-      if (images[frameIndex]) drawScaledImage(images[frameIndex]);
+    const initGSAP = () => {
+      animationStarted = true;
+
+      gsap.to(airpods, {
+        frame: frameCount - 1,
+        snap: "frame",
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#scrollAnimSection",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.5
+        },
+        onUpdate: () => {
+          const frameIndex = Math.round(airpods.frame);
+          let best = frameIndex;
+          if (!images[frameIndex] || !images[frameIndex].complete || images[frameIndex].naturalWidth === 0) {
+            for (let d = 1; d < frameCount; d++) {
+              if (frameIndex - d >= 0 && images[frameIndex - d]?.complete && images[frameIndex - d].naturalWidth > 0) { best = frameIndex - d; break; }
+              if (frameIndex + d < frameCount && images[frameIndex + d]?.complete && images[frameIndex + d].naturalWidth > 0) { best = frameIndex + d; break; }
+            }
+          }
+          if (images[best]?.complete && images[best].naturalWidth > 0) drawScaledImage(images[best]);
+        }
+      });
+
+      const textTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: "#scrollAnimSection",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1
+        }
+      });
+      textTl.fromTo("#stext-1", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
+            .to("#stext-1", { opacity: 1, duration: 1.5 })
+            .to("#stext-1", { opacity: 0, y: -50, duration: 1 })
+            .fromTo("#stext-2", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
+            .to("#stext-2", { opacity: 1, duration: 1.5 })
+            .to("#stext-2", { opacity: 0, y: -50, duration: 1 })
+            .fromTo("#stext-3", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
+            .to("#stext-3", { opacity: 1, duration: 2 })
+            .to("#stext-3", { opacity: 0, y: -50, duration: 1 });
     };
-    window.addEventListener('resize', updateCanvasSize);
-    updateCanvasSize();
 
-    const basePath = window.location.pathname.includes('/restaurant') ? '/restaurant/' : './';
-    const currentFrame = index => (
-      `${basePath}assets/food/ezgif-506832bdb3477620-png-split/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.png`
-    );
-
-    // Light preload loop. Animation starts instantly, frames populate as they arrive.
+    // Load all frames; show frame-0 at once; activate GSAP after THRESHOLD frames
     for (let i = 0; i < frameCount; i++) {
       const img = new Image();
       img.onload = () => {
+        images[i] = img;
+        loadedCount++;
+
+        // Immediately paint the first frame so there's no black screen
         if (i === 0) drawScaledImage(img);
+
+        // Start smooth scroll animation once enough frames are ready
+        if (loadedCount >= THRESHOLD && !animationStarted) {
+          initGSAP();
+        }
       };
       img.src = currentFrame(i);
       images[i] = img;
     }
-
-    gsap.to(airpods, {
-      frame: frameCount - 1,
-      snap: "frame",
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#scrollAnimSection",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.5
-      },
-      onUpdate: () => {
-        const frameIndex = Math.round(airpods.frame);
-        
-        let bestFrame = frameIndex;
-        if (!images[frameIndex] || !images[frameIndex].complete || images[frameIndex].naturalWidth === 0) {
-            for (let d = 1; d < frameCount; d++) {
-                if (frameIndex - d >= 0 && images[frameIndex - d] && images[frameIndex - d].complete && images[frameIndex - d].naturalWidth > 0) {
-                    bestFrame = frameIndex - d; break;
-                }
-                if (frameIndex + d < frameCount && images[frameIndex + d] && images[frameIndex + d].complete && images[frameIndex + d].naturalWidth > 0) {
-                    bestFrame = frameIndex + d; break;
-                }
-            }
-        }
-        if (images[bestFrame] && images[bestFrame].complete && images[bestFrame].naturalWidth > 0) {
-            drawScaledImage(images[bestFrame]);
-        }
-      }
-    });
-
-    const textTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: "#scrollAnimSection",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1
-      }
-    });
-    textTl.fromTo("#stext-1", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
-          .to("#stext-1", { opacity: 1, duration: 1.5 })
-          .to("#stext-1", { opacity: 0, y: -50, duration: 1 })
-          .fromTo("#stext-2", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
-          .to("#stext-2", { opacity: 1, duration: 1.5 })
-          .to("#stext-2", { opacity: 0, y: -50, duration: 1 })
-          .fromTo("#stext-3", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
-          .to("#stext-3", { opacity: 1, duration: 2 })
-          .to("#stext-3", { opacity: 0, y: -50, duration: 1 });
   },
+
 
   renderTrendingSection() {
     // Collect all restaurants with high ratings (4.5+)
