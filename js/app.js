@@ -955,7 +955,7 @@ const app = {
 
     const basePath = window.location.pathname.includes('/restaurant') ? '/restaurant/' : './';
     const currentFrame = index => (
-      `${basePath}assets/food/ezgif-506832bdb3477620-png-split/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.png`
+      `${basePath}assets/food/frames-webp/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.webp`
     );
 
     const drawScaledImage = (img) => {
