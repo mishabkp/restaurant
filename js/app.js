@@ -900,9 +900,12 @@ const app = {
   },
 
   renderScrollAnimationSection() {
+    // Detect GitHub Pages vs local to get correct asset path
+    const basePath = window.location.pathname.includes('/restaurant') ? '/restaurant/' : './';
+    const firstFrame = `${basePath}assets/food/ezgif-506832bdb3477620-png-split/ezgif-frame-001.png`;
     return `
       <section class="scroll-anim-section" id="scrollAnimSection">
-        <div class="scroll-anim-sticky">
+        <div class="scroll-anim-sticky" style="background-image: url('${firstFrame}'); background-size: cover; background-position: center;">
           <!-- The canvas where the 240 frames are drawn -->
           <canvas id="heroScrubCanvas"></canvas>
           <div class="scroll-overlay-gradient"></div>
