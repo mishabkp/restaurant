@@ -949,8 +949,13 @@ const app = {
 
     // Setup Frames
     const frameCount = 240;
+    // Auto-detect base path for GitHub Pages compatibility
+    // On GitHub Pages: /restaurant/ | Locally: /
+    const basePath = window.location.pathname.includes('/restaurant') 
+      ? '/restaurant/' 
+      : './';
     const currentFrame = index => (
-      `assets/food/ezgif-506832bdb3477620-png-split/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.png`
+      `${basePath}assets/food/ezgif-506832bdb3477620-png-split/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.png`
     );
 
     const images = [];
