@@ -979,6 +979,12 @@ const app = {
         if (i === 0) {
           drawScaledImage(img);
           canvas.style.opacity = '1';
+          // After the canvas smoothly fades in (0.5s transition), remove the static CSS background
+          // so it doesn't stay visible behind the transparent PNG animation frames
+          setTimeout(() => {
+            const stickyDiv = document.querySelector('.scroll-anim-sticky');
+            if (stickyDiv) stickyDiv.style.backgroundImage = 'none';
+          }, 500);
           startAnimation();
         }
       };
