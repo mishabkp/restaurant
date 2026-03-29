@@ -906,8 +906,8 @@ const app = {
     return `
       <section class="scroll-anim-section" id="scrollAnimSection">
         <div class="scroll-anim-sticky" style="background-image: url('${firstFrame}'); background-size: cover; background-position: center;">
-          <!-- The canvas where the 240 frames are drawn -->
-          <canvas id="heroScrubCanvas"></canvas>
+          <!-- The canvas where the 240 frames are drawn. Starts hidden so CSS background shows through -->
+          <canvas id="heroScrubCanvas" style="opacity: 0; transition: opacity 0.5s ease;"></canvas>
           <div class="scroll-overlay-gradient"></div>
 
           <!-- Text Containers animated based on scroll -->
@@ -943,8 +943,7 @@ const app = {
     const updateCanvasSize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      // Re-draw current frame on resize if ready
-      if(ready && images[airpods.frame]) drawScaledImage(images[airpods.frame]);
+      if (ready && images[Math.round(airpods.frame)]) drawScaledImage(images[Math.round(airpods.frame)]);
     };
     window.addEventListener('resize', updateCanvasSize);
     updateCanvasSize();
@@ -955,26 +954,47 @@ const app = {
       `${basePath}assets/food/ezgif-506832bdb3477620-png-split/ezgif-frame-${(index + 1).toString().padStart(3, '0')}.png`
     );
 
-    const images = [];
+    const images = new Array(frameCount).fill(null);
+    const loadingSet = new Set();
     const airpods = { frame: 0 };
-    let loadedCount = 0;
     let ready = false;
 
     const drawScaledImage = (img) => {
-      if(!img || !img.complete || img.naturalWidth === 0) return;
+      if (!img || !img.complete || img.naturalWidth === 0) return;
       const hRatio = canvas.width / img.naturalWidth;
       const vRatio = canvas.height / img.naturalHeight;
       const ratio = Math.max(hRatio, vRatio);
-      const centerShift_x = (canvas.width - img.naturalWidth * ratio) / 2;
-      const centerShift_y = (canvas.height - img.naturalHeight * ratio) / 2;
-      
+      const cx = (canvas.width - img.naturalWidth * ratio) / 2;
+      const cy = (canvas.height - img.naturalHeight * ratio) / 2;
       context.clearRect(0, 0, canvas.width, canvas.height);
-      context.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight,
-        centerShift_x, centerShift_y, img.naturalWidth * ratio, img.naturalHeight * ratio);
+      context.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, cx, cy, img.naturalWidth * ratio, img.naturalHeight * ratio);
+    };
+
+    const loadFrame = (i) => {
+      if (i < 0 || i >= frameCount || loadingSet.has(i)) return;
+      loadingSet.add(i);
+      const img = new Image();
+      img.onload = () => {
+        images[i] = img;
+        if (i === 0) {
+          drawScaledImage(img);
+          canvas.style.opacity = '1';
+          startAnimation();
+        }
+      };
+      img.onerror = () => { images[i] = null; loadingSet.delete(i); };
+      img.src = currentFrame(i);
+      images[i] = img;
+    };
+
+    const preloadRange = (start, end) => {
+      for (let i = Math.max(0, start); i <= Math.min(frameCount - 1, end); i++) {
+        loadFrame(i);
+      }
     };
 
     const startAnimation = () => {
-      if (ready) return; // Prevent double trigger
+      if (ready) return;
       ready = true;
 
       gsap.to(airpods, {
@@ -988,22 +1008,26 @@ const app = {
           scrub: 0.5
         },
         onUpdate: () => {
-          const frameIndex = airpods.frame;
-          if (images[frameIndex] && images[frameIndex].complete) {
+          const frameIndex = Math.round(airpods.frame);
+          preloadRange(frameIndex, frameIndex + 25);
+
+          if (images[frameIndex] && images[frameIndex].complete && images[frameIndex].naturalWidth > 0) {
             drawScaledImage(images[frameIndex]);
           } else {
-            // Nearest-neighbor fallback: Find the closest loaded frame
-            let nearest = -1;
-            for(let d=1; d<10; d++) {
-              if(images[frameIndex-d] && images[frameIndex-d].complete) { nearest = frameIndex-d; break; }
-              if(images[frameIndex+d] && images[frameIndex+d].complete) { nearest = frameIndex+d; break; }
+            for (let d = 1; d < 60; d++) {
+              const prev = frameIndex - d;
+              const next = frameIndex + d;
+              if (prev >= 0 && images[prev] && images[prev].complete && images[prev].naturalWidth > 0) {
+                drawScaledImage(images[prev]); break;
+              }
+              if (next < frameCount && images[next] && images[next].complete && images[next].naturalWidth > 0) {
+                drawScaledImage(images[next]); break;
+              }
             }
-            if(nearest !== -1) drawScaledImage(images[nearest]);
           }
         }
       });
 
-      // Text Animations inside the scrub
       const textTl = gsap.timeline({
         scrollTrigger: {
           trigger: "#scrollAnimSection",
@@ -1012,7 +1036,6 @@ const app = {
           scrub: 1
         }
       });
-
       textTl.fromTo("#stext-1", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1 })
             .to("#stext-1", { opacity: 1, duration: 1.5 })
             .to("#stext-1", { opacity: 0, y: -50, duration: 1 })
@@ -1024,40 +1047,12 @@ const app = {
             .to("#stext-3", { opacity: 0, y: -50, duration: 1 });
     };
 
-    // Priority Load First Frame
-    const firstImg = new Image();
-    firstImg.src = currentFrame(0);
-    firstImg.onload = () => {
-      drawScaledImage(firstImg);
-      // Immediately display the canvas with the first frame
-      canvas.style.opacity = '1';
-    };
-
-    // Progressive Preload Logic for all remaining frames
-    const threshold = 40; 
-    let animationStarted = false;
-
-    for (let i = 0; i < frameCount; i++) {
-      const img = new Image();
-      img.src = currentFrame(i);
-      img.onload = () => {
-        loadedCount++;
-        
-        // Start animation once threshold is met
-        if (loadedCount >= threshold && !animationStarted) {
-          animationStarted = true;
-          startAnimation();
-        }
-      };
-      img.onerror = () => {
-        loadedCount++;
-        if (loadedCount >= threshold && !animationStarted) {
-          animationStarted = true;
-          startAnimation();
-        }
-      };
-      images.push(img);
-    }
+    // Load frame 0 first (reveals burger instantly, triggers animation start)
+    loadFrame(0);
+    // Load next 15 frames so early scrolling is smooth
+    setTimeout(() => preloadRange(1, 15), 50);
+    // Load all remaining frames quietly in background
+    setTimeout(() => preloadRange(16, frameCount - 1), 500);
   },
 
   renderTrendingSection() {
