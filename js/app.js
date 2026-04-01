@@ -789,7 +789,7 @@ const app = {
       <div class="hero-premium hero-video-section fade-slide-up">
         <!-- Kerala Food Background Video -->
         <video class="hero-bg-video" autoplay muted loop playsinline>
-          <source src="assets/hero.mp4.mp4" type="video/mp4">
+          <source src="assets/hero.mp4" type="video/mp4">
         </video>
         <!-- Dark gradient overlay for text readability -->
         <div class="hero-video-overlay"></div>

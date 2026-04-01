@@ -3,3 +3,8 @@ server/node_modules/
 server/.env
 .env
 .DS_Store
+.vscode/
+dist/
+build/
+*.log
+Thumbs.db
